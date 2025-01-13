@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>البحث عن تفسير آية</title>
+    <link rel="shortcut icon" href="https://play-lh.googleusercontent.com/QdPcX-1uibkhdQQ0UoZh0KgS4lNp_0t1wxJDQgCTnf2iaI3NYwJPjZdxki88RfrfBiY" type="image/x-icon">
+    <style>
+        :root {
+            --primary-color: #38a169;
+            --primary-dark: #2f855a;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        body {
+            font-family: 'Noto Kufi Arabic', 'Noto Sans Arabic', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0 0 40px 0;
+            background-color: var(--bg-light);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2cb67d, #228b22);
+            text-align: center;
+            padding: 10px 0;
+            color: var(--bg-white);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-title {
+            font-size: 1.8rem;
+            margin: 0;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-subtitle {
+            font-size: 0.9rem;
+            margin-top: 3px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .search-form {
+            display: flex;
+            flex-direction: row;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .input-group {
+            position: relative;
+            flex: 1;
+        }
+
+        .input-group label {
+            position: absolute;
+            right: 12px;
+            top: -8px;
+            background: white;
+            padding: 0 6px;
+            font-size: 0.8rem;
+            color: var(--primary-color);
+            border-radius: 4px;
+            z-index: 1;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.1);
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 120px;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 4px 12px rgba(56, 161, 105, 0.2);
+        }
+
+        .section-container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        .section {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            display: none;
+        }
+
+        .section.visible {
+            display: block;
+        }
+
+        .section:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .section h3 {
+            color: var(--text-primary);
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(56, 161, 105, 0.2);
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h3::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            right: 0;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(to left, var(--primary-color), transparent);
+        }
+
+        .iframe-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 450px;
+            border: none;
+            border-radius: 12px;
+            background: #f8fafc;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        iframe:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Loading state for iframes */
+        .iframe-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        iframe.loading {
+            position: relative;
+        }
+
+        iframe.loading::after {
+            content: 'جاري التحميل...';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+
+        /* Custom scrollbar for iframes */
+        iframe::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        iframe::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 4px;
+        }
+
+        iframe::-webkit-scrollbar-thumb {
+            background: rgba(56, 161, 105, 0.3);
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        iframe::-webkit-scrollbar-thumb:hover {
+            background: rgba(56, 161, 105, 0.5);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .section-container {
+                padding: 0 15px;
+            }
+
+            .section {
+                padding: 20px;
+                margin-bottom: 30px;
+            }
+
+            .iframe-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            iframe {
+                height: 400px;
+            }
+
+            .section h3 {
+                font-size: 1.3rem;
+                margin-bottom: 20px;
+            }
+        }
+
+        /* Dark mode adjustments */
+        @media (prefers-color-scheme: dark) {
+            .section {
+                background: var(--bg-white);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            iframe {
+                background: var(--bg-light);
+            }
+
+            iframe.loading::after {
+                background: rgba(45, 55, 72, 0.95);
+                color: var(--bg-white);
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: var(--bg-white);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            font-size: 0.8rem;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(10px);
+            line-height: 1.6;
+        }
+
+        .footer-copyright {
+            margin-bottom: 4px;
+        }
+
+        .footer-credit {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        /* إضافة تنسيقات شاشة التحميل */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--primary-color);
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Focus mode button styles */
+        .focus-mode-btn {
+            position: fixed;
+            left: 20px; /* RTL layout, so using left instead of right */
+            bottom: 80px;
+            background: var(--bg-white);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .focus-mode-btn:hover {
+            background: var(--primary-color);
+            color: var(--bg-white);
+        }
+
+        .focus-mode-btn i {
+            font-size: 1.2rem;
+        }
+
+        /* Focus mode active styles */
+        body.focus-mode .section:not(.focused) {
+            display: block;
+        }
+
+        body.focus-mode .focus-mode-btn {
+            background: var(--primary-color);
+            color: var(--bg-white);
+        }
+
+        /* تحديث أنماط وضع التركيز */
+        body.focus-mode {
+            background: var(--bg-white);
+        }
+
+        body.focus-mode header,
+        body.focus-mode footer,
+        body.focus-mode .container {
+            display: none;
+        }
+
+        body.focus-mode .section-container {
+            max-width: 100%;
+            margin: 0;
+            padding: 20px;
+        }
+
+        body.focus-mode .section {
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: var(--radius-lg);
+        }
+
+        body.focus-mode iframe {
+            width: 100%;
+            height: 600px; /* ارتفاع أكبر لكل iframe */
+            margin: 0;
+        }
+
+        /* تحسين موقع زر وضع التركيز */
+        body.focus-mode .focus-mode-btn {
+            bottom: 20px;
+            left: 20px;
+            background: var(--primary-color);
+            color: var(--bg-white);
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* تحسين عنوان القسم في وضع التركيز */
+        body.focus-mode .section h3 {
+            position: sticky;
+            top: 0;
+            left: 10px;
+            background: var(--bg-white);
+            padding: 15px 0;
+            margin: 0 0 20px 0;
+            z-index: 100;
+        }
+        body.focus-mode .iframe-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    }
+
+    /* تنسيقات القائمة المنسدلة للبحث */
+    .select-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    .surah-list {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        left: 0;
+        max-height: 200px;
+        overflow-y: auto;
+        background: var(--bg-white);
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        box-shadow: var(--shadow-md);
+        z-index: 1000;
+        display: none;
+    }
+
+    .surah-list.active {
+        display: block;
+    }
+
+    .surah-item {
+        padding: 8px 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .surah-item:hover {
+        background: rgba(56, 161, 105, 0.1);
+    }
+
+    .surah-item.selected {
+        background: var(--primary-color);
+        color: var(--bg-white);
+    }
+
+    /* تحسين شكل شريط التمرير للقائمة */
+    .surah-list::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .surah-list::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.03);
+        border-radius: 4px;
+    }
+
+    .surah-list::-webkit-scrollbar-thumb {
+        background: rgba(56, 161, 105, 0.3);
+        border-radius: 4px;
+    }
+
+    .surah-list::-webkit-scrollbar-thumb:hover {
+        background: rgba(56, 161, 105, 0.5);
+    }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1 class="header-title">البحث عن تفسير آية</h1>
+        <div class="header-subtitle"> التفسير و الأثار والإعراب وأسباب النزول من مكان واحد </div>
+    </header>
+    <div class="container">
+        <div class="search-form">
+            <div class="input-group">
+                <div class="select-wrapper">
+                    <input type="text" id="surahSearch" placeholder="ابحث عن السورة" autocomplete="off">
+                    <div class="surah-list" id="surahList"></div>
+                </div>
+                <label for="surahSearch">اسم السورة</label>
+                <input type="hidden" id="surah">
+            </div>
+
+            <div class="input-group">
+                <input type="number" id="ayah" placeholder="1" min="1" required>
+                <label for="ayah">رقم الآية</label>
+            </div>
+
+            <button onclick="loadTafsir()">عرض التفسير</button>
+        </div>
+    </div>
+
+    <div class="section-container">
+        <!-- قسم التفسير -->
+        <div class="section" id="tafsirSection">
+            <h3>التفسير</h3>
+            <div class="iframe-container">
+                <iframe id="tafsirFrame1" src="" title="تفسير الآية 1"></iframe>
+                <iframe id="tafsirFrame2" src="" title="تفسير الآية 2"></iframe>
+                <iframe id="tafsirFrame3" src="" title="تفسير الآية 3"></iframe>
+            </div>
+        </div>
+
+        <!-- قسم الإعراب واللغة -->
+        <div class="section" id="arabicSection">
+            <h3>الإعراب واللغة</h3>
+            <div class="iframe-container">
+                <iframe id="arabicFrame1" src="" title="الإعراب واللغة 1"></iframe>
+                <iframe id="arabicFrame2" src="" title="الإعراب واللغة 2"></iframe>
+                <iframe id="arabicFrame3" src="" title="الإعراب واللغة 3"></iframe>
+            </div>
+        </div>
+
+        <!-- قسم الأثر -->
+        <div class="section" id="effectSection">
+            <h3>الأثار الواردة في الآية</h3>
+            <div class="iframe-container">
+                <iframe id="effectFrame1" src="" title="الأثر 1"></iframe>
+                <iframe id="effectFrame2" src="" title="الأثر 2"></iframe>
+                <iframe id="effectFrame3" src="" title="الأثر 3"></iframe>
+            </div>
+        </div>
+
+        <!-- قسم أسباب النزول -->
+        <div class="section" id="reasonsSection">
+            <h3>أسباب النزول</h3>
+            <div class="iframe-container">
+                <iframe id="reasonsFrame1" src="" title="أسباب النزول 1"></iframe>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const surahs = [
+    { number: 1, name: "الفاتحة" },
+    { number: 2, name: "البقرة" },
+    { number: 3, name: "آل عمران" },
+    { number: 4, name: "النساء" },
+    { number: 5, name: "المائدة" },
+    { number: 6, name: "الأنعام" },
+    { number: 7, name: "الأعراف" },
+    { number: 8, name: "الأنفال" },
+    { number: 9, name: "التوبة" },
+    { number: 10, name: "يونس" },
+    { number: 11, name: "هود" },
+    { number: 12, name: "يوسف" },
+    { number: 13, name: "الرعد" },
+    { number: 14, name: "إبراهيم" },
+    { number: 15, name: "الحجر" },
+    { number: 16, name: "النحل" },
+    { number: 17, name: "الإسراء" },
+    { number: 18, name: "الكهف" },
+    { number: 19, name: "مريم" },
+    { number: 20, name: "طه" },
+    { number: 21, name: "الأنبياء" },
+    { number: 22, name: "الحج" },
+    { number: 23, name: "المؤمنون" },
+    { number: 24, name: "النور" },
+    { number: 25, name: "الفرقان" },
+    { number: 26, name: "الشعراء" },
+    { number: 27, name: "النمل" },
+    { number: 28, name: "القصص" },
+    { number: 29, name: "العنكبوت" },
+    { number: 30, name: "الروم" },
+    { number: 31, name: "لقمان" },
+    { number: 32, name: "السجدة" },
+    { number: 33, name: "الأحزاب" },
+    { number: 34, name: "سبأ" },
+    { number: 35, name: "فاطر" },
+    { number: 36, name: "يس" },
+    { number: 37, name: "الصافات" },
+    { number: 38, name: "ص" },
+    { number: 39, name: "الزمر" },
+    { number: 40, name: "غافر" },
+    { number: 41, name: "فصلت" },
+    { number: 42, name: "الشورى" },
+    { number: 43, name: "الزخرف" },
+    { number: 44, name: "الدخان" },
+    { number: 45, name: "الجاثية" },
+    { number: 46, name: "الأحقاف" },
+    { number: 47, name: "محمد" },
+    { number: 48, name: "الفتح" },
+    { number: 49, name: "الحجرات" },
+    { number: 50, name: "ق" },
+    { number: 51, name: "الذاريات" },
+    { number: 52, name: "الطور" },
+    { number: 53, name: "النجم" },
+    { number: 54, name: "القمر" },
+    { number: 55, name: "الرحمن" },
+    { number: 56, name: "الواقعة" },
+    { number: 57, name: "الحديد" },
+    { number: 58, name: "المجادلة" },
+    { number: 59, name: "الحشر" },
+    { number: 60, name: "الممتحنة" },
+    { number: 61, name: "الصف" },
+    { number: 62, name: "الجمعة" },
+    { number: 63, name: "المنافقون" },
+    { number: 64, name: "التغابن" },
+    { number: 65, name: "الطلاق" },
+    { number: 66, name: "التحريم" },
+    { number: 67, name: "الملك" },
+    { number: 68, name: "القلم" },
+    { number: 69, name: "الحاقة" },
+    { number: 70, name: "المعارج" },
+    { number: 71, name: "نوح" },
+    { number: 72, name: "الجن" },
+    { number: 73, name: "المزمل" },
+    { number: 74, name: "المدثر" },
+    { number: 75, name: "القيامة" },
+    { number: 76, name: "الإنسان" },
+    { number: 77, name: "المرسلات" },
+    { number: 78, name: "النبأ" },
+    { number: 79, name: "النازعات" },
+    { number: 80, name: "عبس" },
+    { number: 81, name: "التكوير" },
+    { number: 82, name: "الإنفطار" },
+    { number: 83, name: "المطففين" },
+    { number: 84, name: "الإنشقاق" },
+    { number: 85, name: "البروج" },
+    { number: 86, name: "الطارق" },
+    { number: 87, name: "الأعلى" },
+    { number: 88, name: "الغاشية" },
+    { number: 89, name: "الفجر" },
+    { number: 90, name: "البلد" },
+    { number: 91, name: "الشمس" },
+    { number: 92, name: "الليل" },
+    { number: 93, name: "الضحى" },
+    { number: 94, name: "الشرح" },
+    { number: 95, name: "التين" },
+    { number: 96, name: "العلق" },
+    { number: 97, name: "القدر" },
+    { number: 98, name: "البينة" },
+    { number: 99, name: "الزلزلة" },
+    { number: 100, name: "العاديات" },
+    { number: 101, name: "القارعة" },
+    { number: 102, name: "التكاثر" },
+    { number: 103, name: "العصر" },
+    { number: 104, name: "الهمزة" },
+    { number: 105, name: "الفيل" },
+    { number: 106, name: "قريش" },
+    { number: 107, name: "الماعون" },
+    { number: 108, name: "الكوثر" },
+    { number: 109, name: "الكافرون" },
+    { number: 110, name: "النصر" },
+    { number: 111, name: "المسد" },
+    { number: 112, name: "الإخلاص" },
+    { number: 113, name: "الفلق" },
+    { number: 114, name: "الناس" }
+];
+
+        // إضافة دالة لتوليد رقم عشوائي ضمن نطاق محدد
+        function getRandomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // دالة تهيئة البحث عن السور
+        function initializeSurahSearch() {
+            const surahSearch = document.getElementById('surahSearch');
+            const surahList = document.getElementById('surahList');
+            const surahInput = document.getElementById('surah');
+
+            // دالة لإنشاء عنصر في القائمة
+            function createSurahItem(surah) {
+                return `<div class="surah-item" data-number="${surah.number}">
+                    ${surah.name} (${surah.number})
+                </div>`;
+            }
+
+            // دالة لتحديث القائمة
+            function updateSurahList(searchText) {
+                const filteredSurahs = surahs.filter(surah => 
+                    surah.name.includes(searchText) || 
+                    surah.number.toString().includes(searchText)
+                );
+
+                surahList.innerHTML = filteredSurahs
+                    .map(surah => createSurahItem(surah))
+                    .join('');
+                
+                surahList.classList.add('active');
+            }
+
+            // معالج حدث الكتابة في حقل البحث
+            surahSearch.addEventListener('input', (e) => {
+                const searchText = e.target.value;
+                updateSurahList(searchText);
+            });
+
+            // معالج حدث التركيز على حقل البحث
+            surahSearch.addEventListener('focus', () => {
+                updateSurahList(surahSearch.value);
+            });
+
+            // معالج حدث النقر على عنصر في القائمة
+            surahList.addEventListener('click', (e) => {
+                const surahItem = e.target.closest('.surah-item');
+                if (surahItem) {
+                    const surahNumber = surahItem.dataset.number;
+                    const surahName = surahs[surahNumber - 1].name;
+                    surahSearch.value = surahName;
+                    surahInput.value = surahNumber;
+                    surahList.classList.remove('active');
+                }
+            });
+
+            // إخفاء القائمة عند النقر خارجها
+            document.addEventListener('click', (e) => {
+                if (!surahSearch.contains(e.target) && !surahList.contains(e.target)) {
+                    surahList.classList.remove('active');
+                }
+            });
+        }
+
+        // استدعاء دالة التهيئة عند تحميل الصفحة
+        window.addEventListener('load', initializeSurahSearch);
+
+        // تعديل دالة initializeRandomVerse
+        function initializeRandomVerse() {
+            const randomSurah = getRandomNumber(1, 50);
+            const randomAyah = getRandomNumber(1, 50);
+            
+            document.getElementById('surah').value = randomSurah;
+            document.getElementById('surahSearch').value = surahs[randomSurah - 1].name;
+            document.getElementById('ayah').value = randomAyah;
+
+            loadTafsir();
+        }
+
+        // استدعاء الدالة عند تحميل الصفحة
+        window.onload = initializeRandomVerse;
+
+        function loadTafsir() {
+            // الحصول على رقم السورة والآية من الحقول
+            const surah = document.getElementById('surah').value;
+            const ayah = document.getElementById('ayah').value;
+
+            // التحقق من القيم المدخلة
+            if (!surah || !ayah || surah < 1 || surah > 114 || ayah < 1) {
+                alert('يرجى إدخال رقم صحيح للسورة والآية!');
+                return;
+            }
+
+            // إظهار شاشة التحميل
+            const loadingOverlay = document.querySelector('.loading-overlay');
+            loadingOverlay.style.display = 'flex';
+
+            // إخفاء الأقسام السابقة
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('visible');
+            });
+
+            // تحديث الروابط وإعداد iframes
+            let tfsir1 = "tabari";
+            let tfsir2 = "zad-almaseer";
+            let tfsir3 = "alrazi";
+
+            let arabic1 = "aljadwal";
+            let arabic2 = "ibn-aashoor";
+            let arabic3 = "albahr-almuheet";
+            let arabic4 = "ibn-atiyah";
+            
+            let effect1 = "mathoor";
+            let effect2 = "aldur-almanthoor";
+            let effect3 = "ibn-abi-hatim";
+                      
+            const tafsirUrl1 = `https://tafsir.app/${tfsir1}/${surah}/${ayah}`;
+            const tafsirUrl2 = `https://tafsir.app/${tfsir2}/${surah}/${ayah}`;
+            const tafsirUrl3 = `https://tafsir.app/${tfsir3}/${surah}/${ayah}`;
+
+            const arabicUrl1 = `https://tafsir.app/${arabic1}/${surah}/${ayah}`;
+            const arabicUrl2 = `https://tafsir.app/${arabic2}/${surah}/${ayah}`;
+            const arabicUrl3 = `https://tafsir.app/${arabic3}/${surah}/${ayah}`;
+            
+            const effectUrl1 = `https://tafsir.app/${effect1}/${surah}/${ayah}`;
+            const effectUrl2 = `https://tafsir.app/${effect2}/${surah}/${ayah}`;
+            const effectUrl3 = `https://tafsir.app/${effect3}/${surah}/${ayah}`;
+
+            const reasonsUrl1 = `https://tafsir.app/wahidi-asbab/${surah}/${ayah}`;
+
+
+            // تحديث مصادر iframes
+            document.getElementById('tafsirFrame1').src = tafsirUrl1;
+            document.getElementById('tafsirFrame2').src = tafsirUrl2;
+            document.getElementById('tafsirFrame3').src = tafsirUrl3;
+
+            document.getElementById('arabicFrame1').src = arabicUrl1;
+            document.getElementById('arabicFrame2').src = arabicUrl2;
+            document.getElementById('arabicFrame3').src = arabicUrl3;
+
+            document.getElementById('effectFrame1').src = effectUrl1;
+            document.getElementById('effectFrame2').src = effectUrl2;
+            document.getElementById('effectFrame3').src = effectUrl3;
+
+            document.getElementById('reasonsFrame1').src = reasonsUrl1;
+
+
+            // عداد للـ iframes التي تم تحميلها
+            let loadedIframes = 0;
+            const totalIframes = document.querySelectorAll('iframe').length;
+
+            // تحديث مصادر iframes مع إضافة مراقبة التحميل
+            document.querySelectorAll('iframe').forEach(iframe => {
+                iframe.style.display = 'block';
+                
+                // إعادة تعيين حدث التحميل
+                iframe.onload = function() {
+                    loadedIframes++;
+                    this.classList.add('loaded');
+                    
+                    // التحقق مما إذا تم تحميل جميع الـ iframes
+                    if (loadedIframes === totalIframes) {
+                        setTimeout(() => {
+                            // إخفاء شاشة التحميل
+                            loadingOverlay.style.display = 'none';
+                            
+                            // إظهار الأقسام
+                            document.querySelectorAll('.section').forEach(section => {
+                                section.classList.add('visible');
+                            });
+                            
+                            // التمرير إلى أعلى الصفحة
+                            window.scrollTo({
+                                top: 0,
+                                behavior: 'smooth'
+                            });
+                        }, 500); // تأخير صغير للتأكد من اكتمال العرض
+                    }
+                };
+
+                // معالجة حالة الخطأ
+                iframe.onerror = function() {
+                    loadedIframes++;
+                    this.style.display = 'none';
+                    
+                    // التحقق في حالة الخطأ أيضاً
+                    if (loadedIframes === totalIframes) {
+                        loadingOverlay.style.display = 'none';
+                        document.querySelectorAll('.section').forEach(section => {
+                            section.classList.add('visible');
+                        });
+                    }
+                };
+            });
+
+            // تعيين timeout للتأكد من إخفاء شاشة التحميل في حالة حدوث أي مشاكل
+            setTimeout(() => {
+                if (loadingOverlay.style.display === 'flex') {
+                    loadingOverlay.style.display = 'none';
+                    document.querySelectorAll('.section').forEach(section => {
+                        section.classList.add('visible');
+                    });
+                }
+            }, 5000); // 15 ثانية كحد أقصى للتحميل
+        }
+
+        function toggleFocusMode() {
+            const body = document.body;
+            const focusBtn = document.querySelector('.focus-mode-btn');
+            const icon = focusBtn.querySelector('i');
+            const sections = document.querySelectorAll('.section');
+            
+            body.classList.toggle('focus-mode');
+            
+            if (body.classList.contains('focus-mode')) {
+                icon.classList.replace('fa-compress', 'fa-expand');
+                // Find the first visible section and focus on it
+                for (let section of sections) {
+                    if (section.classList.contains('visible')) {
+                        section.classList.add('focused');
+                        break;
+                    }
+                }
+            } else {
+                icon.classList.replace('fa-expand', 'fa-compress');
+                sections.forEach(section => section.classList.remove('focused'));
+            }
+        }
+
+        // Modify your existing loadTafsir function to handle focus mode
+        // Add this inside the loadTafsir function where you show sections
+        document.querySelectorAll('.section').forEach(section => {
+            section.classList.add('visible');
+            if (document.body.classList.contains('focus-mode')) {
+                section.classList.remove('focused');
+                // Focus on the first section by default
+                document.querySelector('.section').classList.add('focused');
+            }
+        });
+
+        // Add click handler for sections in focus mode
+        document.querySelectorAll('.section').forEach(section => {
+            section.addEventListener('click', () => {
+                if (document.body.classList.contains('focus-mode')) {
+                    document.querySelectorAll('.section').forEach(s => s.classList.remove('focused'));
+                    section.classList.add('focused');
+                }
+            });
+        });
+    </script>
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">جاري تحميل التفاسير...</div>
+    </div>
+    <footer>
+        <div class="footer-copyright">جميع الحقوق محفوظة لموقع tafsir.app ©</div>
+        <div class="footer-credit">تم جمع وتصميم هذا الموقع بواسطة محمد عبد الحميد محمد - نسألكم الدعاء له</div>
+    </footer>
+    <button class="focus-mode-btn" onclick="toggleFocusMode()" title="وضع التركيز">
+        <i class="fas fa-compress"></i>
+        <span>وضع التركيز</span>
+    </button>
+</body>
+</html>
