@@ -39,15 +39,18 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             margin-bottom: 2rem;
         }
+        
         .header >* {
             display: inline-block;
             padding: 10px;
             margin: 0px;
         }
+        
         .header >b{
             display: block;
             padding: 10px;
         }
+
         .controls {
             position: fixed;
             bottom: 30px;
@@ -200,45 +203,29 @@
             font-weight: bold;
         }
 
-        .verse-card.selected .verse-content {
-            background: rgba(139, 69, 19, 0.1);
-            border-radius: 4px;
-            padding: 2px 4px;
-        }
-
-        .quran-text {
-            display: block;
-            background: var(--secondary-color);
-            padding: 3rem 4rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            margin: 2rem auto;
-            max-width: 900px;
-            text-align: justify;
-            direction: rtl;
-            line-height: 2.8;
-            position: relative;
-            border: 1px solid var(--border-color);
-        }
-
         .verse-card {
             display: inline;
             padding: 0 13px;
             position: relative;
             cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .verse-card:hover {
+            background: rgba(139, 69, 19, 0.05);
         }
 
         .verse-content {
             font-family: 'Uthmanic', 'Amiri', serif;
             font-size: 22px;
-            color: var(--text-color);
+            color: var(--primary);
             position: relative;
             display: inline;
         }
 
         .verse-number {
             font-size: 12px;
-            color: var(--primary-color);
+            color: var(--primary);
             position: relative;
             top: -10px;
             margin: 0 3px;
@@ -257,12 +244,13 @@
 
         .loader {
             border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary-color);
+            border-top: 4px solid var(--primary);
             border-radius: 50%;
             width: 40px;
             height: 40px;
             animation: spin 1s linear infinite;
             margin: 2rem auto;
+            display: none;
         }
 
         @keyframes spin {
@@ -270,15 +258,81 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* أنماط التفسير */
+        .tafsir-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
+            z-index: 2000;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        .tafsir-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #8B4513;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .close-tafsir {
+            cursor: pointer;
+            font-size: 24px;
+            color: #8B4513;
+        }
+
+        .tafsir-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .tafsir-tab {
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            background: #f0f0f0;
+            transition: all 0.3s;
+        }
+
+        .tafsir-tab.active {
+            background: #8B4513;
+            color: white;
+        }
+
+        .tafsir-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
                 margin-top: -1rem;
                 width: 95%;
-            }
-
-            .header {
-                margin-bottom: 1rem;
             }
 
             .header h1 {
@@ -311,16 +365,16 @@
             }
 
             .controls {
-    width: 100%;
-    padding: 5px;
-    bottom: 0px;
-    border-radius: 20px;
-  }
+                width: 100%;
+                padding: 5px;
+                bottom: 0px;
+                border-radius: 20px;
+            }
 
             .input-group {
                 flex-direction: row;
-    gap: 5px;
-    align-items: center;
+                gap: 5px;
+                align-items: center;
             }
 
             .control-section {
@@ -330,9 +384,9 @@
 
             button {
                 padding: 0px;
-    min-width: 30px;
-    height: 30px;
-    font-size: 10px;
+                min-width: 30px;
+                height: 30px;
+                font-size: 10px;
             }
 
             input[type="number"] {
@@ -353,7 +407,6 @@
         }
 
         @media (max-width: 480px) {
-
             .verse-content {
                 font-size: 16px;
             }
@@ -384,24 +437,120 @@
             .reciters {
                 width: 200px;
             }
+            .how-to-use-btn{
+                position: relative !important;
+                top: 0px !important;
+            }
         }
 
-        .quran-text::before,
-        .quran-text::after {
-            content: '۞';
+        /* Add styles for error and message notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 2000;
+            animation: fadeInOut 3s ease-in-out;
+        }
+
+        .error-message {
+            background-color: #e74c3c;
+        }
+
+        .info-message {
+            background-color: #2ecc71;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -20px); }
+            15% { opacity: 1; transform: translate(-50%, 0); }
+            85% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, -20px); }
+        }
+
+        /* Add selected verse style */
+        .verse-card.selected {
+            background: rgba(139, 69, 19, 0.1);
+        }
+
+        .how-to-use-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            margin-top: 10px;
             position: absolute;
+            top: 35px;
+            right: 10px;
+        }
+
+        .how-to-use-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .how-to-use-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
+            z-index: 2000;
+            width: 90%;
+            max-width: 600px;
+            max-height: 100vh;
+            overflow-y: auto;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        .how-to-use-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #8B4513;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .close-how-to-use {
+            cursor: pointer;
             font-size: 24px;
-            color: var(--primary-color);
+            color: #8B4513;
         }
 
-        .quran-text::before {
-            top: 15px;
-            right: 15px;
+        .how-to-use-content {
+            font-size: 16px;
+            line-height: 1.6;
         }
 
-        .quran-text::after {
-            bottom: 15px;
-            left: 15px;
+        .how-to-use-content h4 {
+            color: #8B4513;
+            margin: 15px 0 10px;
+        }
+
+        .how-to-use-content ul {
+            padding-right: 20px;
+        }
+
+        .how-to-use-content li {
+            margin-bottom: 10px;
+        }
+
+        .how-to-use-content ol {
+            padding-right: 20px;
+            margin: 5px 0;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
@@ -412,6 +561,10 @@
         <h1>تَثْبِيتْ - تكرار</h1>
         <p>برنامج الحفظ المتقن مع التكرار الذكي</p>
         <b>تم تصميم هذا الموقع بواسطة محمد عبد الحميد نسالكم الدعاء له</b>
+        <button id="howToUseBtn" class="how-to-use-btn">
+            <i class="fas fa-question-circle"></i>
+            كيف يعمل؟
+        </button>
     </div>
 
     <div class="container">
@@ -458,6 +611,56 @@
         <div class="reciters" id="recitersContainer"></div>
     </div>
 
+    <div class="overlay" id="tafsirOverlay"></div>
+    <div class="tafsir-modal" id="tafsirModal">
+        <div class="tafsir-header">
+            <h3>تفسير الآية</h3>
+            <span class="close-tafsir" onclick="closeTafsir()">&times;</span>
+        </div>
+        <div class="tafsir-tabs">
+            <div class="tafsir-tab active" onclick="loadTafsir('jalalayn')">تفسير ميسر</div>
+            <div class="tafsir-tab" onclick="loadTafsir('tabari')">تفسير الطبري</div>
+        </div>
+        <div class="tafsir-content" id="tafsirContent"></div>
+    </div>
+
+    <div class="overlay" id="howToUseOverlay"></div>
+    <div class="how-to-use-modal" id="howToUseModal">
+        <div class="how-to-use-header">
+            <h3>كيف يعمل الموقع؟</h3>
+            <span class="close-how-to-use" onclick="closeHowToUse()">&times;</span>
+        </div>
+        <div class="how-to-use-content">
+            <h4>الوظائف الأساسية:</h4>
+            <ul>
+                <li><strong>تحميل الصفحة:</strong> أدخل رقم الصفحة (1-604) واضغط على زر التحميل 📖</li>
+                <li><strong>تكرار آية:</strong> 
+                    <ol>
+                        <li>اضغط على زر تكرار آية <i class="fas fa-redo-alt"></i></li>
+                        <li>حدد الآية المراد تكرارها</li>
+                        <li>اضغط زر التشغيل ▶️</li>
+                    </ol>
+                </li>
+                <li><strong>تكرار مقطع:</strong>
+                    <ol>
+                        <li>اضغط على زر تكرار مقطع <i class="fas fa-sync-alt"></i></li>
+                        <li>حدد بداية المقطع ثم نهايته</li>
+                        <li>اضغط زر التشغيل ▶️</li>
+                    </ol>
+                </li>
+                <li><strong>عدد التكرارات:</strong> يمكنك تحديد عدد مرات التكرار من خلال الرقم في الخانة المخصصة</li>
+                <li><strong>اختيار القارئ:</strong> اضغط على زر الميكروفون <i class="fas fa-microphone-alt"></i> لاختيار القارئ المفضل</li>
+                <li><strong>عرض التفسير:</strong> انقر نقراً مزدوجاً على أي آية لعرض تفسيرها</li>
+            </ul>
+            <h4>ملاحظات مهمة:</h4>
+            <ul>
+                <li>يمكنك إيقاف التشغيل في أي وقت باستخدام زر الإيقاف ⏸️</li>
+                <li>استخدم زر المسح ✖️ لإلغاء تحديد الآيات</li>
+                <li>الموقع مصمم للمساعدة في حفظ القرآن الكريم من خلال التكرار المنظم</li>
+            </ul>
+        </div>
+    </div>
+
     <script>
         let currentAudio = null;
         let currentReciter = 'alafasy';
@@ -468,7 +671,10 @@
         let isPlaying = false;
         let textData = null;
         let availableReciters = [];
+        let currentSurah = null;
+        let currentAyah = null;
 
+        // تهيئة الأحداث
         document.getElementById('loadPageBtn').addEventListener('click', loadPage);
         document.getElementById('verseRepeatBtn').addEventListener('click', () => setRepeatMode('verse'));
         document.getElementById('passageRepeatBtn').addEventListener('click', () => setRepeatMode('passage'));
@@ -477,6 +683,7 @@
         document.getElementById('pauseBtn').addEventListener('click', pauseAudio);
         document.getElementById('clearBtn').addEventListener('click', clearSelection);
 
+        // تحميل الصفحة
         async function loadPage() {
             const pageInput = document.getElementById('pageNumber');
             const page = pageInput.value;
@@ -505,6 +712,7 @@
             }
         }
 
+        // عرض النص القرآني
         function displayText(ayahs) {
             const textDiv = document.getElementById('quranText');
             const pageHeader = document.getElementById('pageHeader');
@@ -520,14 +728,18 @@
 
             textDiv.innerHTML = ayahs.map((ayah, index) => `
                 <div class="verse-card" 
-                     data-index="${index}" 
-                     onclick="selectVerse(${index})">
+                     data-index="${index}"
+                     data-surah="${ayah.surah.number}"
+                     data-ayah="${ayah.numberInSurah}"
+                     onclick="selectVerse(${index})"
+                     ondblclick="showTafsir(${ayah.surah.number}, ${ayah.numberInSurah})">
                     <span class="verse-content">${ayah.text}</span>
                     <span class="verse-number">${ayah.numberInSurah}</span>
                 </div>
             `).join('');
         }
 
+        // تشغيل آية واحدة
         async function playSingleVerse(verseNumber) {
             return new Promise((resolve, reject) => {
                 if (currentAudio) {
@@ -535,16 +747,30 @@
                     currentAudio = null;
                 }
 
-                currentAudio = new Audio(`https://cdn.islamic.network/quran/audio/128/${currentReciter}/${verseNumber}.mp3`);
-                currentAudio.onended = resolve;
-                currentAudio.onerror = reject;
-                currentAudio.play().catch(reject);
+                const audio = new Audio(`https://cdn.islamic.network/quran/audio/64/${currentReciter}/${verseNumber}.mp3`);
+                currentAudio = audio;
+
+                audio.addEventListener('ended', () => {
+                    resolve();
+                });
+
+                audio.addEventListener('error', (e) => {
+                    reject(new Error(`Failed to load audio: ${e.message}`));
+                });
+
+                audio.play().catch(reject);
             });
         }
 
+        // تشغيل الصوت
         async function playAudio() {
             if (!textData || !textData.data.ayahs) {
                 showError('الرجاء تحميل الصفحة أولاً');
+                return;
+            }
+
+            if (isPlaying) {
+                showError('جاري التشغيل بالفعل');
                 return;
             }
             
@@ -553,20 +779,20 @@
 
             try {
                 if (selectedVerses.length === 0) {
-                    // تشغيل الصفحة كاملة
+                    showMessage('تشغيل الصفحة كاملة');
                     for (let repeat = 0; repeat < currentRepeats && isPlaying; repeat++) {
                         for (let i = 0; i < textData.data.ayahs.length && isPlaying; i++) {
                             await playSingleVerse(textData.data.ayahs[i].number);
                         }
                     }
                 } else if (repeatMode === 'verse' && selectedVerses.length === 1) {
-                    // تكرار آية واحدة
+                    showMessage('تكرار الآية المحددة');
                     const verse = textData.data.ayahs[selectedVerses[0]];
                     for (let i = 0; i < currentRepeats && isPlaying; i++) {
                         await playSingleVerse(verse.number);
                     }
                 } else if (repeatMode === 'passage' && selectedVerses.length === 2) {
-                    // تكرار مقطع
+                    showMessage('تشغيل المقطع المحدد');
                     const [start, end] = selectedVerses.sort((a, b) => a - b);
                     for (let repeat = 0; repeat < currentRepeats && isPlaying; repeat++) {
                         for (let i = start; i <= end && isPlaying; i++) {
@@ -576,10 +802,13 @@
                 }
             } catch (error) {
                 console.error('Playback error:', error);
-                showError('خطأ في التشغيل');
+                showError('حدث خطأ أثناء التشغيل');
+            } finally {
+                isPlaying = false;
             }
         }
 
+        // تحديد نمط التكرار
         function setRepeatMode(mode) {
             repeatMode = mode;
             currentRepeats = parseInt(document.getElementById('repeatCount').value) || 3;
@@ -587,6 +816,7 @@
             showMessage(mode === 'verse' ? 'اختر آية للتكرار' : 'اختر بداية ونهاية المقطع');
         }
 
+        // تحديد الآية
         function selectVerse(index) {
             if (!repeatMode) {
                 showError('الرجاء اختيار نمط التكرار أولاً');
@@ -617,6 +847,7 @@
             }
         }
 
+        // إيقاف التشغيل
         function pauseAudio() {
             isPlaying = false;
             if (currentAudio) {
@@ -625,17 +856,16 @@
             }
         }
 
+        // تحميل القراء
         async function loadReciters() {
             try {
                 const response = await fetch('https://api.alquran.cloud/v1/edition/format/audio');
                 const data = await response.json();
                 
                 if (data.code === 200) {
-                    // تصفية القراء العرب فقط
                     availableReciters = data.data.filter(reciter => 
                         reciter.language === 'ar' && reciter.type !== 'translation'
                     );
-                    
                     displayReciters();
                 }
             } catch (error) {
@@ -644,6 +874,7 @@
             }
         }
 
+        // عرض القراء
         function displayReciters() {
             const container = document.getElementById('recitersContainer');
             container.innerHTML = availableReciters.map(reciter => `
@@ -654,6 +885,7 @@
             `).join('');
         }
 
+        // اختيار القارئ
         function selectReciter(reciterId) {
             currentReciter = reciterId;
             document.querySelectorAll('.reciter').forEach(el => 
@@ -663,6 +895,46 @@
             document.getElementById('recitersContainer').classList.remove('show');
         }
 
+        // وظائف التفسير
+        async function showTafsir(surah, ayah) {
+            currentSurah = surah;
+            currentAyah = ayah;
+            document.getElementById('tafsirOverlay').style.display = 'block';
+            document.getElementById('tafsirModal').style.display = 'block';
+            loadTafsir('jalalayn');
+        }
+
+        async function loadTafsir(type) {
+            try {
+                const tafsirSlug = type === 'jalalayn' ? 'ar-tafsir-muyassar' : 'ar-tafsir-al-tabari';
+                const url = `https://cdn.jsdelivr.net/gh/spa5k/tafsir_api@main/tafsir/${tafsirSlug}/${currentSurah}/${currentAyah}.json`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                document.getElementById('tafsirContent').innerHTML = data.text || 'التفسير غير متوفر حاليًا';
+                updateTabsStyle(type);
+            } catch (error) {
+                console.error('Error loading tafsir:', error);
+                document.getElementById('tafsirContent').innerHTML = 'حدث خطأ في تحميل التفسير';
+            }
+        }
+
+        function updateTabsStyle(activeType) {
+            document.querySelectorAll('.tafsir-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.textContent.includes(activeType === 'jalalayn' ? 'الجلالين' : 'الطبري')) {
+                    tab.classList.add('active');
+                }
+            });
+        }
+
+        function closeTafsir() {
+            document.getElementById('tafsirOverlay').style.display = 'none';
+            document.getElementById('tafsirModal').style.display = 'none';
+        }
+
+        // وظائف مساعدة
         function showLoader() {
             document.getElementById('loader').style.display = 'block';
         }
@@ -671,20 +943,23 @@
             document.getElementById('loader').style.display = 'none';
         }
 
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type === 'error' ? 'error-message' : 'info-message'}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
         function showError(message) {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-message';
-            errorDiv.textContent = message;
-            document.body.appendChild(errorDiv);
-            setTimeout(() => errorDiv.remove(), 3000);
+            showNotification(message, 'error');
         }
 
         function showMessage(message) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'message';
-            msgDiv.textContent = message;
-            document.body.appendChild(msgDiv);
-            setTimeout(() => msgDiv.remove(), 3000);
+            showNotification(message, 'info');
         }
 
         function toggleReciters() {
@@ -702,18 +977,25 @@
             });
         }
 
-        // إضافة استدعاء تحميل القراء عند تحميل الصفحة
+        // أحداث التحميل
         window.addEventListener('load', loadReciters);
+        document.getElementById('tafsirOverlay').addEventListener('click', closeTafsir);
 
-        // إغلاق قائمة القراء عند النقر خارجها
-        document.addEventListener('click', function(event) {
-            const recitersContainer = document.getElementById('recitersContainer');
-            const recitersBtn = document.getElementById('recitersBtn');
-            
-            if (!recitersBtn.contains(event.target) && !recitersContainer.contains(event.target)) {
-                recitersContainer.classList.remove('show');
-            }
-        });
+        // إضافة الأحداث للزر كيف يعمل
+        document.getElementById('howToUseBtn').addEventListener('click', showHowToUse);
+
+        function showHowToUse() {
+            document.getElementById('howToUseOverlay').style.display = 'block';
+            document.getElementById('howToUseModal').style.display = 'block';
+        }
+
+        function closeHowToUse() {
+            document.getElementById('howToUseOverlay').style.display = 'none';
+            document.getElementById('howToUseModal').style.display = 'none';
+        }
+
+        // إضافة حدث إغلاق الشرح عند النقر على الخلفية
+        document.getElementById('howToUseOverlay').addEventListener('click', closeHowToUse);
     </script>
 </body>
 </html>
