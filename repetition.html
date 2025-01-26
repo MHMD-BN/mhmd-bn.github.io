@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>تَثْبِيتْ - تكرار</title>
+    <style>
+        :root {
+            --primary: #2D3250;
+            --secondary: #424769;
+            --accent: #7077A1;
+            --light: #F6B17A;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Amiri', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            margin-top: -2rem;
+            padding-bottom: 120px;
+        }
+
+        .header {
+            text-align: center;
+            background: linear-gradient(135deg, #8B4513, #6b3410);
+            color: white;
+            border-radius: 0 0 2rem 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .header >* {
+            display: inline-block;
+            padding: 10px;
+            margin: 0px;
+        }
+        .header >b{
+            display: block;
+            padding: 10px;
+        }
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            width: auto;
+            max-width: 600px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px;
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 16px;
+        }
+
+        button {
+            padding: 10px;
+            border: none;
+            border-radius: 12px;
+            background: var(--primary);
+            color: var(--white);
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 42px;
+            height: 42px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            background: var(--secondary);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="number"] {
+            width: 60px;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 14px;
+            background: var(--white);
+            height: 42px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(112, 119, 161, 0.2);
+        }
+
+        .play-btn {
+            background: #2ecc71;
+        }
+
+        .play-btn:hover {
+            background: #27ae60;
+        }
+
+        .pause-btn {
+            background: #e74c3c;
+        }
+
+        .pause-btn:hover {
+            background: #c0392b;
+        }
+
+        .reciters-btn {
+            background: var(--accent);
+        }
+
+        .reciters-btn:hover {
+            background: #5a6084;
+        }
+
+        .clear-btn {
+            background: #95a5a6;
+        }
+
+        .clear-btn:hover {
+            background: #7f8c8d;
+        }
+
+        .repeat-btn {
+            background: var(--light);
+        }
+
+        .repeat-btn:hover {
+            background: #e29d63;
+        }
+
+        .reciters {
+            position: absolute;
+            bottom: calc(100% + 15px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 15px;
+            width: 300px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .reciters.show {
+            display: block;
+        }
+
+        .reciter {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            text-align: right;
+            margin-bottom: 5px;
+        }
+
+        .reciter:hover {
+            background: rgba(112, 119, 161, 0.1);
+        }
+
+        .active-reciter {
+            background: rgba(112, 119, 161, 0.15);
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .verse-card.selected .verse-content {
+            background: rgba(139, 69, 19, 0.1);
+            border-radius: 4px;
+            padding: 2px 4px;
+        }
+
+        .quran-text {
+            display: block;
+            background: var(--secondary-color);
+            padding: 3rem 4rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin: 2rem auto;
+            max-width: 900px;
+            text-align: justify;
+            direction: rtl;
+            line-height: 2.8;
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        .verse-card {
+            display: inline;
+            padding: 0 13px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .verse-content {
+            font-family: 'Uthmanic', 'Amiri', serif;
+            font-size: 22px;
+            color: var(--text-color);
+            position: relative;
+            display: inline;
+        }
+
+        .verse-number {
+            font-size: 12px;
+            color: var(--primary-color);
+            position: relative;
+            top: -10px;
+            margin: 0 3px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: #8B4513;
+            color: white;
+            border-radius: 8px;
+            font-size: 1.5rem;
+            border: 2px solid #d4b895;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+                margin-top: -1rem;
+                width: 95%;
+            }
+
+            .header {
+                margin-bottom: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .quran-text {
+                padding: 1.5rem;
+                margin: 1rem auto;
+                line-height: 2.5;
+            }
+
+            .verse-content {
+                font-size: 18px;
+            }
+
+            .verse-number {
+                font-size: 10px;
+                top: -8px;
+            }
+
+            .page-header {
+                font-size: 1.2rem;
+                margin: 1rem 0;
+                padding: 0.8rem;
+            }
+
+            .controls {
+    width: 100%;
+    padding: 5px;
+    bottom: 0px;
+    border-radius: 20px;
+  }
+
+            .input-group {
+                flex-direction: row;
+    gap: 5px;
+    align-items: center;
+            }
+
+            .control-section {
+                justify-content: center;
+                width: auto;
+            }
+
+            button {
+                padding: 0px;
+    min-width: 30px;
+    height: 30px;
+    font-size: 10px;
+            }
+
+            input[type="number"] {
+                width: 60px;
+                padding: 8px;
+                height: 17px;
+            }
+
+            .reciters {
+                width: 250px;
+                max-height: 250px;
+            }
+
+            .reciter {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .verse-content {
+                font-size: 16px;
+            }
+
+            .controls {
+                border-radius: 0px;
+            }
+            .control-section{
+                padding: 0px;
+                gap: 5px;
+            }
+            .header h1 {
+                font-size: 1.2rem;
+            }
+
+            .header p {
+                font-size: 0.9rem;
+            }
+
+            .page-header {
+                font-size: 1rem;
+            }
+
+            .quran-text {
+                padding: 1rem;
+            }
+
+            .reciters {
+                width: 200px;
+            }
+        }
+
+        .quran-text::before,
+        .quran-text::after {
+            content: '۞';
+            position: absolute;
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        .quran-text::before {
+            top: 15px;
+            right: 15px;
+        }
+
+        .quran-text::after {
+            bottom: 15px;
+            left: 15px;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <h1>تَثْبِيتْ - تكرار</h1>
+        <p>برنامج الحفظ المتقن مع التكرار الذكي</p>
+        <b>تم تصميم هذا الموقع بواسطة محمد عبد الحميد نسالكم الدعاء له</b>
+    </div>
+
+    <div class="container">
+        <div class="page-header" id="pageHeader"></div>
+        <div class="loader" id="loader"></div>
+        <div class="quran-text" id="quranText"></div>
+    </div>
+
+    <div class="controls">
+        <div class="input-group">
+            <div class="control-section">
+                <input type="number" id="pageNumber" placeholder="الصفحة" min="1" max="604">
+                <button id="loadPageBtn" title="تحميل الصفحة">
+                    <i class="fas fa-book-open"></i>
+                </button>
+            </div>
+            
+            <div class="control-section">
+                <input type="number" id="repeatCount" min="1" value="3" placeholder="التكرار">
+                <button class="repeat-btn" id="verseRepeatBtn" title="تكرار آية">
+                    <i class="fas fa-redo-alt"></i>
+                </button>
+                <button class="repeat-btn" id="passageRepeatBtn" title="تكرار مقطع">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            
+            <div class="control-section">
+                <button class="reciters-btn" id="recitersBtn" title="اختيار القارئ">
+                    <i class="fas fa-microphone-alt"></i>
+                </button>
+                <button class="play-btn" id="playBtn" title="تشغيل">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button class="pause-btn" id="pauseBtn" title="إيقاف">
+                    <i class="fas fa-pause"></i>
+                </button>
+            </div>
+            
+            <button class="clear-btn" id="clearBtn" title="مسح التحديد">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="reciters" id="recitersContainer"></div>
+    </div>
+
+    <script>
+        let currentAudio = null;
+        let currentReciter = 'alafasy';
+        let currentPage = null;
+        let currentRepeats = 3;
+        let repeatMode = null;
+        let selectedVerses = [];
+        let isPlaying = false;
+        let textData = null;
+        let availableReciters = [];
+
+        document.getElementById('loadPageBtn').addEventListener('click', loadPage);
+        document.getElementById('verseRepeatBtn').addEventListener('click', () => setRepeatMode('verse'));
+        document.getElementById('passageRepeatBtn').addEventListener('click', () => setRepeatMode('passage'));
+        document.getElementById('recitersBtn').addEventListener('click', toggleReciters);
+        document.getElementById('playBtn').addEventListener('click', playAudio);
+        document.getElementById('pauseBtn').addEventListener('click', pauseAudio);
+        document.getElementById('clearBtn').addEventListener('click', clearSelection);
+
+        async function loadPage() {
+            const pageInput = document.getElementById('pageNumber');
+            const page = pageInput.value;
+            
+            if (!page || page < 1 || page > 604) {
+                showError('الرجاء إدخال رقم صفحة صحيح');
+                return;
+            }
+            
+            try {
+                showLoader();
+                const response = await fetch(`https://api.alquran.cloud/v1/page/${page}/ar.alafasy`);
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    textData = data;
+                    currentPage = page;
+                    displayText(data.data.ayahs);
+                    hideLoader();
+                } else {
+                    showError('حدث خطأ في تحميل البيانات');
+                }
+            } catch (error) {
+                showError('حدث خطأ في الاتصال بالخادم');
+                console.error(error);
+            }
+        }
+
+        function displayText(ayahs) {
+            const textDiv = document.getElementById('quranText');
+            const pageHeader = document.getElementById('pageHeader');
+            
+            const firstVerse = ayahs[0];
+            const lastVerse = ayahs[ayahs.length - 1];
+            pageHeader.innerHTML = `
+                الصفحة ${currentPage} 
+                <span style="font-size: 0.9em; opacity: 0.9;">
+                (سورة ${firstVerse.surah.name} - من الآية ${firstVerse.numberInSurah} إلى ${lastVerse.numberInSurah})
+                </span>
+            `;
+
+            textDiv.innerHTML = ayahs.map((ayah, index) => `
+                <div class="verse-card" 
+                     data-index="${index}" 
+                     onclick="selectVerse(${index})">
+                    <span class="verse-content">${ayah.text}</span>
+                    <span class="verse-number">${ayah.numberInSurah}</span>
+                </div>
+            `).join('');
+        }
+
+        async function playSingleVerse(verseNumber) {
+            return new Promise((resolve, reject) => {
+                if (currentAudio) {
+                    currentAudio.pause();
+                    currentAudio = null;
+                }
+
+                currentAudio = new Audio(`https://cdn.islamic.network/quran/audio/128/${currentReciter}/${verseNumber}.mp3`);
+                currentAudio.onended = resolve;
+                currentAudio.onerror = reject;
+                currentAudio.play().catch(reject);
+            });
+        }
+
+        async function playAudio() {
+            if (!textData || !textData.data.ayahs) {
+                showError('الرجاء تحميل الصفحة أولاً');
+                return;
+            }
+            
+            isPlaying = true;
+            currentRepeats = parseInt(document.getElementById('repeatCount').value) || 3;
+
+            try {
+                if (selectedVerses.length === 0) {
+                    // تشغيل الصفحة كاملة
+                    for (let repeat = 0; repeat < currentRepeats && isPlaying; repeat++) {
+                        for (let i = 0; i < textData.data.ayahs.length && isPlaying; i++) {
+                            await playSingleVerse(textData.data.ayahs[i].number);
+                        }
+                    }
+                } else if (repeatMode === 'verse' && selectedVerses.length === 1) {
+                    // تكرار آية واحدة
+                    const verse = textData.data.ayahs[selectedVerses[0]];
+                    for (let i = 0; i < currentRepeats && isPlaying; i++) {
+                        await playSingleVerse(verse.number);
+                    }
+                } else if (repeatMode === 'passage' && selectedVerses.length === 2) {
+                    // تكرار مقطع
+                    const [start, end] = selectedVerses.sort((a, b) => a - b);
+                    for (let repeat = 0; repeat < currentRepeats && isPlaying; repeat++) {
+                        for (let i = start; i <= end && isPlaying; i++) {
+                            await playSingleVerse(textData.data.ayahs[i].number);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Playback error:', error);
+                showError('خطأ في التشغيل');
+            }
+        }
+
+        function setRepeatMode(mode) {
+            repeatMode = mode;
+            currentRepeats = parseInt(document.getElementById('repeatCount').value) || 3;
+            clearSelection();
+            showMessage(mode === 'verse' ? 'اختر آية للتكرار' : 'اختر بداية ونهاية المقطع');
+        }
+
+        function selectVerse(index) {
+            if (!repeatMode) {
+                showError('الرجاء اختيار نمط التكرار أولاً');
+                return;
+            }
+
+            const verse = document.querySelector(`[data-index="${index}"]`);
+            
+            if (repeatMode === 'verse') {
+                clearSelection();
+                selectedVerses = [index];
+                verse.classList.add('selected');
+            } else if (repeatMode === 'passage') {
+                if (selectedVerses.length === 2) {
+                    clearSelection();
+                    selectedVerses = [index];
+                } else {
+                    selectedVerses.push(index);
+                }
+                verse.classList.add('selected');
+
+                if (selectedVerses.length === 2) {
+                    const [start, end] = selectedVerses.sort((a, b) => a - b);
+                    for (let i = start; i <= end; i++) {
+                        document.querySelector(`[data-index="${i}"]`).classList.add('selected');
+                    }
+                }
+            }
+        }
+
+        function pauseAudio() {
+            isPlaying = false;
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+        }
+
+        async function loadReciters() {
+            try {
+                const response = await fetch('https://api.alquran.cloud/v1/edition/format/audio');
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    // تصفية القراء العرب فقط
+                    availableReciters = data.data.filter(reciter => 
+                        reciter.language === 'ar' && reciter.type !== 'translation'
+                    );
+                    
+                    displayReciters();
+                }
+            } catch (error) {
+                showError('خطأ في تحميل قائمة القراء');
+                console.error('Error loading reciters:', error);
+            }
+        }
+
+        function displayReciters() {
+            const container = document.getElementById('recitersContainer');
+            container.innerHTML = availableReciters.map(reciter => `
+                <div class="reciter ${reciter.identifier === currentReciter ? 'active-reciter' : ''}"
+                     onclick="selectReciter('${reciter.identifier}')">
+                    ${reciter.name}
+                </div>
+            `).join('');
+        }
+
+        function selectReciter(reciterId) {
+            currentReciter = reciterId;
+            document.querySelectorAll('.reciter').forEach(el => 
+                el.classList.remove('active-reciter')
+            );
+            document.querySelector(`[onclick="selectReciter('${reciterId}')"]`).classList.add('active-reciter');
+            document.getElementById('recitersContainer').classList.remove('show');
+        }
+
+        function showLoader() {
+            document.getElementById('loader').style.display = 'block';
+        }
+
+        function hideLoader() {
+            document.getElementById('loader').style.display = 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            document.body.appendChild(errorDiv);
+            setTimeout(() => errorDiv.remove(), 3000);
+        }
+
+        function showMessage(message) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message';
+            msgDiv.textContent = message;
+            document.body.appendChild(msgDiv);
+            setTimeout(() => msgDiv.remove(), 3000);
+        }
+
+        function toggleReciters() {
+            const recitersContainer = document.getElementById('recitersContainer');
+            if (!availableReciters.length) {
+                loadReciters();
+            }
+            recitersContainer.classList.toggle('show');
+        }
+
+        function clearSelection() {
+            selectedVerses = [];
+            document.querySelectorAll('.verse-card').forEach(verse => {
+                verse.classList.remove('selected');
+            });
+        }
+
+        // إضافة استدعاء تحميل القراء عند تحميل الصفحة
+        window.addEventListener('load', loadReciters);
+
+        // إغلاق قائمة القراء عند النقر خارجها
+        document.addEventListener('click', function(event) {
+            const recitersContainer = document.getElementById('recitersContainer');
+            const recitersBtn = document.getElementById('recitersBtn');
+            
+            if (!recitersBtn.contains(event.target) && !recitersContainer.contains(event.target)) {
+                recitersContainer.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
