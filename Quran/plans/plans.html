@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تَثْبِيتْ - الخطط</title>
+  <link rel='stylesheet' href='https://rawcdn.githack.com/SochavaAG/example-mycode/master/_common/css/reset.css'>
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="../original.png" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="ag-format-container">
+  <div class="ag-courses_box">
+    <div class="ag-courses_item" id="1">
+      <a href="#" class="ag-courses-item_link">
+        <div class="ag-courses-item_bg"></div>
+
+        <div class="ag-courses-item_title">
+          حفظ القرآن الكريم في 20 شهر 
+        </div>
+
+        <div class="ag-courses-item_date-box">
+حفظ صفحة واحدة يوميا
+        </div>
+      </a>
+    </div>
+
+    <div class="ag-courses_item" id="2">
+      <a href="#" class="ag-courses-item_link">
+        <div class="ag-courses-item_bg"></div>
+
+        <div class="ag-courses-item_title">
+          حفظ القرآن الكريم في 10 شهر 
+        </div>
+
+        <div class="ag-courses-item_date-box">
+حفظ صفحتان يوميا
+        </div>
+      </a>
+    </div>
+
+    <div class="ag-courses_item" id="4">
+      <a href="#" class="ag-courses-item_link">
+        <div class="ag-courses-item_bg"></div>
+
+        <div class="ag-courses-item_title">
+          حفظ القرآن الكريم في 5 أشهر 
+        </div>
+
+        <div class="ag-courses-item_date-box">
+حفظ 4 صفحات يوميا
+        </div>
+      </a>
+    </div>
+
+    <div class="ag-courses_item" id="5">
+      <a href="#" class="ag-courses-item_link">
+        <div class="ag-courses-item_bg"></div>
+
+        <div class="ag-courses-item_title">
+          حفظ القرآن الكريم في 4 أشهر 
+        </div>
+
+        <div class="ag-courses-item_date-box">
+حفظ 5 صفحات يوميا
+        </div>
+      </a>
+    </div>
+
+
+    <div class="ag-courses_item" id="10">
+      <a href="#" class="ag-courses-item_link">
+        <div class="ag-courses-item_bg"></div>
+
+        <div class="ag-courses-item_title">
+          حفظ القرآن الكريم في شهرين 
+        </div>
+
+        <div class="ag-courses-item_date-box">
+حفظ 10 صفحات يوميا
+        </div>
+      </a>
+    </div>
+
+    <div class="ag-courses_item" id="15">
+      <a href="#" class="ag-courses-item_link">
+        <div class="ag-courses-item_bg"></div>
+
+        <div class="ag-courses-item_title">
+حفظ القرآن الكريم في شهر و نصف 
+        </div>
+
+        <div class="ag-courses-item_date-box">
+حفظ 15 صفحة يوميا
+        </div>
+      </a>
+    </div>
+
+  </div>
+</div>
+<!-- partial -->
+<script type="module">
+  // Import Firebase functions
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyDQeWpg4bkUMyAir76OLl4-4d9cFExx37Q",
+      authDomain: "quran-11747.firebaseapp.com",
+      projectId: "quran-11747",
+      storageBucket: "quran-11747.firebasestorage.app",
+      messagingSenderId: "484969787827",
+      appId: "1:484969787827:web:fd2b841c1a513a0816dbc6",
+      measurementId: "G-ZNC30E63VL"
+    };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Function to get cookie value
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  }
+
+  // Add click event listeners to all items
+  document.querySelectorAll('.ag-courses_item').forEach(item => {
+    item.addEventListener('click', async function(e) {
+      e.preventDefault();
+      
+      const planId = this.id;
+      const userId = getCookie('userId');
+      
+      if (!userId) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'تنبيه',
+          text: 'الرجاء تسجيل الدخول أولاً',
+          confirmButtonText: 'حسناً',
+          confirmButtonColor: '#3085d6',
+        }).then(() => {
+          window.location.href = '../loginAndsignup.html';
+        });
+        return;
+      }
+
+      try {
+        // Show elegant loading message with progress bar
+        Swal.fire({
+          title: 'جاري إنشاء الخطة',
+          html: '<div class="loading-text">نقوم بتجهيز خطة الحفظ الخاصة بك...</div>',
+          timer: 3000,
+          timerProgressBar: true,
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+          background: '#fff',
+          customClass: {
+            title: 'custom-swal-title',
+            popup: 'custom-swal-popup'
+          }
+        });
+
+        // Save the selected plan
+        await setDoc(doc(db, "users", userId), {
+          selectedPlan: planId,
+          currentPart: 1,
+          currentDay: 1,
+          totalPages: 0,
+          updatedAt: new Date()
+        }, { merge: true });
+
+        // Wait for 2 seconds
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Show success message with animation
+        await Swal.fire({
+          icon: 'success',
+          title: 'تم إنشاء الخطة بنجاح! 🎉',
+          html: '<div class="success-text">تم تجهيز خطة الحفظ الخاصة بك</div>' +
+                '<div class="redirect-text">سيتم تحويلك إلى الصفحة الرئيسية</div>',
+          showConfirmButton: false,
+          timer: 2500,
+          timerProgressBar: true,
+          background: '#fff',
+          customClass: {
+            popup: 'custom-swal-popup',
+            title: 'custom-swal-title',
+            icon: 'custom-swal-icon'
+          }
+        });
+
+        window.location.href = '../index.html';
+      } catch (error) {
+        console.error("Error saving plan: ", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'عذراً!',
+          text: 'حدث خطأ أثناء حفظ الخطة',
+          confirmButtonText: 'حاول مرة أخرى',
+          confirmButtonColor: '#d33',
+          customClass: {
+            popup: 'custom-swal-popup',
+            title: 'custom-swal-title'
+          }
+        });
+      }
+    });
+  });
+</script>
+
+<style>
+  .custom-swal-popup {
+    border-radius: 15px !important;
+    padding: 20px !important;
+  }
+
+  .custom-swal-title {
+    font-size: 24px !important;
+    color: #333 !important;
+    margin-bottom: 15px !important;
+  }
+
+  .custom-swal-icon {
+    transform: scale(1.2);
+  }
+
+  .loading-text {
+    font-size: 18px;
+    color: #666;
+    margin: 15px 0;
+  }
+
+  .success-text {
+    font-size: 18px;
+    color: #28a745;
+    margin: 10px 0;
+  }
+
+  .redirect-text {
+    font-size: 16px;
+    color: #666;
+    margin-top: 10px;
+  }
+
+  .swal2-timer-progress-bar {
+    background: #4CAF50 !important;
+  }
+</style>
+</body>
+</html>
