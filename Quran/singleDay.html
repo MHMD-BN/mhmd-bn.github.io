@@ -1730,13 +1730,13 @@ body {
             
             // الحفظ الجديد - 20 مرة
             const newMemPages = currentPlan.newMemorization;
-            await playPagesWithRepetitions(newMemPages[0], newMemPages[1], 1);
+            await playPagesWithRepetitions(newMemPages[0], newMemPages[1], 20);
             
             if (window.isAutoModeActive) {
                 // المراجعة القريبة - 5 مرات
                 if (currentPlan.closeReview[0] > 0) {
                     const closeRevPages = currentPlan.closeReview;
-                    await playPagesWithRepetitions(closeRevPages[0], closeRevPages[1], 1);
+                    await playPagesWithRepetitions(closeRevPages[0], closeRevPages[1], 3);
                 }
             }
             
@@ -1744,7 +1744,7 @@ body {
                 // المراجعة البعيدة - 3 مرات
                 if (currentPlan.day > 30 && currentPlan.distantReview[0] > 0) {
                     const distantRevPages = currentPlan.distantReview;
-                    await playPagesWithRepetitions(distantRevPages[0], distantRevPages[1], 3);
+                    await playPagesWithRepetitions(distantRevPages[0], distantRevPages[1], 2);
                 }
             }
             
