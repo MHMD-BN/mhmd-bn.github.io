@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../original.png" type="image/x-icon">
+    <title>مبارك 🎉 - تَثْبِيتْ</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600&family=Poppins:wght@400;600&display=swap');
+        
+        body {
+            font-family: 'Noto Kufi Arabic', 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(120deg, rgba(0, 192, 157, 0.1), rgba(45, 135, 176, 0.1)), url('../islamic.jpg');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            background: transparent;
+            border: none;
+            display: fixed;
+            top: 0px;
+        }
+
+        .celebration-content {
+            text-align: center;
+            position: fixed;
+            width: 90%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 3rem;
+            border-radius: 30px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.1),
+                0 0 100px rgba(0, 192, 157, 0.1);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin: 0;
+            background: linear-gradient(45deg, #00c09d, #2D87B0, #00c09d);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientText 3s linear infinite, bounceIn 1s ease-out;
+        }
+
+        p {
+            font-size: 1.8rem;
+            color: #444;
+            margin: 0;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .random-text {
+            font-size: 1.3rem !important;
+            color: #555 !important;
+            max-width: 90% !important;
+            line-height: 2 !important;
+            padding: 2rem !important;
+            background: rgba(0, 192, 157, 0.08) !important;
+            border-radius: 20px !important;
+            border: 2px solid rgba(0, 192, 157, 0.2) !important;
+            box-shadow: 
+                0 10px 20px rgba(0, 0, 0, 0.05),
+                inset 0 0 20px rgba(0, 192, 157, 0.05) !important;
+            transition: all 0.3s ease;
+            animation: glowPulse 2s infinite;
+        }
+
+        .submit-btn {
+            height: 60px;
+            width: 240px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            background: linear-gradient(45deg, #00C09D, #2D87B0, #00C09D);
+            background-size: 200% auto;
+            border: none;
+            color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 192, 157, 0.3);
+            cursor: pointer;
+            transition: all 0.5s ease;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards, gradientMove 3s linear infinite;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 192, 157, 0.4);
+            letter-spacing: 1px;
+        }
+
+        @keyframes floatAnimation {
+            0%, 100% { transform: translate(-50%, -50%); }
+            50% { transform: translate(-50%, -52%); }
+        }
+
+        @keyframes gradientText {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), inset 0 0 20px rgba(0, 192, 157, 0.05); }
+            50% { box-shadow: 0 10px 30px rgba(0, 192, 157, 0.2), inset 0 0 30px rgba(0, 192, 157, 0.1); }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .confetti {
+            width: 15px;
+            height: 15px;
+            background-color: #00C09D;
+            clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+        }
+
+        .confetti-container {
+            perspective: 700px;
+            position: absolute;
+            overflow: hidden;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .confetti {
+            position: absolute;
+            z-index: 1;
+            top: -10px;
+            border-radius: 0%;
+        }
+        .confetti--animation-slow {
+            animation: confetti-slow 2.25s linear 1 forwards;
+        }
+        .confetti--animation-medium {
+            animation: confetti-medium 1.75s linear 1 forwards;
+        }
+        .confetti--animation-fast {
+            animation: confetti-fast 1.25s linear 1 forwards;
+        }
+
+        .highlight {
+            color: #00c09d;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .progress-text {
+            font-size: 1.4rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .progress-container {
+            width: 80%;
+            margin: 1rem 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 192, 157, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #00C09D, #2D87B0);
+            width: 0%;
+            transition: width 1s ease-in-out;
+        }
+
+        .progress-percentage {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        #completion-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="js-container container"></div>
+
+<div class="celebration-content">
+    <div class="checkmark-circle">
+        <div class="background"></div>
+        <div class="checkmark draw"></div>
+    </div>
+    <h1>مبارك 🎉</h1>
+    <div id="completion-message">
+        <p>لقد أتممت <span id="completed-parts" class="highlight">0</span> جزء من القرآن الكريم</p>
+        <p class="progress-text">أحسنت! واصل تقدمك في رحلة القرآن</p>
+    </div>
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div id="progress-fill"></div>
+        </div>
+        <p class="progress-percentage">نسبة الإنجاز: <span id="completion-percentage">0</span>%</p>
+    </div>
+    <button class="submit-btn" type="submit" onclick="celebrate()">العودة للرئيسية</button>
+</div>  
+
+<script>
+
+    const Confettiful = function (el) {
+        this.el = el;
+        this.containerEl = null;
+
+        this.confettiFrequency = 3;
+        this.confettiColors = ['#EF2964', '#00C09D', '#2D87B0', '#48485E', '#EFFF1D'];
+        this.confettiAnimations = ['slow', 'medium', 'fast'];
+
+        this._setupElements();
+        this._renderConfetti();
+    };
+
+    Confettiful.prototype._setupElements = function () {
+        const containerEl = document.createElement('div');
+        const elPosition = this.el.style.position;
+
+        if (elPosition !== 'relative' || elPosition !== 'absolute') {
+            this.el.style.position = 'relative';
+        }
+
+        containerEl.classList.add('confetti-container');
+
+        this.el.appendChild(containerEl);
+
+        this.containerEl = containerEl;
+    };
+
+    Confettiful.prototype._renderConfetti = function () {
+        this.confettiInterval = setInterval(() => {
+            const confettiEl = document.createElement('div');
+            const confettiSize = Math.floor(Math.random() * 3) + 7 + 'px';
+            const confettiBackground = this.confettiColors[Math.floor(Math.random() * this.confettiColors.length)];
+            const confettiLeft = Math.floor(Math.random() * this.el.offsetWidth) + 'px';
+            const confettiAnimation = this.confettiAnimations[Math.floor(Math.random() * this.confettiAnimations.length)];
+
+            confettiEl.classList.add('confetti', 'confetti--animation-' + confettiAnimation);
+            confettiEl.style.left = confettiLeft;
+            confettiEl.style.width = confettiSize;
+            confettiEl.style.height = confettiSize;
+            confettiEl.style.backgroundColor = confettiBackground;
+
+            confettiEl.removeTimeout = setTimeout(function () {
+                confettiEl.parentNode.removeChild(confettiEl);
+            }, 3000);
+
+            this.containerEl.appendChild(confettiEl);
+        }, 25);
+    };
+
+    window.confettiful = new Confettiful(document.querySelector('.js-container'));
+
+ 
+
+    // استدعاء الدالة عند تحميل الصفحة
+    window.onload = function() {
+        
+        // قراءة عدد الأجزاء المكتملة من localStorage
+        const completedJuz = localStorage.getItem('completedJuz');
+        const totalJuz = 30; // إجمالي عدد أجزاء القرآن
+        
+        // تحديث العناصر في الصفحة
+        document.getElementById('completed-parts').textContent = completedJuz;
+        
+        // حساب وعرض نسبة الإنجاز
+        const percentage = Math.round((completedJuz / totalJuz) * 100);
+        document.getElementById('completion-percentage').textContent = percentage;
+        
+        // تحديث شريط التقدم
+        document.getElementById('progress-fill').style.width = percentage + '%';
+
+        // التحقق من إكمال القرآن
+        if (completedJuz == 30) {
+            document.querySelector('h1').textContent = "ما شاء الله! 🌟";
+            
+            const completionMessage = document.getElementById('completion-message');
+            completionMessage.innerHTML = `
+                <p class="highlight" style="font-size: 2rem; margin-bottom: 1rem;">
+                    لقد أتممت القرآن الكريم كاملاً
+                </p>
+                <div class="random-text">
+                    <p style="font-size: 1.4rem; color: #2D87B0;">
+                        نهنئك على هذا الإنجاز العظيم! لقد أظهرت التزاماً وصبراً رائعاً في رحلتك مع كتاب الله.
+                        نسأل الله أن يجعل هذا القرآن حجة لك لا عليك، وأن يرفع درجاتك في الجنة
+                    </p>
+                </div>
+                <p class="progress-text" style="color: #00c09d; font-size: 1.6rem; margin-top: 1rem;">
+                    تذكر أن هذه ليست النهاية، بل هي بداية جديدة لعلاقة أعمق مع القرآن الكريم
+                </p>
+            `;
+
+            // تغيير نص الزر
+            document.querySelector('.submit-btn').textContent = "مسار المراجعة";
+            
+            // زيادة كثافة الconfetti للاحتفال
+            window.confettiful.confettiFrequency = 10;
+        }
+    }
+
+    function celebrate() {
+        if(localStorage.getItem('completedJuz') < 30){
+            window.location.href = "../index.html";
+        }else{
+            window.location.href = "../review/review.html";
+        }
+    }
+</script>
+
+</body>
+</html>
