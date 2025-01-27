@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="original.png" type="image/x-icon">
+    
+    <title>تَثْبِيتْ</title>
+    
+    <style>
+        :root {
+            --primary-green: #1d4b38;
+            --secondary-green: #2d6a4f;
+            --accent-gold: #c6a34f;
+            --background-color: #f7f6f1;
+            --text-color: #1b4332;
+            --islamic-pattern: rgba(198, 163, 79, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--background-color);
+            background-image: url('islamic.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 3rem;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .methodology-container {
+            position: relative;
+            max-width: 1200px;
+            margin: auto;
+            padding: 5rem;
+        }
+
+
+        .timeline-path {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            z-index: 1;
+            width: 100%;
+            pointer-events: none;
+        }
+
+        .timeline-svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .timeline-path-line {
+            fill: none;
+            stroke: url(#islamic-gradient);
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 8px rgba(198, 163, 79, 0.3));
+            opacity: 0.95;
+        }
+
+        .steps-container {
+            position: relative;
+            z-index: 2;
+            margin: 0 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .step {
+            margin-bottom: 5rem;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .step:nth-child(3n+1) {
+            transform: translateX(-280px);
+        }
+
+        .step:nth-child(3n+2) {
+            transform: translateX(0);
+        }
+
+        .step:nth-child(3n) {
+            transform: translateX(280px);
+        }
+
+        .step-icon {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 3;
+            background: linear-gradient(145deg, 
+                var(--primary-green), 
+                var(--secondary-green)
+            );
+            border: 6px double var(--accent-gold);
+            box-shadow: 
+                0 15px 35px rgba(29, 75, 56, 0.3),
+                inset 0 2px 15px rgba(198, 163, 79, 0.4);
+            opacity: 0.9;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .step-icon::before {
+            content: '';
+            position: absolute;
+            inset: -12px;
+            border-radius: 50%;
+            background: 
+                linear-gradient(45deg, 
+                    transparent 45%, 
+                    var(--accent-gold) 45%, 
+                    var(--accent-gold) 55%, 
+                    transparent 55%
+                ),
+                linear-gradient(-45deg, 
+                    transparent 45%, 
+                    var(--accent-gold) 45%, 
+                    var(--accent-gold) 55%, 
+                    transparent 55%
+                );
+            background-size: 15px 15px;
+            opacity: 0.1;
+            transform: scale(1.1);
+            z-index: -1;
+        }
+
+        .step-icon::after {
+            content: attr(data-surah);
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Amiri', 'Scheherazade New', serif;
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            background: var(--primary-green);
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--accent-gold);
+            opacity: 0;
+        }
+
+        .step-icon:hover::after {
+            opacity: 1;
+        }
+
+        .step-icon:hover {
+            transform: scale(1.05);
+        }
+
+        .step-number {
+            position: absolute;
+            right: -20px;
+            top: -20px;
+            width: 55px;
+            height: 55px;
+            background: var(--primary-green);
+            color: var(--accent-gold);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.8rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border: 3px solid var(--accent-gold);
+            font-family: 'Amiri', 'Scheherazade New', serif;
+        }
+
+        .step-icon.active {
+            opacity: 1;
+            background: var(--accent-gold);
+            box-shadow: 0 15px 35px rgba(198, 163, 79, 0.5);
+        }
+
+        .step-icon i {
+            color: var(--accent-gold);
+            font-size: 4rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
+        }
+
+        @media (max-width: 1200px) {
+            .step:nth-child(3n+1) { transform: translateX(-180px); }
+            .step:nth-child(3n) { transform: translateX(180px); }
+            .methodology-container { padding: 4rem; }
+            .steps-container { margin: 0 80px; }
+        }
+
+        @media (max-width: 768px) {
+            .step:nth-child(3n+1) { transform: translateX(-120px); }
+            .step:nth-child(3n) { transform: translateX(120px); }
+            .step-icon {
+                width: 130px;
+                height: 130px;
+            }
+            .step-number {
+                width: 45px;
+                height: 45px;
+                font-size: 1.5rem;
+            }
+            .timeline-path-line {
+                stroke-width: 6;
+            }
+            .steps-container {
+                gap: 1.5rem;
+            }
+        }
+
+        /* Enhanced styles for the progress bar */
+        .containerProgress {
+            padding: 20px 0px;
+  width: 100%;
+  text-align: center;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: #1f4938;
+  z-index: 1000;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.progress {
+    background: rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08);
+  width: 80%;
+  margin: auto;
+}
+
+.progress-bar {
+  height: 18px;
+  background-color: #ee303c;
+  border-radius: 4px;
+  transition: 0.4s linear;
+  transition-property: width, background-color;
+}
+
+.progress-striped .progress-bar {
+  background-color: #FCBC51;
+  width: 70%;
+  background-image: linear-gradient(45deg, #fca311 25%, transparent 25%, transparent 50%, #fca311 50%, #fca311 75%, transparent 75%, transparent);
+  animation: progressAnimationStrike 6s;
+}
+        /* Enhance step indicators */
+        .step {
+            margin-bottom: 5rem;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .step-icon {
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .step-icon.active {
+            background: var(--accent-gold);
+            box-shadow: 0 15px 35px rgba(198, 163, 79, 0.5);
+        }
+
+        .step-icon:hover {
+            transform: scale(1.05);
+        }
+
+        /* Improve layout for step-by-step feel */
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .steps-container {
+                gap: 1.5rem;
+            }
+        }
+        #memorized-pages-count{
+            color: #fca311;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: auto
+            ;
+
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Scheherazade+New&display=swap" rel="stylesheet">
+</head>
+<body>
+    <script>
+        // التحقق من وجود معرف المستخدم في الكوكيز
+        function checkUserAuth() {
+            const userId = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('userId='));
+            
+            if (!userId) {
+                // إذا لم يكن المعرف موجوداً، قم بالتحويل إلى صفحة تسجيل الدخول
+                window.location.href = 'loginAndsignup.html';
+            }
+        }
+
+        // تنفيذ التحقق فور تحميل الصفحة
+        checkUserAuth();
+    </script>
+
+    <div class="containerProgress">
+        <div class="progress progress-striped">
+          <div class="progress-bar">
+          </div>                       
+        </div> 
+    <p id="memorized-pages-count" title="عدد الصفحات المحفوظة">0</p>
+    </div>
+    <div class="methodology-container">
+        <div class="timeline-path">
+            <svg class="timeline-svg" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="islamic-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color: var(--accent-gold); stop-opacity: 1"/>
+                        <stop offset="25%" style="stop-color: var(--primary-green); stop-opacity: 0.8"/>
+                        <stop offset="50%" style="stop-color: var(--accent-gold); stop-opacity: 1"/>
+                        <stop offset="75%" style="stop-color: var(--primary-green); stop-opacity: 0.8"/>
+                        <stop offset="100%" style="stop-color: var(--accent-gold); stop-opacity: 1"/>
+                    </linearGradient>
+        
+                    <!-- Add decorative pattern -->
+                    <pattern id="islamic-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M0,10 L20,10 M10,0 L10,20" 
+                              stroke="var(--accent-gold)" 
+                              stroke-width="0.5" 
+                              stroke-opacity="0.3"/>
+                    </pattern>
+                </defs>
+        
+                <path class="timeline-path-line" />
+            </svg>
+        </div>
+        <div class="steps-container">
+            <script src="js/dashboard.js"></script>
+            <script type="module">
+                // Import the functions you need from the SDKs you need
+   
+                import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+    
+                // Your web app's Firebase configuration
+                // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+                const firebaseConfig = {
+                  apiKey: "AIzaSyDQeWpg4bkUMyAir76OLl4-4d9cFExx37Q",
+                  authDomain: "quran-11747.firebaseapp.com",
+                  projectId: "quran-11747",
+                  storageBucket: "quran-11747.firebasestorage.app",
+                  messagingSenderId: "484969787827",
+                  appId: "1:484969787827:web:fd2b841c1a513a0816dbc6",
+                  measurementId: "G-ZNC30E63VL"
+                };
+              
+                // Initialize Firebase
+                const app = initializeApp(firebaseConfig);
+                const analytics = getAnalytics(app);
+                const db = getFirestore(app);
+
+    // دالة للحصول على قيمة الكوكيز
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
+
+    // تعريف المتغيرات العالمية في بداية الملف
+    window.jza = 1;  // قيمة افتراضية
+    window.pagesPerDay = 1;  // قيمة افتراضية
+    window.currentDay = 1;  // قيمة افتراضية للـ current day
+
+    // جلب معرف المستخدم من الكوكيز
+    const userId = getCookie('userId');
+
+    // استدعاء الدالة بعد تحميل الصفحة
+    window.addEventListener('load', function() {
+        setTimeout(checkGlobalVariables, 2000); // انتظار ثانيتين للتأكد من تحميل البيانات
+    });
+
+    if (userId) {
+        // جلب بيانات المستخدم من Firestore
+        const userRef = doc(db, "users", userId);
+        
+        getDoc(userRef)
+            .then((docSnap) => {
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
+                    // تصحيح تعيين القيم
+                    window.jza = parseInt(userData.currentPart) || 1;
+                    window.pagesPerDay = parseInt(userData.selectedPlan) || 1;
+                    window.currentDay = parseInt(userData.currentDay) || 1;
+                    
+                    // تصحيح تخزين القيم في الكوكيز
+                    document.cookie = `currentDay=${window.currentDay}; path=/; max-age=51536000`;
+                    document.cookie = `currentjza=${window.jza}; path=/; max-age=51536000`; // تم تغيير window.currentPart إلى window.jza
+                    document.cookie = `pagesPerDay=${window.pagesPerDay}; path=/; max-age=51536000`; // تم تغيير window.currentPart إلى window.jza
+
+
+                    console.log('Data loaded - jza:', window.jza);
+                    console.log('Data loaded - pagesPerDay:', window.pagesPerDay);
+                    console.log('Data loaded - currentDay:', window.currentDay);
+                    
+                    // إعادة تحميل العناصر
+                    updateInterface();
+                }
+            })
+            .catch((error) => {
+                console.error("Error getting user data:", error);
+                // استخدام القيم الافتراضية في حالة حدوث خطأ
+                window.jza = 1;
+                window.pagesPerDay = 1;
+                window.currentDay = 1;
+            });
+    }
+    
+
+    // دالة لتحديث واجهة المستخدم
+    function updateInterface() {
+        const stepsContainer = document.querySelector('.steps-container');
+        if (!stepsContainer) return;
+
+        stepsContainer.innerHTML = '';
+        
+        for (let i = 30; i >= 1; i--) {
+            const isActive = i <= window.jza;
+            const isLastActive = i === window.jza;
+            
+            stepsContainer.innerHTML += `
+                <div class="step">
+                    <div class="step-icon ${isActive ? 'active' : ''}" 
+                         style="background: ${isActive ? 'var(--primary-green)' : '#808080'}"
+                         ${isLastActive ? 'id="lastActiveStep"' : ''}>
+                        <a href="${isLastActive ? 'dayes.html' : '#'}" 
+                           ${!isLastActive ? 'onclick="return false;"' : ''} 
+                           style="cursor: ${isLastActive ? 'pointer' : 'not-allowed'}">
+                            <i class="fa-solid fa-${icons[30-i]}" 
+                               style="opacity: ${isActive ? '1' : '0.5'}"></i>
+                            <span class="step-number">${i}</span>
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+        
+        updatePath();
+        updateProgress();
+
+        // Add scroll to last active step after a short delay
+        setTimeout(() => {
+            const lastActiveStep = document.getElementById('lastActiveStep');
+            if (lastActiveStep) {
+                lastActiveStep.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        }, 500); // 500ms delay to ensure DOM is ready
+    }
+</script>
+            <script>
+                // Add this color array before the steps creation
+                const colors = [
+                    '#4a7c4c', '#2c786c', '#3d8361', '#519872', '#2d6a4f',
+                    '#40916c', '#52b788', '#74c69d', '#95d5b2', '#1b4332',
+                    '#386641', '#588157', '#4c956c', '#2d6a4f', '#40916c',
+                    '#52b788', '#74c69d', '#95d5b2', '#1b4332', '#386641',
+                    '#588157', '#4c956c', '#2d6a4f', '#40916c', '#52b788',
+                    '#74c69d', '#95d5b2', '#1b4332', '#386641', '#588157'
+                ];
+                const icons = [
+    'globe',                // جزء 30 (سورة الروم إلى الناس)
+    'bug',                  // جزء 29 (سورة العنكبوت) - بديل عن "spider"
+    'fire',                 // جزء 28 (سورة القصص)
+    'mosque',               // جزء 27 (سورة النمل)
+    'scroll',               // جزء 26 (سورة الشعراء)
+    'book-open',            // جزء 25 (سورة الفرقان)
+    'sun',                  // جزء 24 (سورة النور)
+    'hand-holding-heart',   // جزء 23 (سورة المؤمنون)
+    'kaaba',                // جزء 22 (سورة الحج)
+    'book-quran',           // جزء 21 (سورة الأنبياء)
+    'dove',                 // جزء 20 (سورة طه)
+    'walking',                // جزء 19 (سورة مريم) - عصا موسى (بديل عن staff-snake)
+    'baby-carriage',        // جزء 18 (سورة الكهف)
+    'mountain',                 // جزء 17 (سورة الإسراء)
+    'moon',                 // جزء 16 (سورة النحل)
+    'bug',                  // جزء 15 (سورة الحجر)
+    'cube',                // جزء 14 (سورة إبراهيم)
+    'tree',                 // جزء 13 (سورة الرعد)
+    'bolt',                 // جزء 12 (سورة يوسف)
+    'shirt',                // جزء 11 (سورة هود)
+    'ship',                 // جزء 10 (سورة يونس)
+    'fish',                 // جزء 9 (سورة التوبة)
+    'flag',                 // جزء 8 (سورة الأنفال)
+    'shield-alt',        // جزء 7 (سورة الأعراف)
+    'mountain',             // جزء 6 (سورة الأنعام)
+    'leaf',                 // جزء 5 (سورة المائدة)
+    'utensils',             // جزء 4 (سورة النساء)
+    'users',         // جزء 3 (سورة آل عمران)
+    'hands-praying',        // جزء 2 (سورة البقرة)
+    'scale-balanced'        // جزء 1 (سورة الفاتحة)
+];
+                const stepsContainer = document.querySelector('.steps-container');
+                
+                for (let i = 30; i >= 1; i--) {
+                    const isActive = i <= window.jza; // Only the first step (30) is active
+                    const isLastActive = i == window.jza; // Check if it's the last active step
+                    
+                    stepsContainer.innerHTML += `
+                    <div class="step">
+                        <div class="step-icon ${isActive ? 'active' : ''}" 
+                             style="background: ${isActive ? 'var(--primary-green)' : '#808080'}">
+                            <a href="${isLastActive ? `dayes.html` : '#'}" 
+                               ${!isLastActive ? 'onclick="return false;"' : ''} 
+                               style="cursor: ${isLastActive ? 'pointer' : 'not-allowed'}">
+                                <i class="fa-solid fa-${icons[30-i]}" 
+                                   style="opacity: ${isActive ? '1' : '0.5'}"></i>
+                                <span class="step-number">${i}</span>
+                            </a>
+                        </div>
+                    </div>
+                    `;
+                }
+            </script>
+        </div>
+    </div>
+
+    <script>
+    let active = 1;
+        function updatePath() {
+            const steps = document.querySelectorAll('.step-icon');
+            const path = document.querySelector('.timeline-path-line');
+            const container = document.querySelector('.methodology-container');
+            
+            let pathData = '';
+            steps.forEach((step, index) => {
+                const rect = step.getBoundingClientRect();
+                const containerRect = container.getBoundingClientRect();
+                
+                const x = rect.left - containerRect.left + (rect.width / 2);
+                const y = rect.top - containerRect.top + (rect.height / 2);
+                
+                if (index === 0) {
+                    pathData += `M ${x} ${y}`;
+                } else {
+                    const prevRect = steps[index - 1].getBoundingClientRect();
+                    const prevX = prevRect.left - containerRect.left + (prevRect.width / 2);
+                    const prevY = prevRect.top - containerRect.top + (prevRect.height / 2);
+                    
+                    // Enhanced snake-like curve control
+                    const curveIntensity = 150;
+                    const midY = (prevY + y) / 2;
+                    
+                    if (index % 3 === 1) {
+                        // Moving right
+                        pathData += ` C ${prevX} ${midY}, ${x - curveIntensity} ${y}, ${x} ${y}`;
+                    } else if (index % 3 === 2) {
+                        // Moving left
+                        pathData += ` C ${prevX + curveIntensity} ${prevY}, ${x - curveIntensity} ${y}, ${x} ${y}`;
+                    } else {
+                        // Moving center
+                        pathData += ` C ${prevX - curveIntensity} ${prevY}, ${x + curveIntensity} ${y}, ${x} ${y}`;
+                    }
+                }
+            });
+            
+            path.setAttribute('d', pathData);
+        }
+
+        // Update the SVG gradient
+        const svg = document.querySelector('.timeline-svg');
+        svg.innerHTML = `
+            <defs>
+                <linearGradient id="islamic-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color: var(--accent-gold); stop-opacity: 1"/>
+                    <stop offset="25%" style="stop-color: var(--primary-green); stop-opacity: 0.8"/>
+                    <stop offset="50%" style="stop-color: var(--accent-gold); stop-opacity: 1"/>
+                    <stop offset="75%" style="stop-color: var(--primary-green); stop-opacity: 0.8"/>
+                    <stop offset="100%" style="stop-color: var(--accent-gold); stop-opacity: 1"/>
+                </linearGradient>
+
+                <!-- Add decorative pattern -->
+                <pattern id="islamic-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M0,10 L20,10 M10,0 L10,20" 
+                          stroke="var(--accent-gold)" 
+                          stroke-width="0.5" 
+                          stroke-opacity="0.3"/>
+                </pattern>
+            </defs>
+            <path class="timeline-path-line" />
+        `;
+
+        // Add resize observer for responsive updates
+        const resizeObserver = new ResizeObserver(() => {
+            updatePath();
+        });
+
+        resizeObserver.observe(document.querySelector('.methodology-container'));
+
+        // Initial path update
+        window.addEventListener('load', updatePath);
+        window.addEventListener('resize', updatePath);
+    </script>
+<script src="https://unpkg.com/@quranjs/api/dist/index.umd.min.js"></script>
+<script>
+ // quranjsApi is the global variable set by the script tag
+ const { quran } = window.quranjsApi;
+ quran.v4.chapters.findAll().then(console.log); // log all chapters
+
+
+    // Add this after your existing scripts
+    window.addEventListener('load', function() {
+        // Find the first active step
+        const firstActiveStep = document.querySelector('.step-icon.active');
+        
+        if (firstActiveStep) {
+            // Scroll to the first active step with smooth behavior
+            firstActiveStep.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+        }
+    });
+</script>
+
+<script>
+    function updateProgress() {
+        // حساب عدد الصفحات المحفوظة (عدد العناصر النشطة)
+        const activeSteps = document.querySelectorAll('.step-icon.active');
+        const memorizedPages = activeSteps.length  - 1; // كل خطوة تمثل 4 صفحات
+
+        // تحديث عداد الصفحات المحفوظة
+        document.getElementById('memorized-pages-count').textContent = memorizedPages;
+
+        // حساب نسبة التقدم (عدد الصفحات المحفوظة / 20 * 100)
+        const progressPercentage = (memorizedPages / 30) * 100;
+
+        // تحديث شريط التقدم
+        const progressBar = document.querySelector('.progress-bar');
+        progressBar.style.width = `${progressPercentage}%`;
+    }
+
+    // استدعاء الدالة عند تحميل الصفحة
+    window.addEventListener('load', updateProgress);
+</script>
+
+<script>
+    console.log('Current jza:', window.jza);
+    console.log('Pages per day:', window.pagesPerDay);
+</script>
+
+</body>
+</html>
+
+
+

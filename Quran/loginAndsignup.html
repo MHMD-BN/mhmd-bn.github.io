@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="original.png" type="image/x-icon">
+    <title>تَثْبِيتْ - تسجيل</title>
+    <style>
+    body, input, button, h1, h2, p, span, a {
+        direction: rtl;
+        text-align: right;
+        font-family: 'Cairo', sans-serif;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        background: url(islamic.jpg);
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+        margin: 0;
+        overflow: visible;
+    }
+
+    h1 {
+        font-weight: bold;
+        margin: 0;
+    }
+
+    h2 {
+        text-align: center;
+    }
+
+    p {
+        font-size: 14px;
+        font-weight: 100;
+        line-height: 20px;
+        letter-spacing: 0.5px;
+        margin: 20px 0 30px;
+    }
+
+    span {
+        font-size: 12px;
+    }
+
+    a {
+        color: #333;
+        font-size: 14px;
+        text-decoration: none;
+        margin: 15px 0;
+    }
+
+    button {
+        border-radius: 20px;
+        border: 1px solid #1d4b38;
+        background-color: #1d4b38;
+        color: #FFFFFF;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 12px 45px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        transition: transform 80ms ease-in;
+    }
+
+    button:active {
+        transform: scale(0.95);
+    }
+
+    button:focus {
+        outline: none;
+    }
+
+    button.ghost {
+        background-color: transparent;
+        border-color: #FFFFFF;
+    }
+
+    form {
+        background-color: #FFFFFF;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 0 50px;
+        height: 100%;
+        text-align: right;
+        direction: rtl;
+    }
+
+    input {
+        background-color: #eee;
+        border: none;
+        padding: 12px 15px;
+        margin: 8px 0;
+        width: 100%;
+        text-align: right;
+        padding-right: 15px;
+    }
+
+    .container {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
+                   0 10px 10px rgba(0,0,0,0.22);
+        position: relative;
+        overflow: hidden;
+        width: 90%;
+        max-width: 400px;
+        min-height: 480px;
+        margin: 0 15px;
+    }
+
+    .form-container {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        transition: all 0.6s ease-in-out;
+        width: 100%;
+        direction: rtl;
+    }
+
+    .sign-in-container, .sign-up-container {
+        width: 100%;
+        z-index: 2;
+    }
+
+    .overlay-container {
+        display: none; /* Hide overlay on small screens */
+    }
+
+    .container.right-panel-active .sign-in-container {
+        transform: translateX(100%);
+    }
+
+    .container.right-panel-active .sign-up-container {
+        transform: translateX(100%);
+        opacity: 1;
+        z-index: 5;
+        animation: show 0.6s;
+    }
+
+    @keyframes show {
+        0%, 49.99% {
+            opacity: 0;
+            z-index: 1;
+        }
+        
+        50%, 100% {
+            opacity: 1;
+            z-index: 5;
+        }
+    }
+
+    .overlay-container {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 50%;
+        height: 100%;
+        overflow: hidden;
+        transition: transform 0.6s ease-in-out;
+        z-index: 100;
+    }
+
+    .container.right-panel-active .overlay-container{
+        transform: translateX(-100%);
+    }
+
+    .overlay {
+        background: #1d4b38;
+        background: -webkit-linear-gradient(to right, #1d4b38, #1d4b38);
+        background: linear-gradient(to right, #1d4b38, #1d4b38);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: 0 0;
+        color: #FFFFFF;
+        position: relative;
+        left: -100%;
+        height: 100%;
+        width: 200%;
+        transform: translateX(0);
+        transition: transform 0.6s ease-in-out;
+    }
+
+    .container.right-panel-active .overlay {
+        transform: translateX(50%);
+    }
+
+    .overlay-panel {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 0 40px;
+        text-align: center;
+        top: 0;
+        height: 100%;
+        width: 50%;
+        transform: translateX(0);
+        transition: transform 0.6s ease-in-out;
+    }
+
+    .overlay-left {
+        transform: translateX(-20%);
+    }
+
+    .container.right-panel-active .overlay-left {
+        transform: translateX(0);
+    }
+
+    .overlay-right {
+        right: 0;
+        transform: translateX(0);
+    }
+
+    .container.right-panel-active .overlay-right {
+        transform: translateX(20%);
+    }
+
+    .social-container {
+        margin: 20px 0;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .social-container a {
+        border: 1px solid #DDDDDD;
+        border-radius: 50%;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 5px;
+        height: 40px;
+        width: 40px;
+    }
+
+    footer {
+        background-color: #222;
+        color: #fff;
+        font-size: 14px;
+        bottom: 0;
+        position: fixed;
+        left: 0;
+        right: 0;
+        text-align: center;
+        z-index: 999;
+    }
+
+    footer p {
+        margin: 10px 0;
+    }
+    .sign-up-container.active {
+            display: block; /* Show when active */
+        }
+        
+        .sign-in-container.hidden {
+            display: none; /* Hide when not active */
+        }
+
+        .mobile-toggle {
+            display: block; /* Ensure it's visible on small screens */
+        }
+        .sign-up-container {
+            display: none; /* Hide by default */
+            opacity: 1;
+            transform: none;
+        }
+        
+        @media screen and (max-width: 768px) {
+        .sign-up-container {
+            display: none; /* Hide by default */
+            opacity: 1;
+            transform: none;
+        }
+        
+        
+        .sign-in-container {
+            display: block; /* Show by default */
+            transform: none;
+        }
+        
+
+        
+        form {
+            padding: 0 20px;
+        }
+        
+        h1 {
+            font-size: 24px;
+        }
+        
+        p {
+            font-size: 13px;
+        }
+        
+        button {
+            padding: 10px 35px;
+        }
+        
+        .social-container a {
+            height: 35px;
+            width: 35px;
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        body {
+            margin: 0;
+            padding: 15px;
+        }
+        
+        
+        input {
+            padding: 10px 12px;
+        }
+        
+        footer p {
+            font-size: 12px;
+            padding: 0 15px;
+        }
+    }
+
+    /* Add new styles for mobile toggle button */
+    .mobile-toggle {
+        margin-top: 15px;
+        color: #1d4b38;
+        cursor: pointer;
+        font-size: 14px;
+        text-decoration: underline; /* Make it more visible */
+    }
+        .active {
+            display: block !important; /* Show when active */
+        }
+        
+        .hidden {
+            display: none !important; /* Hide when not active */
+        }
+
+    /* Add new styles for toggle link */
+    .toggle-link {
+        margin-top: 15px;
+        color: #1d4b38;
+        cursor: pointer;
+        font-size: 14px;
+        text-decoration: underline; /* Make it more visible */
+    }
+
+    /* إضافة أنماط التنبيهات */
+    .alert {
+        padding: 15px;
+  border-radius: 8px;
+  margin: 10px 0;
+  width: 100%;
+  text-align: center;
+  display: none;
+  animation: slideIn 0.3s ease-in-out;
+  position: absolute;
+  top: 10px;
+    }
+
+    .alert-error {
+        background-color: #ffe6e6;
+        color: #cc0000;
+        border: 1px solid #ffcccc;
+    }
+
+    .alert-success {
+        background-color: #e6ffe6;
+        color: #006600;
+        border: 1px solid #ccffcc;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    </style>
+</head>
+<body>
+<div class="container" id="container">
+	<div class="form-container sign-in-container">
+		<form action="#" id="signInForm">
+			<h1>تسجيل الدخول</h1>
+			<div id="signInAlert" class="alert"></div>
+			<div class="social-container">
+				<a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+				<a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+				<a href="#" class="social"><i class="fab fa-apple"></i></a>
+			</div>
+			<span>أو أستخدم البريد الإلكتروني للتسجيل</span>
+			<input type="email" placeholder="البريد الإلكتروني" required />
+			<input type="password" placeholder="كلمة المرور" required />
+			<a href="#" id="forgotPassword">نسيت كلمة المرور؟</a>
+			<button type="submit">تسجيل الدخول</button>
+			<a href="#" class="toggle-link" id="goToSignUp">ليس لديك حساب؟ سجل الآن</a>
+		</form>
+	</div>
+	<div class="form-container sign-up-container">
+		<form action="#" id="signUpForm">
+			<h1>إنشاء حساب</h1>
+			<div id="signUpAlert" class="alert"></div>
+			<div class="social-container">
+				<a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+				<a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+				<a href="#" class="social"><i class="fab fa-apple"></i></a>
+			</div>
+			<span>أو استخدام البريد الإلكتروني للتسجيل</span>
+			<input type="text" placeholder="الأسم" required />
+			<input type="email" placeholder="البريد الإلكتروني" required />
+			<input type="password" placeholder="كلمة المرور" required />
+			<button type="submit">تسجيل</button>
+			<a href="#" class="toggle-link" id="goToSignIn">هل لديك حساب بالفعل؟ سجل دخولك</a>
+		</form>
+	</div>
+	<div class="overlay-container">
+		<div class="overlay">
+			<div class="overlay-panel overlay-left">
+				<h1>مرحبا بك مرة أخرى</h1>
+				<p>لكي تستمر في التعلم يجب عليك تسجيل الدخول</p>
+				<button class="ghost" id="signIn">تسجيل الدخول</button>
+			</div>
+			<div class="overlay-panel overlay-right">
+				<h1>مرحبا بك للمرة الأولى</h1>
+				<p>أدخل البريد الإلكتروني وكلمة المرور للتسجيل</p>
+				<button class="ghost" id="signUp">تسجيل</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<footer>
+	<p>
+        هذا الموقع صمم بواسطة محمد عبد الحميد محمد عبد الله ، نسألكم الدعاء له بالرحمة و المغفرة
+	</p>
+</footer>
+<script>
+    const signUpButton = document.getElementById('signUp');
+const signInButton = document.getElementById('signIn');
+const container = document.getElementById('container');
+
+signUpButton.addEventListener('click', () => {
+	container.classList.add("right-panel-active");
+});
+
+signInButton.addEventListener('click', () => {
+	container.classList.remove("right-panel-active");
+});
+
+const goToSignUp = document.getElementById('goToSignUp');
+const goToSignIn = document.getElementById('goToSignIn');
+const signUpContainer = document.querySelector('.sign-up-container');
+const signInContainer = document.querySelector('.sign-in-container');
+
+// Ensure sign-in is visible by default
+signUpContainer.classList.remove('active');
+signInContainer.classList.remove('hidden');
+
+goToSignUp.addEventListener('click', (e) => {
+    e.preventDefault();
+    signUpContainer.classList.add('active');
+    signInContainer.classList.add('hidden');
+});
+
+goToSignIn.addEventListener('click', (e) => {
+    e.preventDefault();
+    signUpContainer.classList.remove('active');
+    signInContainer.classList.remove('hidden');
+});
+
+</script>
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyDQeWpg4bkUMyAir76OLl4-4d9cFExx37Q",
+      authDomain: "quran-11747.firebaseapp.com",
+      projectId: "quran-11747",
+      storageBucket: "quran-11747.firebasestorage.app",
+      messagingSenderId: "484969787827",
+      appId: "1:484969787827:web:fd2b841c1a513a0816dbc6",
+      measurementId: "G-ZNC30E63VL"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    // Import the necessary Firebase modules
+    import { 
+        getAuth, 
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        signInWithPopup,
+        GoogleAuthProvider,
+        FacebookAuthProvider,
+        OAuthProvider,
+        sendPasswordResetEmail
+    } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+
+    import { 
+        getFirestore, 
+        doc, 
+        getDoc,
+        setDoc, 
+        serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+
+    // Initialize Firebase Auth and Firestore
+    const auth = getAuth();
+    const db = getFirestore();
+    const googleProvider = new GoogleAuthProvider();
+    const facebookProvider = new FacebookAuthProvider();
+    const appleProvider = new OAuthProvider('apple.com');
+
+    // Add cookie helper function
+    function setUserCookie(userId, expirationDays = 30) {
+        const d = new Date();
+        d.setTime(d.getTime() + (expirationDays * 24 * 60 * 60 * 1000));
+        const expires = "expires=" + d.toUTCString();
+        document.cookie = `userId=${userId};${expires};path=/;SameSite=Strict`;
+    }
+
+    // Update the checkUserPlan function
+    async function checkUserPlan(userId) {
+        const userDoc = await getDoc(doc(db, "users", userId));
+        if (userDoc.exists()) {
+            const userData = userDoc.data();
+            return userData.selectedPlan && userData.selectedPlan > 0;
+        }
+        return false;
+    }
+
+    // إضافة دالة عرض الرسائل
+    function showAlert(elementId, message, type) {
+        const alert = document.getElementById(elementId);
+        alert.textContent = message;
+        alert.className = `alert alert-${type}`;
+        alert.style.display = 'block';
+        
+        // إخفاء التنبيه بعد 5 ثواني
+        setTimeout(() => {
+            alert.style.display = 'none';
+        }, 5000);
+    }
+
+    // تحديث معالجة تسجيل الدخول
+    const signInForm = document.getElementById('signInForm');
+    signInForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = signInForm.querySelector('input[type="email"]').value;
+        const password = signInForm.querySelector('input[type="password"]').value;
+
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            showAlert('signInAlert', 'تم تسجيل الدخول بنجاح!', 'success');
+            setUserCookie(userCredential.user.uid);
+            
+            const hasPlan = await checkUserPlan(userCredential.user.uid);
+            setTimeout(() => {
+                window.location.href = hasPlan ? 'index.html' : 'plans/plans.html';
+            }, 1000);
+        } catch (error) {
+            let errorMessage = 'حدث خطأ في تسجيل الدخول';
+            switch (error.code) {
+                case 'auth/user-not-found':
+                    errorMessage = 'البريد الإلكتروني غير مسجل';
+                    break;
+                case 'auth/wrong-password':
+                    errorMessage = 'كلمة المرور غير صحيحة';
+                    break;
+                case 'auth/invalid-email':
+                    errorMessage = 'البريد الإلكتروني غير صالح';
+                    break;
+                case 'auth/too-many-requests':
+                    errorMessage = 'تم تجاوز عدد المحاولات المسموح بها. الرجاء المحاولة لاحقاً';
+                    break;
+            }
+            showAlert('signInAlert', errorMessage, 'error');
+        }
+    });
+
+    // تحديث معالجة التسجيل
+    const signUpForm = document.getElementById('signUpForm');
+    signUpForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = signUpForm.querySelector('input[type="text"]').value;
+        const email = signUpForm.querySelector('input[type="email"]').value;
+        const password = signUpForm.querySelector('input[type="password"]').value;
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            showAlert('signUpAlert', 'تم إنشاء الحساب بنجاح!', 'success');
+            const user = userCredential.user;
+            setUserCookie(user.uid);
+            await setDoc(doc(db, "users", user.uid), {
+                name: name,
+                email: email,
+                createdAt: serverTimestamp()
+            });
+            setTimeout(() => {
+                window.location.href = 'plans/plans.html';
+            }, 1000);
+        } catch (error) {
+            let errorMessage = 'حدث خطأ في إنشاء الحساب';
+            switch (error.code) {
+                case 'auth/email-already-in-use':
+                    errorMessage = 'البريد الإلكتروني مستخدم بالفعل';
+                    break;
+                case 'auth/weak-password':
+                    errorMessage = 'كلمة المرور ضعيفة جداً';
+                    break;
+                case 'auth/invalid-email':
+                    errorMessage = 'البريد الإلكتروني غير صالح';
+                    break;
+            }
+            showAlert('signUpAlert', errorMessage, 'error');
+        }
+    });
+
+    // Update Social Media Sign In Function
+    const socialSignIn = async (provider) => {
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+            setUserCookie(user.uid);
+            
+            await setDoc(doc(db, "users", user.uid), {
+                name: user.displayName,
+                email: user.email,
+                photoURL: user.photoURL,
+                createdAt: serverTimestamp()
+            }, { merge: true });
+            
+            const hasPlan = await checkUserPlan(user.uid);
+            showAlert('signInAlert', 'تم تسجيل الدخول بنجاح!', 'success');
+            setTimeout(() => {
+                window.location.href = hasPlan ? 'index.html' : 'plans/plans.html';
+            }, 1000);
+        } catch (error) {
+            showAlert('signInAlert', "خطأ في تسجيل الدخول: " + error.message, 'error');
+        }
+    };
+
+    // Add click listeners to social media buttons
+    document.querySelectorAll('.social-container a').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const platform = e.currentTarget.querySelector('i').classList[1];
+            
+            if (platform.includes('facebook')) {
+                socialSignIn(facebookProvider);
+            } else if (platform.includes('google')) {
+                socialSignIn(googleProvider);
+            } else if (platform.includes('apple')) {
+                socialSignIn(appleProvider);
+            }
+        });
+    });
+
+    // Password Reset Function
+    const forgotPassword = document.getElementById('forgotPassword');
+    forgotPassword.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const email = signInForm.querySelector('input[type="email"]').value;
+        
+        if (!email) {
+            showAlert('signInAlert', "الرجاء إدخال البريد الإلكتروني أولاً", 'error');
+            return;
+        }
+
+        try {
+            await sendPasswordResetEmail(auth, email);
+            showAlert('signInAlert', "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني", 'success');
+        } catch (error) {
+            showAlert('signInAlert', "خطأ في إرسال رابط إعادة تعيين كلمة المرور: " + error.message, 'error');
+        }
+    });
+
+    // Listen for auth state changes
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            // User is signed in
+            console.log('User is signed in:', user);
+            // You might want to redirect to dashboard here
+            // window.location.href = '/dashboard.html';
+        } else {
+            // User is signed out
+            console.log('User is signed out');
+        }
+    });
+</script>
+
+</body>
+</html>
