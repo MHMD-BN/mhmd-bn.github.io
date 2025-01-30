@@ -2,7 +2,8 @@
 const CACHE_NAME = 'quran-notification-cache';
 const urlsToCache = [
     '/',
-    '/test.html',
+    '/index.html',
+    '/styles.css',
     '/script.js'
 ];
 
