@@ -42,3 +42,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+if ('periodicSync' in navigator) {
+    navigator.serviceWorker.ready.then(registration => {
+        registration.periodicSync.register('check-notifications', {
+            minInterval: 60 * 1000 // كل دقيقة
+        }).then(() => {
+            console.log('Periodic Sync registered');
+        }).catch(err => {
+            console.error('Periodic Sync registration failed:', err);
+        });
+    });
+}
