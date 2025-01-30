@@ -2,7 +2,7 @@
 const CACHE_NAME = 'quran-notification-cache';
 const urlsToCache = [
     '/',
-    '/index.html',
+    '/test.html',
     '/script.js'
 ];
 
@@ -49,29 +49,25 @@ self.addEventListener('push', event => {
     event.waitUntil(self.registration.showNotification(data.title, options));
 });
 
-function checkForNotifications() {
-    const dbPromise = idb.open('notifications-db', 1);
+async function checkForNotifications() {
+    const db = await idb.openDB('notifications-db', 1);
 
-    dbPromise.then(db => {
-        const tx = db.transaction('times', 'readonly');
-        const store = tx.objectStore('times');
-        return store.get(1);
-    }).then(notificationTime => {
-        if (notificationTime) {
-            const now = new Date();
-            const [hours, minutes] = notificationTime.time.split(':');
-            const targetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+    const tx = db.transaction('times', 'readonly');
+    const store = tx.objectStore('times');
+    const notificationTime = await store.get(1);
 
-            if (now.getHours() === parseInt(hours) && now.getMinutes() === parseInt(minutes)) {
-                showNotification();
-            } else if (now > targetTime) {
-                // إعادة الجدولة ليوم الغد بنفس الوقت
-                targetTime.setDate(targetTime.getDate() + 1);
-            }
+    if (notificationTime) {
+        const now = new Date();
+        const [hours, minutes] = notificationTime.time.split(':');
+        const targetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+
+        if (now.getHours() === parseInt(hours) && now.getMinutes() === parseInt(minutes)) {
+            showNotification();
+        } else if (now > targetTime) {
+            // إعادة الجدولة ليوم الغد بنفس الوقت
+            targetTime.setDate(targetTime.getDate() + 1);
         }
-    }).catch(err => {
-        console.error('Error checking notifications:', err);
-    });
+    }
 }
 
 function showNotification() {
@@ -90,10 +86,4 @@ self.onmessage = function(event) {
     if (event.data.action === 'checkNotifications') {
         checkForNotifications();
     }
-
-    self.addEventListener('periodicsync', event => {
-    if (event.tag === 'check-notifications') {
-        checkForNotifications();
-    }
-});
 };
