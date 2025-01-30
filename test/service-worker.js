@@ -90,4 +90,10 @@ self.onmessage = function(event) {
     if (event.data.action === 'checkNotifications') {
         checkForNotifications();
     }
+
+    self.addEventListener('periodicsync', event => {
+    if (event.tag === 'check-notifications') {
+        checkForNotifications();
+    }
+});
 };
