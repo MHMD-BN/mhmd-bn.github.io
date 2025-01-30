@@ -347,8 +347,124 @@
                 font-size: 1.2rem !important;
             }
         }
+
+        /* Updated flame icon styles */
+        .motivation-flame {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            padding: 8px 15px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .flame-icon {
+            font-size: 40px;
+            color: #ff6b35;
+            position: relative;
+            animation: flameFloat 3s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+
+        .flame-icon::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.4) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            animation: flameGlow 2s infinite alternate;
+        }
+
+        .flame-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.2) 0%, transparent 80%);
+            transform: translate(-50%, -50%);
+            animation: flamePulse 3s infinite;
+        }
+
+        .streak-count {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        @keyframes flameFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-5px) scale(1.05); }
+        }
+
+        @keyframes flameGlow {
+            0% { opacity: 0.8; }
+            100% { opacity: 0.2; }
+        }
+
+        @keyframes flamePulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Dynamic color changes based on streak */
+        .flame-icon.gold { color: #ffd700; }
+        .flame-icon.gold::before { background: radial-gradient(circle, rgba(255, 215, 0, 0.4) 0%, transparent 70%); }
+        .flame-icon.gold::after { background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 80%); }
+
+        .flame-icon.orange { color: #ff6b35; }
+        .flame-icon.orange::before { background: radial-gradient(circle, rgba(255, 107, 53, 0.4) 0%, transparent 70%); }
+        .flame-icon.orange::after { background: radial-gradient(circle, rgba(255, 107, 53, 0.2) 0%, transparent 80%); }
+
+        .flame-icon.red { color: #ff0000; }
+        .flame-icon.red::before { background: radial-gradient(circle, rgba(255, 0, 0, 0.4) 0%, transparent 70%); }
+        .flame-icon.red::after { background: radial-gradient(circle, rgba(255, 0, 0, 0.2) 0%, transparent 80%); }
+
+        /* أنماط الإشعارات */
+        .streak-notification {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 1000;
+            font-size: 16px;
+            color: #1d4b38;
+            border-right: 4px solid #fca311;
+        }
+
+        .streak-notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .streak-notification i {
+            margin-left: 8px;
+            color: #fca311;
+        }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Scheherazade+New&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -594,6 +710,11 @@
         </div>
     </div>
 
+    <div class="motivation-flame">
+        <i class="fa-solid fa-fire-flame-curved flame-icon"></i>
+        <span class="streak-count" id="streakCount">0 يوم</span>
+    </div>
+
     <script>
     let active = 1;
         function updatePath() {
@@ -716,6 +837,136 @@
 <script>
     console.log('Current jza:', window.jza);
     console.log('Pages per day:', window.pagesPerDay);
+</script>
+
+<script>
+    // دالة لحساب الأيام المتتالية
+    function calculateStreak() {
+        const completedDays = JSON.parse(localStorage.getItem('completedDays') || '[]');
+        let streak = 0;
+        const today = new Date().toISOString().split('T')[0];
+        
+        // فرز الأيام من الأحدث إلى الأقدم
+        completedDays.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
+        
+        // حساب الأيام المتتالية
+        for (let i = 0; i < completedDays.length; i++) {
+            const dayDate = completedDays[i].completedAt.split('T')[0];
+            if (i === 0 && dayDate !== today) {
+                break; // إذا لم يكمل اليوم الحالي
+            }
+            if (i > 0) {
+                const prevDate = new Date(completedDays[i-1].completedAt);
+                const currentDate = new Date(completedDays[i].completedAt);
+                const diffTime = Math.abs(prevDate - currentDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                if (diffDays > 1) break; // إذا كان هناك انقطاع
+            }
+            streak ++; // إضافة يومين بدلاً من يوم واحد
+        }
+        
+        return streak/2;
+    }
+
+    // تحديث شعلة الحماس عند تحميل الصفحة
+    window.addEventListener('load', () => {
+        const streak = calculateStreak();
+        const streakCount = document.getElementById('streakCount');
+        const flameIcon = document.querySelector('.flame-icon');
+        
+        streakCount.textContent = `${streak} يوم${streak > 10 ? '' : ''}`;
+        
+        // تغيير لون الشعلة بناءً على عدد الأيام
+        flameIcon.classList.remove('gold', 'orange', 'red');
+        if (streak >= 7) {
+            flameIcon.classList.add('gold');
+        } else if (streak >= 3) {
+            flameIcon.classList.add('orange');
+        } else {
+            flameIcon.classList.add('red');
+        }
+    });
+</script>
+
+<script>
+    // دالة لعرض الإشعارات
+    function showStreakNotification(streak) {
+        // إزالة أي إشعارات سابقة
+        const existingNotification = document.querySelector('.streak-notification');
+        if (existingNotification) {
+            existingNotification.remove();
+        }
+
+        let message = '';
+        let icon = '';
+
+        switch(streak) {
+            case 2:
+                message = 'رائع! يومان متتاليان من الإنجاز';
+                icon = 'fa-solid fa-star';
+                break;
+            case 3:
+                message = 'أحسنت! ثلاثة أيام متتالية من التقدم';
+                icon = 'fa-solid fa-award';
+                break;
+            case 7:
+                message = 'عمل رائع! أسبوع كامل من الالتزام';
+                icon = 'fa-solid fa-trophy';
+                break;
+            case 9:
+                message = 'مذهل! تسعة أيام من النجاح المتواصل';
+                icon = 'fa-solid fa-crown';
+                break;
+            case 10:
+                message = 'تهانينا! عشرة أيام من التميز والإنجاز';
+                icon = 'fa-solid fa-medal';
+                break;
+            default:
+                return; // لا تظهر إشعاراً للأيام الأخرى
+        }
+
+        const notification = document.createElement('div');
+        notification.className = 'streak-notification';
+        notification.innerHTML = `<i class="${icon}"></i>${message}`;
+        document.body.appendChild(notification);
+
+        // تأخير قصير قبل إظهار الإشعار للحصول على تأثير حركي
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 100);
+
+        // إخفاء الإشعار بعد 5 ثوانٍ
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                notification.remove();
+            }, 500);
+        }, 5000);
+    }
+
+    // تحديث دالة تحميل الصفحة لتشمل الإشعارات
+    window.addEventListener('load', () => {
+        const streak = calculateStreak();
+        const streakCount = document.getElementById('streakCount');
+        const flameIcon = document.querySelector('.flame-icon');
+        
+        streakCount.textContent = `${streak} يوم${streak > 10 ? '' : ''}`;
+        
+        // تغيير لون الشعلة بناءً على عدد الأيام
+        flameIcon.classList.remove('gold', 'orange', 'red');
+        if (streak >= 7) {
+            flameIcon.classList.add('gold');
+        } else if (streak >= 3) {
+            flameIcon.classList.add('orange');
+        } else {
+            flameIcon.classList.add('red');
+        }
+
+        // التحقق من الأيام المميزة وعرض الإشعار المناسب
+        if ([2, 3, 7, 9, 10].includes(streak)) {
+            showStreakNotification(streak);
+        }
+    });
 </script>
 
 </body>
