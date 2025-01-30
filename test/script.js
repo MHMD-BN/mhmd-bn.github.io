@@ -23,23 +23,17 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    function saveNotificationTime(time) {
-        const dbPromise = idb.open('notifications-db', 1, upgradeDb => {
-            if (!upgradeDb.objectStoreNames.contains('times')) {
-                upgradeDb.createObjectStore('times', { keyPath: 'id' });
+    async function saveNotificationTime(time) {
+        const db = await idb.openDB('notifications-db', 1, {
+            upgrade(db) {
+                if (!db.objectStoreNames.contains('times')) {
+                    db.createObjectStore('times', { keyPath: 'id' });
+                }
             }
         });
 
-        dbPromise.then(db => {
-            const tx = db.transaction('times', 'readwrite');
-            const store = tx.objectStore('times');
-            store.put({ id: 1, time: time });
-            return tx.complete;
-        }).then(() => {
-            console.log('وقت الإشعار تم تخزينه.');
-        }).catch(err => {
-            console.error('Error saving notification time:', err);
-        });
+        await db.put('times', { id: 1, time: time });
+        console.log('وقت الإشعار تم تخزينه.');
     }
 });
 if ('periodicSync' in navigator) {
