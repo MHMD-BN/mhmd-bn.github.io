@@ -63,10 +63,11 @@ button:hover {
     <script src="script.js"></script>
     <!-- في ملف index.html -->
 <!-- في ملف index.html -->
-<script src="https://unpkg.com/idb@6.0.0/build/idb.min.js"></script>    <script>
+<script src="https://unpkg.com/idb@6.0.0/build/idb.min.js"></script>
+        <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
+                navigator.serviceWorker.register('/test/service-worker.js') // تأكد من أن المسار صحيح
                     .then(function(registration) {
                         console.log('Service Worker registered with scope:', registration.scope);
                     })
