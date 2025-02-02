@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>موقع مراجعة القرآن - تسجيل الدخول والتسجيل</title>
+  <!-- استخدام بعض الخطوط الإسلامية مثل "Amiri" -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri&display=swap">
+  <style>
+    body {
+      background: linear-gradient(135deg, #f6f9fc 0%, #eef2f7 100%);
+      font-family: 'Amiri', serif;
+      direction: rtl;
+      margin: 0;
+      padding: 10px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 500px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      margin: 10px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      font-size: 24px;
+      margin-bottom: 20px;
+      font-weight: 700;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-toggle {
+      display: flex;
+      justify-content: space-between;
+      background: #f8fafc;
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-toggle input[type="radio"] {
+      display: none;
+    }
+
+    .form-toggle label {
+      flex: 1;
+      padding: 10px 14px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-radius: 8px;
+      margin: 0 1px;
+    }
+
+    .form-toggle label:hover {
+      background: rgba(52, 152, 219, 0.1);
+      color: #3498db;
+    }
+
+    .form-toggle input[type="radio"]:checked + label {
+      background: #3498db;
+      color: white;
+      box-shadow: 0 2px 6px rgba(52, 152, 219, 0.3);
+    }
+
+    form {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    form.active {
+      display: flex;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    label {
+      color: #475569;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    input[type="number"] {
+      padding: 10px 12px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 13px;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+    }
+
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="number"]:focus {
+      border-color: #3498db;
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+      outline: none;
+      background: white;
+    }
+
+    input::placeholder {
+      color: #94a3b8;
+    }
+
+    button {
+      padding: 12px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 9px rgba(52, 152, 219, 0.2);
+      font-weight: 600;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+      box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      box-shadow: 0 2px 6px rgba(52, 152, 219, 0.2);
+      transform: translateY(0);
+    }
+
+    .toggle-link {
+      text-align: center;
+      margin-top: 15px;
+      color: #3498db;
+      font-size: 14px;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .toggle-link:hover {
+      color: #2980b9;
+      text-decoration: underline;
+    }
+
+    .message {
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-top: 15px;
+      display: none;
+    }
+
+    .error {
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+    }
+
+    .success-message {
+      background: #dcfce7;
+      border: 1px solid #bbf7d0;
+      color: #16a34a;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 8px;
+      }
+
+      .container {
+        padding: 20px;
+        border-radius: 14px;
+        margin: 6px;
+      }
+
+      h2 {
+        font-size: 22px;
+        margin-bottom: 15px;
+      }
+
+      .form-toggle {
+        padding: 2px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+      }
+
+      .form-toggle label {
+        padding: 6px 10px;
+        font-size: 12px;
+        margin: 0 1px;
+      }
+
+      form {
+        gap: 12px;
+      }
+
+      .input-group {
+        gap: 3px;
+      }
+
+      label {
+        font-size: 12px;
+        margin-bottom: 2px;
+      }
+
+      input[type="email"],
+      input[type="password"],
+      input[type="number"] {
+        padding: 8px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+      }
+
+      button {
+        padding: 10px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        margin-top: 10px;
+      }
+
+      .toggle-link {
+        margin-top: 12px;
+        font-size: 12px;
+      }
+
+      .message {
+        padding: 8px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        margin-top: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 15px;
+        border-radius: 12px;
+      }
+
+      h2 {
+        font-size: 20px;
+        margin-bottom: 12px;
+      }
+
+      .form-toggle {
+        margin-bottom: 12px;
+      }
+
+      .form-toggle label {
+        padding: 4px 6px;
+        font-size: 11px;
+      }
+
+      form {
+        gap: 10px;
+      }
+
+      .input-group {
+        gap: 2px;
+      }
+
+      label {
+        font-size: 11px;
+      }
+
+      input[type="email"],
+      input[type="password"],
+      input[type="number"] {
+        padding: 6px 8px;
+        border-radius: 5px;
+        font-size: 11px;
+      }
+
+      button {
+        padding: 8px 12px;
+        border-radius: 5px;
+        font-size: 13px;
+      }
+
+      .toggle-link {
+        font-size: 12px;
+        margin-top: 10px;
+      }
+
+      .message {
+        font-size: 12px;
+        padding: 6px 8px;
+        border-radius: 5px;
+        margin-top: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-toggle">
+      <input type="radio" id="loginToggle" name="formToggle" value="login" checked>
+      <label for="loginToggle" onclick="switchForm('login')">تسجيل الدخول</label>
+      <input type="radio" id="registerToggle" name="formToggle" value="register">
+      <label for="registerToggle" onclick="switchForm('register')">إنشاء حساب</label>
+    </div>
+    <!-- نموذج تسجيل الدخول -->
+    <form id="loginForm" class="active">
+      <h2>تسجيل الدخول</h2>
+      <div class="input-group">
+        <label for="loginEmail">البريد الإلكتروني</label>
+        <input type="email" id="loginEmail" placeholder="أدخل بريدك الإلكتروني" required>
+      </div>
+      
+      <div class="input-group">
+        <label for="loginPassword">كلمة المرور</label>
+        <input type="password" id="loginPassword" placeholder="أدخل كلمة المرور" required>
+      </div>
+      
+      <button type="submit">دخول</button>
+      <p class="toggle-link" onclick="switchForm('register')">ليس لديك حساب؟ سجل الآن</p>
+      <div id="loginError" class="message error"></div>
+      <div id="loginSuccess" class="message success-message"></div>
+    </form>
+
+    <!-- نموذج إنشاء حساب جديد -->
+    <form id="registerForm">
+      <h2>إنشاء حساب</h2>
+      <div class="input-group">
+        <label for="regEmail">البريد الإلكتروني</label>
+        <input type="email" id="regEmail" placeholder="أدخل بريدك الإلكتروني" required>
+      </div>
+      
+      <div class="input-group">
+        <label for="regPassword">كلمة المرور</label>
+        <input type="password" id="regPassword" placeholder="أدخل كلمة المرور" required>
+      </div>
+
+      <div class="input-group">
+        <label for="reviewTime">الوقت المتاح للمراجعة يومياً (بالدقائق)</label>
+        <input type="number" id="reviewTime" placeholder="أدخل الوقت المتاح" required>
+      </div>
+      
+      <button type="submit">تسجيل</button>
+      <p class="toggle-link" onclick="switchForm('login')">لديك حساب بالفعل؟ سجل الدخول</p>
+      <div id="registerError" class="message error"></div>
+      <div id="registerSuccess" class="message success-message"></div>
+    </form>
+  </div>
+
+  <ul id="sheikhsList">
+    <!-- سيتم إضافة أسماء الشيوخ هنا -->
+  </ul>
+
+  <!-- تضمين مكتبات Firebase (باستخدام إصدار v9 على نمط الوحدات) -->
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+    import { getFirestore, collection, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyDQeWpg4bkUMyAir76OLl4-4d9cFExx37Q",
+      authDomain: "quran-11747.firebaseapp.com",
+      projectId: "quran-11747",
+      storageBucket: "quran-11747.firebasestorage.app",
+      messagingSenderId: "484969787827",
+      appId: "1:484969787827:web:fd2b841c1a513a0816dbc6",
+      measurementId: "G-ZNC30E63VL"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    // دالة التبديل بين نماذج التسجيل وتسجيل الدخول
+    function switchForm(formId) {
+      document.getElementById('loginForm').classList.remove('active');
+      document.getElementById('registerForm').classList.remove('active');
+      document.getElementById(formId + 'Form').classList.add('active');
+      if (formId === 'login') {
+        document.getElementById('loginToggle').checked = true;
+        document.getElementById('registerToggle').checked = false;
+      } else {
+        document.getElementById('loginToggle').checked = false;
+        document.getElementById('registerToggle').checked = true;
+      }
+      // مسح رسائل الخطأ عند التبديل بين النماذج
+      document.getElementById('loginError').style.display = 'none';
+      document.getElementById('registerError').style.display = 'none';
+    }
+    window.switchForm = switchForm;
+
+    // التعامل مع نموذج التسجيل
+    const registerForm = document.getElementById('registerForm');
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('regEmail').value;
+      const password = document.getElementById('regPassword').value;
+      const reviewTime = document.getElementById('reviewTime').value;
+      const registerErrorDiv = document.getElementById('registerError');
+      const registerSuccessDiv = document.getElementById('registerSuccess');
+
+      try {
+        // إنشاء حساب مستخدم باستخدام البريد الإلكتروني وكلمة المرور
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        // تخزين البيانات الإضافية في Firestore
+        await setDoc(doc(db, "users", user.uid), {
+          email: email,
+          reviewTime: reviewTime,
+          Day: 1,
+        });
+        registerSuccessDiv.innerText = "تم التسجيل بنجاح! سيتم تحويلك إلى الصفحة الرئيسية.";
+        registerSuccessDiv.style.display = "block";
+        registerErrorDiv.style.display = "none";
+
+        document.cookie = `userId=${user.uid}; path=/; max-age=3600`; // تخزين userId في الكوكيز لمدة ساعة
+        setTimeout(() => {
+          window.location.href = 'index.html'; // إعادة توجيه إلى index.html بعد تأخير قصير
+        }, 2000); // تأخير لمدة 2 ثانية
+
+      } catch (error) {
+        console.error("Registration Error:", error);
+        const errorMessage = getErrorMessage(error.code);
+        registerErrorDiv.innerText = errorMessage;
+        registerErrorDiv.style.display = "block";
+        registerSuccessDiv.style.display = "none";
+      }
+    });
+
+    // التعامل مع نموذج تسجيل الدخول
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      const loginErrorDiv = document.getElementById('loginError');
+      const loginSuccessDiv = document.getElementById('loginSuccess');
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        loginSuccessDiv.innerText = "تم تسجيل الدخول بنجاح! سيتم تحويلك إلى الصفحة الرئيسية.";
+        loginSuccessDiv.style.display = "block";
+        loginErrorDiv.style.display = "none";
+
+        const user = auth.currentUser; // الحصول على المستخدم الحالي بعد تسجيل الدخول
+        document.cookie = `userId=${user.uid}; path=/; max-age=3600`; // تخزين userId في الكوكيز لمدة ساعة
+        setTimeout(() => {
+          window.location.href = 'index.html'; // إعادة توجيه إلى index.html بعد تأخير قصير
+        }, 2000); // تأخير لمدة 2 ثانية
+
+      } catch (error) {
+        console.error("Login Error:", error);
+        const errorMessage = getErrorMessage(error.code);
+        loginErrorDiv.innerText = errorMessage;
+        loginErrorDiv.style.display = "block";
+        loginSuccessDiv.style.display = "none";
+      }
+    });
+
+    // تعريف رسائل الخطأ بالعربية
+    const errorMessages = {
+      'auth/email-already-in-use': 'هذا البريد الإلكتروني مُسجل بالفعل. الرجاء استخدام بريد إلكتروني آخر.',
+      'auth/invalid-email': 'البريد الإلكتروني غير صالح. الرجاء إدخال بريد إلكتروني صحيح.',
+      'auth/operation-not-allowed': 'تسجيل المستخدم غير مُفعل حالياً.',
+      'auth/weak-password': 'كلمة المرور ضعيفة. يجب أن تتكون من 6 أحرف على الأقل.',
+      'auth/user-disabled': 'تم تعطيل هذا الحساب. الرجاء التواصل مع الدعم.',
+      'auth/user-not-found': 'هذا البريد الإلكتروني غير مُسجل. الرجاء التأكد من البريد الإلكتروني أو إنشاء حساب جديد.',
+      'auth/wrong-password': 'كلمة المرور غير صحيحة. الرجاء المحاولة مرة أخرى.' ,
+      'auth/too-many-requests': 'تم حظر الوصول مؤقتًا بسبب محاولات تسجيل دخول فاشلة متكررة. يرجى المحاولة مرة أخرى لاحقًا.'
+    };
+
+    function getErrorMessage(errorCode) {
+      return errorMessages[errorCode] || 'حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى.';
+    }
+
+  </script>
+
+  <script src="script.js"></script>
+</body>
+</html>
