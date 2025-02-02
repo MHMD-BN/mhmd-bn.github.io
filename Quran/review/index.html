@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدخال سور أو أجزاء القرآن</title>
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap');
+
+body {
+    font-family: "Cairo", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #0d3b66, #0a2e44);
+    margin: 0;
+    direction: rtl;
+}
+
+.tags-container {
+    width: 480px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    border: 2px solid rgba(255, 223, 120, 0.5);
+    transition: transform 0.3s ease-in-out;
+}
+
+
+.instructions {
+    font-size: 15px;
+    color: #ffd700;
+    margin-bottom: 12px;
+    background: rgba(255, 223, 120, 0.2);
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    border: 1px solid rgba(255, 223, 120, 0.4);
+}
+
+.tags-input {
+    display: flex;
+    flex-wrap: wrap;
+    border: 2px solid rgba(255, 223, 120, 0.5);
+    padding: 10px;
+    border-radius: 8px;
+    min-height: 50px;
+    cursor: text;
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: border 0.3s ease-in-out;
+}
+
+.tags-input:focus-within {
+    border-color: #ffd700;
+}
+
+.tags-input input {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 8px;
+    font-size: 16px;
+    background: transparent;
+    color: white;
+}
+
+.tag {
+    background: rgba(255, 223, 120, 0.3);
+    color: white;
+    padding: 8px 15px;
+    margin: 4px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out;
+    border: 1px solid rgba(255, 223, 120, 0.5);
+}
+
+.tag:hover {
+    background: rgba(255, 223, 120, 0.6);
+}
+
+.tag .remove {
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    transition: color 0.3s ease-in-out;
+    position: relative;
+    left: -7px;
+}
+
+.tag .remove:hover {
+    color: red;
+}
+
+.error-message {
+    color: black;
+    font-size: 14px;
+    margin-top: 8px;
+    display: none;
+    background: rgba(255, 0, 0, 0.56);
+    padding: 8px;
+    border-radius: 5px;
+}
+
+.dropdown {
+    position: absolute;
+    width: 100%;
+    top: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background: rgba(255, 223, 120, 0.1);
+    border: 1px solid rgba(255, 223, 120, 0.4);
+    border-radius: 8px;
+    display: none;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown div {
+    padding: 12px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+    font-size: 16px;
+    color: white;
+}
+
+.dropdown div:hover,
+.dropdown div.active {
+    background: rgba(255, 223, 120, 0.3);
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="tags-container">
+        <p class="instructions">🔍 ابدأ بالبحث، ثم اختر من القائمة أو اضغط "Enter" بعد الكتابة.</p>
+        <div class="tags-input" id="tags-input">
+            <input type="text" id="tag-input" placeholder="بحث عن سورة، جزء أو حزب...">
+            <div class="dropdown" id="dropdown"></div>
+        </div>
+        <div class="error-message" id="error-message">⚠️ يرجى اختيار سورة، جزء أو حزب فقط!</div>
+        <button id="next-button" style="margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 8px; border: none; background-color: #ffd700; color: #0d3b66; font-weight: bold;">التالي</button>
+    </div>
+
+    <div id="notification-container" style="display: none; position: fixed; top: 20px; right: 20px; background-color: #4CAF50; color: white; padding: 15px; border-radius: 5px; z-index: 1000;">
+        <span id="notification-message"></span>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="script.js"></script>
+    <script>
+        // Your Firebase configuration
+        const firebaseConfig = {
+      apiKey: "AIzaSyDQeWpg4bkUMyAir76OLl4-4d9cFExx37Q",
+      authDomain: "quran-11747.firebaseapp.com",
+      projectId: "quran-11747",
+      storageBucket: "quran-11747.firebasestorage.app",
+      messagingSenderId: "484969787827",
+      appId: "1:484969787827:web:fd2b841c1a513a0816dbc6",
+      measurementId: "G-ZNC30E63VL"
+    };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        // const analytics = firebase.analytics();
+
+        const tagsContainer = document.getElementById("tags-input");
+        const input = document.getElementById("tag-input");
+        const dropdown = document.getElementById("dropdown");
+        const errorMessage = document.getElementById("error-message");
+        const nextButton = document.getElementById("next-button");
+
+        let tags = [];
+        let selectedIndex = -1;
+        const ajzaa = Array.from({ length: 30 }, (_, i) => `جزء ${i + 1}`);
+        const ahzab = Array.from({ length: 60 }, (_, i) => `حزب ${i + 1}`);
+
+        const validEntries = [...surahsAR.map(s => s.name), ...ajzaa, ...ahzab];
+
+        input.addEventListener("input", function() {
+            let searchText = input.value.toLowerCase().trim();
+            dropdown.innerHTML = "";
+            selectedIndex = -1;
+
+            if (searchText === "") {
+                dropdown.style.display = "none";
+                return;
+            }
+
+            let filtered = validEntries.filter(item => item.toLowerCase().includes(searchText));
+            if (filtered.length > 0) {
+                dropdown.style.display = "block";
+                filtered.forEach((item, index) => {
+                    let option = document.createElement("div");
+                    option.textContent = item;
+                    option.setAttribute("data-index", index);
+                    option.addEventListener("click", function() {
+                        addTag(item);
+                        dropdown.style.display = "none";
+                        input.value = "";
+                    });
+                    dropdown.appendChild(option);
+                });
+            } else {
+                dropdown.style.display = "none";
+            }
+        });
+
+        input.addEventListener("keydown", function(event) {
+            const dropdownItems = document.querySelectorAll(".dropdown div");
+
+            if (event.key === "ArrowDown") {
+                event.preventDefault();
+                selectedIndex = (selectedIndex + 1) % dropdownItems.length;
+                updateActiveItem(dropdownItems);
+            } else if (event.key === "ArrowUp") {
+                event.preventDefault();
+                selectedIndex = (selectedIndex - 1 + dropdownItems.length) % dropdownItems.length;
+                updateActiveItem(dropdownItems);
+            } else if (event.key === "Enter") {
+                event.preventDefault();
+                let tagText = input.value.trim();
+                if (selectedIndex >= 0 && dropdownItems.length > 0) {
+                    tagText = dropdownItems[selectedIndex].textContent;
+                }
+
+                if (tagText !== "" && validEntries.includes(tagText) && !tags.includes(tagText)) {
+                    addTag(tagText);
+                    input.value = "";
+                    dropdown.style.display = "none";
+                    errorMessage.style.display = "none";
+                } else {
+                    errorMessage.style.display = "block";
+                }
+            }
+        });
+
+        function updateActiveItem(items) {
+            items.forEach(item => item.classList.remove("active"));
+            if (selectedIndex >= 0) {
+                items[selectedIndex].classList.add("active");
+            }
+        }
+
+        function addTag(tagText) {
+            if (tags.includes(tagText)) {
+                return; // Prevent adding duplicate tags
+            }
+            tags.push(tagText);
+            const tagElement = document.createElement("div");
+            tagElement.classList.add("tag");
+            tagElement.innerHTML = `${tagText} <span class="remove">&times;</span>`;
+            tagElement.querySelector(".remove").addEventListener("click", function() {
+                removeTag(tagText, tagElement);
+            });
+            tagsContainer.insertBefore(tagElement, input);
+        }
+
+        function removeTag(tagText, tagElement) {
+            tags = tags.filter(tag => tag !== tagText);
+            tagsContainer.removeChild(tagElement);
+        }
+
+        nextButton.addEventListener('click', function() {
+            localStorage.setItem('selectedQuranParts', JSON.stringify(tags));
+            showNotification('تم حفظ الأجزاء المختارة بنجاح!');
+
+            const userId = getCookie('userId');
+            if (userId) {
+                saveSelectedPartsToFirestore(userId, tags);
+            } else {
+                console.error('لم يتم العثور على معرف المستخدم في الكوكيز.');
+                showNotification('خطأ: لم يتم العثور على معرف المستخدم.');
+            }
+        });
+
+        function showNotification(message) {
+            const notificationContainer = document.getElementById('notification-container');
+            const notificationMessage = document.getElementById('notification-message');
+
+            notificationMessage.textContent = message;
+            notificationContainer.style.display = 'block';
+
+            setTimeout(function() {
+                notificationContainer.style.display = 'none';
+            }, 3000);
+        }
+
+        function loadTagsFromLocalStorage() {
+            const storedTags = localStorage.getItem('selectedQuranParts');
+            if (storedTags) {
+                const parsedTags = JSON.parse(storedTags);
+                tags = [];
+                const uniqueTags = new Set(parsedTags);
+                uniqueTags.forEach(tagText => {
+                    addTag(tagText);
+                });
+            }
+        }
+
+        function analyzeLocalStorageData() {
+            const storedData = localStorage.getItem('selectedQuranParts');
+            if (storedData) {
+                try {
+                    const parsedData = JSON.parse(storedData);
+                    if (Array.isArray(parsedData)) {
+                        parsedData.forEach(item => {
+                            let pages = 0;
+                            if (surahsAR.some(surah => surah.name === item)) {
+                                const surah = surahsAR.find(surah => surah.name === item);
+                                pages = surah.pages;
+                            } else if (item.startsWith('جزء')) {
+                                pages = 20;
+                            } else if (item.startsWith('حزب')) {
+                                pages = 10;
+                            }
+                        });
+                    } else {
+                        console.log('البيانات المحفوظة ليست مصفوفة.');
+                    }
+                } catch (e) {
+                    console.error('خطأ في تحليل البيانات من LocalStorage:', e);
+                }
+            } else {
+                console.log('لا توجد بيانات محفوظة في LocalStorage.');
+            }
+        }
+
+        function getCookie(name) {
+            console.log("getCookie called with name:", name);
+            console.log("typeof document.cookie:", typeof document.cookie);
+
+            if (document.cookie == null) {
+                console.log("document.cookie is null or undefined!");
+                return null;
+            }
+
+            let cookieString = String(document.cookie);
+            let value = `; ${cookieString}`;
+            if (typeof value === 'string') {
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) {
+                    console.log("Cookie found, returning value");
+                    return parts.pop().split(';').shift();
+                }
+            } else {
+                console.log("Value is NOT a string before split!");
+            }
+            console.log("Cookie not found or value is not a string, returning null");
+            return null;
+        }
+
+        async function saveSelectedPartsToFirestore(userId, tags) {
+            const selectedQuranPartsData = [];
+            for (const item of tags) {
+                let pages = 0;
+                if (surahsAR.some(surah => surah.name === item)) {
+                    const surah = surahsAR.find(surah => surah.name === item);
+                    pages = surah.pages;
+                } else if (item.startsWith('جزء')) {
+                    pages = 20;
+                } else if (item.startsWith('حزب')) {
+                    pages = 10;
+                }
+                selectedQuranPartsData.push({ name: item, pages: pages });
+            }
+
+            try {
+                await db.collection('users').doc(userId).set({
+                    selectedQuranParts: selectedQuranPartsData,
+                    "last حفظ": firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                showNotification('جاري تحويلك للصفحة الرئيسية');
+                setTimeout(() => {
+          window.location.href = 'task.html'; // إعادة توجيه إلى index.html بعد تأخير قصير
+          localStorage.setItem('editModeEnabled', 'false');
+        }, 2000); // تأخير لمدة 2 ثانية
+        
+            } catch (error) {
+                showNotification('خطأ في حفظ الأجزاء المختارة.');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', loadTagsFromLocalStorage);
+        window.addEventListener('DOMContentLoaded', analyzeLocalStorageData);
+
+function fetchUserDataAndDisplay() {
+    const userId = getCookie('userId');
+
+    if (userId) {
+        db.collection("users").doc(userId).get()
+            .then((docSnapshot) => {
+                if (docSnapshot.exists) {
+                    const userData = docSnapshot.data();
+                    const paertsResult = paerts(userData.selectedQuranParts, userData.reviewTime, 13);
+                    if (Array.isArray(paertsResult)) {
+                        console.log(paertsResult);
+                    } else {
+                        console.log(paertsResult);
+                    }
+                } else {
+                    console.log("لم يتم العثور على بيانات لهذا المستخدم");
+                }
+            })
+            .catch((error) => {
+                console.error("خطأ في جلب بيانات المستخدم:", error);
+            });
+    } else {
+        console.log("لم يتم العثور على معرف المستخدم في الكوكيز");
+    }
+}
+
+// استدعاء الدالة عند تحميل الصفحة
+window.addEventListener('DOMContentLoaded', fetchUserDataAndDisplay);
+
+        function checkUserAuthAndRedirect() {
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    // المستخدم مسجل الدخول
+                    const userId = user.uid;
+                    const docRef = db.collection('users').doc(userId);
+
+                    try {
+                        const docSnapshot = await docRef.get();
+                        const editeMode = localStorage.getItem('editModeEnabled');
+                        console.log("editModeEnabled value:", editeMode);
+                        console.log("docSnapshot.exists:", docSnapshot.exists);
+                        if (docSnapshot.exists) {
+                            console.log("docSnapshot.data().selectedQuranParts:", docSnapshot.data().selectedQuranParts);
+                            if (docSnapshot.data().selectedQuranParts) {
+                                console.log("docSnapshot.data().selectedQuranParts.length:", docSnapshot.data().selectedQuranParts.length);
+                            }
+                        }
+                        if(editeMode !== 'true' && docSnapshot.exists && docSnapshot.data().selectedQuranParts && docSnapshot.data().selectedQuranParts.length > 0) {
+                            window.location.href = 'task.html';
+                        } else {
+                            // المستخدم مسجل الدخول ولكن ليس لديه بيانات أو في وضع التعديل، يبقى في صفحة index.html
+                            console.log('المستخدم مسجل الدخول و لكن لم يختر أجزاء من قبل أو في وضع تعديل.');
+                        }
+                    } catch (error) {
+                        console.error("Error fetching user data:", error);
+                    }
+                } else {
+                    // المستخدم غير مسجل الدخول، يتم تحويله إلى login.html
+                    window.location.href = 'login.html';
+                }
+            });
+        }
+
+        // استدعاء الدالة عند تحميل الصفحة للتحقق من حالة المستخدم والتحويل
+        window.addEventListener('DOMContentLoaded', checkUserAuthAndRedirect);
+
+    </script>
+
+</body>
+</html>
+
+
