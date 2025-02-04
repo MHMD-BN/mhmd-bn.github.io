@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="logo.png" type="image/x-icon">
-    <title>ذكّرني</title>
+    <title>إدخال سور أو أجزاء القرآن</title>
     <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap');
 
@@ -157,6 +156,8 @@ body {
     <div id="notification-container" style="display: none; position: fixed; top: 20px; right: 20px; background-color: #4CAF50; color: white; padding: 15px; border-radius: 5px; z-index: 1000;">
         <span id="notification-message"></span>
     </div>
+
+    <button id="logout-button" style="position: fixed; top: 10px; left: 10px; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 8px; border: none; background-color: #f44336; color: white; font-weight: bold;">تسجيل الخروج</button>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -467,6 +468,20 @@ window.addEventListener('DOMContentLoaded', fetchUserDataAndDisplay);
         window.addEventListener('DOMContentLoaded', checkUserAuthAndRedirect);
 
     </script>
+
+<script>
+    document.getElementById('logout-button').addEventListener('click', function() {
+        firebase.auth().signOut().then(() => {
+            // تسجيل الخروج ناجح، يمكنك إعادة توجيه المستخدم إلى صفحة تسجيل الدخول أو أي صفحة أخرى
+            console.log('تم تسجيل الخروج بنجاح');
+            window.location.href = 'login.html'; // أو أي صفحة تسجيل دخول أخرى
+        }).catch((error) => {
+            // حدث خطأ أثناء تسجيل الخروج.
+            console.error('خطأ في تسجيل الخروج:', error);
+            alert('خطأ في تسجيل الخروج.');
+        });
+    });
+</script>
 
 </body>
 </html>
