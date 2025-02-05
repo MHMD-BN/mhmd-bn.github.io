@@ -1170,6 +1170,7 @@ z-index: 9000000;
       <button class="login" id="save-settings">حفظ</button>
       <button class="login" id="close-settings">إلغاء</button>
       <button class="login" id="default-settings" style="background-color: #3e4684;">اختر لي</button>
+      <button class="login" id="logout" style="background-color: #ff6b6b;">خروج</button>
     </div>
   </div>
 </div>
@@ -1562,6 +1563,20 @@ $(function () {
             localStorage.setItem('theme', 'light');
             themeToggle.removeClass('fa-sun').addClass('fa-moon');
         }
+    });
+
+    // Add this to the JavaScript section:
+    $('#logout').on('click', function(e) {
+        e.preventDefault();
+        // Clear login status
+        localStorage.removeItem('isLoggedIn');
+        // Reset current page
+        currentPage = 0;
+        localStorage.setItem('currentDay', currentPage);
+        // Show login screen
+        loginScreen.show();
+        // Hide settings modal
+        $('#settings-modal').fadeOut();
     });
 });
 </script>
