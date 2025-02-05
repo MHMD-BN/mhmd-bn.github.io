@@ -1238,7 +1238,8 @@ $(function () {
         const selectedSheikh = sheikhSelect.val();
         const selectedPages = parseInt(pagesInput.val());
         
-        if (selectedPages && selectedPages > 0 && selectedPages <= 604) {
+        // Improved validation
+        if (!isNaN(selectedPages) && selectedPages >= 1 && selectedPages <= 604) {
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('selectedSheikh', selectedSheikh);
             localStorage.setItem('pagesPerSession', selectedPages);
@@ -1256,6 +1257,8 @@ $(function () {
             playPages();
         } else {
             alert('الرجاء إدخال عدد صفحات صحيح بين 1 و 604');
+            pagesInput.val(''); // Clear the input field
+            pagesInput.focus(); // Focus back on the input field
         }
     });
 
@@ -1483,9 +1486,9 @@ $(function () {
     // Add these event listeners
     $('#edit-settings').on('click', function() {
         $('#settings-modal').fadeIn();
-        $('#edit-sheikh').val(window.currentSheikh);
-        $('#edit-pages').val(window.pagesPerSession);
-        $('#start-page').val(currentPage + 1);
+        $('#edit-sheikh').val(window.currentSheikh || 'Menshawi_32kbps');
+        $('#edit-pages').val(window.pagesPerSession || 10);
+        $('#start-page').val((currentPage + 1) || 1);
     });
 
     $('#close-settings').on('click', function() {
@@ -1494,31 +1497,42 @@ $(function () {
 
     $('#save-settings').on('click', function() {
         const newSheikh = $('#edit-sheikh').val();
-        const newPages = parseInt($('#edit-pages').val());
-        const startPage = parseInt($('#start-page').val());
+        const newPages = $('#edit-pages').val();
+        const startPage = $('#start-page').val();
 
-        if (newPages && newPages > 0 && newPages <= 604 && startPage && startPage > 0 && startPage <= 604) {
-            window.currentSheikh = newSheikh;
-            window.pagesPerSession = newPages;
+        // تحقق من أن القيم ليست فارغة وأنها أرقام
+        if (newSheikh && newPages && startPage) {
             
-            // Handle case when startPage is 604
-            currentPage = startPage === 604 ? 0 : startPage - 1;
-
+            window.currentSheikh = newSheikh;
+            window.pagesPerSession = parseInt(newPages);
+            currentPage = parseInt(startPage) - 1; // Adjust to zero-based index
+            
+            // Save to localStorage
             localStorage.setItem('selectedSheikh', newSheikh);
-            localStorage.setItem('pagesPerSession', newPages);
+            localStorage.setItem('pagesPerSession', window.pagesPerSession);
             localStorage.setItem('currentDay', currentPage);
 
+            // Update UI
             updateTrackName(newSheikh);
             pages = loadPages();
             
-            // Immediately update the surah name for the starting page
+            // Update surah name for the starting page
             getSurahName(startPage).then(surahName => {
                 $('#album-name').text(surahName);
             });
             
             $('#settings-modal').fadeOut();
+            
+            // If audio is playing, stop it and start with new settings
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+                i.attr("class", "fas fa-play");
+                playerTrack.removeClass("active");
+                albumArt.removeClass("active");
+            }
         } else {
-            alert('الرجاء إدخال قيم صحيحة (عدد الصفحات بين 1 و 604، ورقم الصفحة بين 1 و 604)');
+            alert('الرجاء إدخال قيم صحيحة:\n- عدد الصفحات بين 1 و 604\n- رقم الصفحة بين 1 و 604');
         }
     });
 
