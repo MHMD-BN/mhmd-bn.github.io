@@ -9,7 +9,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
     <link rel="shortcut icon" href="original.png" type="image/x-icon">
     <title>تَثْبِيتْ - تسجيل</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+    :root {
+        --primary-green: #1d4b38;
+        --secondary-green: #2d6a4f;
+        --accent-gold: #d4a017;
+        --light-beige: #f5f5dc;
+        --dark-brown: #3e2723;
+        --text-primary: #2d3748;
+        --text-secondary: #4a5568;
+        --bg-white: #ffffff;
+        --bg-light: #f7fafc;
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+
     body, input, button, h1, h2, p, span, a {
         direction: rtl;
         text-align: right;
@@ -110,10 +129,10 @@
     }
 
     .container {
-        background-color: #fff;
+        background: var(--bg-white);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: var(--shadow-lg);
         border-radius: 10px;
-        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
-                   0 10px 10px rgba(0,0,0,0.22);
         position: relative;
         overflow: hidden;
         width: 90%;
@@ -129,6 +148,8 @@
         transition: all 0.6s ease-in-out;
         width: 100%;
         direction: rtl;
+        background: var(--light-beige);
+        border-radius: var(--radius-lg);
     }
 
     .sign-in-container, .sign-up-container {
@@ -360,41 +381,10 @@
         text-decoration: underline; /* Make it more visible */
     }
 
-    /* إضافة أنماط التنبيهات */
-    .alert {
-        padding: 15px;
-  border-radius: 8px;
-  margin: 10px 0;
-  width: 100%;
-  text-align: center;
-  display: none;
-  animation: slideIn 0.3s ease-in-out;
-  position: absolute;
-  top: 10px;
-    }
-
-    .alert-error {
-        background-color: #ffe6e6;
-        color: #cc0000;
-        border: 1px solid #ffcccc;
-    }
-
-    .alert-success {
-        background-color: #e6ffe6;
-        color: #006600;
-        border: 1px solid #ccffcc;
-    }
-
-    @keyframes slideIn {
-        from {
-            transform: translateY(-20px);
-            opacity: 0;
-        }
-        to {
-            transform: translateY(0);
-            opacity: 1;
-        }
-    }
+    /* يمكن إزالة أنماط التنبيهات القديمة */
+    /* .alert {
+        display: none;
+    } */
     </style>
 </head>
 <body>
@@ -403,12 +393,6 @@
 		<form action="#" id="signInForm">
 			<h1>تسجيل الدخول</h1>
 			<div id="signInAlert" class="alert"></div>
-			<div class="social-container">
-				<a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-				<a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-				<a href="#" class="social"><i class="fab fa-apple"></i></a>
-			</div>
-			<span>أو أستخدم البريد الإلكتروني للتسجيل</span>
 			<input type="email" placeholder="البريد الإلكتروني" required />
 			<input type="password" placeholder="كلمة المرور" required />
 			<a href="#" id="forgotPassword">نسيت كلمة المرور؟</a>
@@ -420,12 +404,6 @@
 		<form action="#" id="signUpForm">
 			<h1>إنشاء حساب</h1>
 			<div id="signUpAlert" class="alert"></div>
-			<div class="social-container">
-				<a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-				<a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-				<a href="#" class="social"><i class="fab fa-apple"></i></a>
-			</div>
-			<span>أو استخدام البريد الإلكتروني للتسجيل</span>
 			<input type="text" placeholder="الأسم" required />
 			<input type="email" placeholder="البريد الإلكتروني" required />
 			<input type="password" placeholder="كلمة المرور" required />
@@ -521,6 +499,7 @@ goToSignIn.addEventListener('click', (e) => {
         GoogleAuthProvider,
         FacebookAuthProvider,
         OAuthProvider,
+        signOut,
         sendPasswordResetEmail
     } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 
@@ -557,17 +536,18 @@ goToSignIn.addEventListener('click', (e) => {
         return false;
     }
 
-    // إضافة دالة عرض الرسائل
-    function showAlert(elementId, message, type) {
-        const alert = document.getElementById(elementId);
-        alert.textContent = message;
-        alert.className = `alert alert-${type}`;
-        alert.style.display = 'block';
-        
-        // إخفاء التنبيه بعد 5 ثواني
-        setTimeout(() => {
-            alert.style.display = 'none';
-        }, 5000);
+    // تعديل دالة عرض الرسائل لاستخدام SweetAlert2
+    function showAlert(title, message, type) {
+        Swal.fire({
+            title: title,
+            text: message,
+            icon: type,
+            confirmButtonText: 'حسناً',
+            confirmButtonColor: '#1d4b38',
+            customClass: {
+                confirmButton: 'swal2-confirm'
+            }
+        });
     }
 
     // تحديث معالجة تسجيل الدخول
@@ -579,7 +559,7 @@ goToSignIn.addEventListener('click', (e) => {
 
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            showAlert('signInAlert', 'تم تسجيل الدخول بنجاح!', 'success');
+            showAlert('نجاح', 'تم تسجيل الدخول بنجاح!', 'success');
             setUserCookie(userCredential.user.uid);
             
             const hasPlan = await checkUserPlan(userCredential.user.uid);
@@ -602,7 +582,7 @@ goToSignIn.addEventListener('click', (e) => {
                     errorMessage = 'تم تجاوز عدد المحاولات المسموح بها. الرجاء المحاولة لاحقاً';
                     break;
             }
-            showAlert('signInAlert', errorMessage, 'error');
+            showAlert('خطأ', errorMessage, 'error');
         }
     });
 
@@ -616,7 +596,7 @@ goToSignIn.addEventListener('click', (e) => {
 
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            showAlert('signUpAlert', 'تم إنشاء الحساب بنجاح!', 'success');
+            showAlert('نجاح', 'تم إنشاء الحساب بنجاح!', 'success');
             const user = userCredential.user;
             setUserCookie(user.uid);
             await setDoc(doc(db, "users", user.uid), {
@@ -640,11 +620,11 @@ goToSignIn.addEventListener('click', (e) => {
                     errorMessage = 'البريد الإلكتروني غير صالح';
                     break;
             }
-            showAlert('signUpAlert', errorMessage, 'error');
+            showAlert('خطأ', errorMessage, 'error');
         }
     });
 
-    // Update Social Media Sign In Function
+    // تحديث تسجيل الدخول عبر وسائل التواصل الاجتماعي
     const socialSignIn = async (provider) => {
         try {
             const result = await signInWithPopup(auth, provider);
@@ -659,47 +639,31 @@ goToSignIn.addEventListener('click', (e) => {
             }, { merge: true });
             
             const hasPlan = await checkUserPlan(user.uid);
-            showAlert('signInAlert', 'تم تسجيل الدخول بنجاح!', 'success');
+            showAlert('نجاح', 'تم تسجيل الدخول بنجاح!', 'success');
             setTimeout(() => {
                 window.location.href = hasPlan ? 'index.html' : 'plans/plans.html';
             }, 1000);
         } catch (error) {
-            showAlert('signInAlert', "خطأ في تسجيل الدخول: " + error.message, 'error');
+            showAlert('خطأ', "خطأ في تسجيل الدخول: " + error.message, 'error');
         }
     };
 
-    // Add click listeners to social media buttons
-    document.querySelectorAll('.social-container a').forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            const platform = e.currentTarget.querySelector('i').classList[1];
-            
-            if (platform.includes('facebook')) {
-                socialSignIn(facebookProvider);
-            } else if (platform.includes('google')) {
-                socialSignIn(googleProvider);
-            } else if (platform.includes('apple')) {
-                socialSignIn(appleProvider);
-            }
-        });
-    });
-
-    // Password Reset Function
+    // تحديث وظيفة إعادة تعيين كلمة المرور
     const forgotPassword = document.getElementById('forgotPassword');
     forgotPassword.addEventListener('click', async (e) => {
         e.preventDefault();
         const email = signInForm.querySelector('input[type="email"]').value;
         
         if (!email) {
-            showAlert('signInAlert', "الرجاء إدخال البريد الإلكتروني أولاً", 'error');
+            showAlert('خطأ', "الرجاء إدخال البريد الإلكتروني أولاً", 'error');
             return;
         }
 
         try {
             await sendPasswordResetEmail(auth, email);
-            showAlert('signInAlert', "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني", 'success');
+            showAlert('نجاح', "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني", 'success');
         } catch (error) {
-            showAlert('signInAlert', "خطأ في إرسال رابط إعادة تعيين كلمة المرور: " + error.message, 'error');
+            showAlert('خطأ', "خطأ في إرسال رابط إعادة تعيين كلمة المرور: " + error.message, 'error');
         }
     });
 
@@ -714,6 +678,35 @@ goToSignIn.addEventListener('click', (e) => {
             // User is signed out
             console.log('User is signed out');
         }
+    });
+
+    function clearAllUserData() {
+        // حذف كوكيز userId بشكل محدد
+        document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        
+        // حذف جميع الكوكيز الأخرى
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i];
+            const eqPos = cookie.indexOf("=");
+            const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        }
+
+        // حذف جميع عناصر localStorage
+        localStorage.clear();
+        
+        // حذف بيانات sessionStorage
+        sessionStorage.clear();
+    }
+
+    document.getElementById('logout-button').addEventListener('click', function() {
+        signOut(auth).then(() => {
+            clearAllUserData();
+            window.location.href = 'login.html';
+        }).catch((error) => {
+            showAlert('خطأ', 'حدث خطأ أثناء تسجيل الخروج: ' + error.message, 'error');
+        });
     });
 </script>
 
