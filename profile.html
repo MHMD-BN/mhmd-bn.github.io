@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background:url("Quran/islamic.jpg");
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .profile-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 400px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .profile-container:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .profile-img-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #48a74c;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .profile-img:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .edit-overlay {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .edit-overlay:hover {
+            transform: scale(1.15) rotate(15deg);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .user-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .user-name:hover {
+            color: #4CAF50;
+        }
+
+        .edit-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .edit-icons i {
+            cursor: pointer;
+            color: #718096;
+            font-size: 1.2rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .edit-icons i:hover {
+            background: #4CAF50;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .rank {
+            font-weight: 600;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .rank:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-box {
+            background: rgba(248, 249, 250, 0.8);
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            text-align: left;
+            border-left: 4px solid #4CAF50;
+            transition: all 0.3s ease;
+        }
+
+        .info-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-box p {
+            margin: 0.75rem 0;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .info-box i {
+            cursor: pointer;
+            color: #4CAF50;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .info-box i:hover {
+            color: #45a049;
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .action-buttons {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .action-buttons button {
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            color: #4a5568;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-btn:hover {
+            background: linear-gradient(135deg, #e9ecef, #dee2e6);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+            color: white;
+            box-shadow: 0 2px 4px rgba(255, 0, 0, 0.1);
+        }
+
+        .delete-btn:hover {
+            background: linear-gradient(135deg, #cc0000, #990000);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 0, 0, 0.2);
+        }
+
+        /* Modal Styles */
+        .modal {
+            overflow-y: auto;
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        #avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .avatar-option {
+            cursor: pointer;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            border: 3px solid transparent;
+            aspect-ratio: 1/1;
+        }
+
+        @media (max-width: 600px) {
+            #avatar-grid {
+                grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+                gap: 10px;
+                padding: 10px;
+            }
+            
+            .avatar-option {
+                border-width: 2px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            #avatar-grid {
+                grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+                gap: 8px;
+            }
+        }
+
+        .avatar-option:hover {
+            transform: scale(1.1);
+            border-color: #4CAF50;
+        }
+
+        .avatar-option img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+    <!-- Add SweetAlert2 CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-img-container">
+            <img src="profile.png" alt="User Image" class="profile-img" id="profile-image" onclick="openAvatarModal()">
+        </div>
+        <h2 class="user-name">مستخدم جديد<i class="fas fa-user-edit" onclick="editName()" style="cursor: pointer; color: #4CAF50; margin-left: 5px;"></i></h2>
+        <p class="rank">Rank: <span></span></p>
+        <div class="info-box">
+            <p><strong>Plan:</strong> <span id="user-plan">لم يتم أختيار خطة بعد</span> <i class="fas fa-edit" onclick="editPlan()" style="cursor: pointer; color: #4CAF50; margin-left: 5px;"></i></p>
+            <p><strong>Review Time:</strong> <span id="review-time">لم يتم أختيار وقت المراجعة بعد</span> <i class="fas fa-edit" onclick="editReviewTime()" style="cursor: pointer; color: #4CAF50; margin-left: 5px;"></i></p>
+            <p><strong>Password:</strong> *********** <i class="fas fa-edit" onclick="changePassword()" style="cursor: pointer; color: #4CAF50; margin-left: 5px;"></i></p>
+        </div>
+        <div class="action-buttons">
+            <button class="logout-btn" onclick="logout()">Logout</button>
+            <button class="delete-btn" onclick="deleteAccount()">Delete Account</button>
+        </div>
+    </div>
+
+    <!-- Modal for Avatar Selection -->
+    <div id="avatarModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>اختر صورة شخصية</h3>
+            <div id="avatar-grid">
+                <!-- Add custom avatar input section -->
+                <div class="avatar-option custom-avatar">
+                    <div class="custom-avatar-container">
+                        <input type="text" id="custom-avatar-url" placeholder="أدخل رابط الصورة الخارجية" class="custom-avatar-input">
+                        <button onclick="useCustomAvatar()" class="custom-avatar-btn">استخدام الصورة</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { 
+            getAuth,
+            sendPasswordResetEmail,
+            EmailAuthProvider
+        } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+        import { 
+            getFirestore, 
+            doc, 
+            getDoc,
+            updateDoc,
+            setDoc,
+            deleteDoc
+        } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+        import { 
+            getStorage,
+            ref,
+            uploadBytes,
+            getDownloadURL,
+            listAll
+        } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-storage.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDQeWpg4bkUMyAir76OLl4-4d9cFExx37Q",
+            authDomain: "quran-11747.firebaseapp.com",
+            projectId: "quran-11747",
+            storageBucket: "quran-11747.appspot.com",
+            messagingSenderId: "484969787827",
+            appId: "1:484969787827:web:fd2b841c1a513a0816dbc6",
+            measurementId: "G-ZNC30E63VL"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // جعل الوظائف متاحة بشكل عام
+        window.auth = auth;
+        window.db = db;
+        window.doc = doc;
+        window.updateDoc = updateDoc;
+        window.deleteDoc = deleteDoc;
+
+        // تحديث دالة التحقق من المستخدم
+        async function loadUserProfile(userId) {
+            try {
+                // التحقق من حالة المصادقة
+                const user = window.auth.currentUser;
+                if (!user) {
+                    console.log('User not authenticated, waiting for auth state...');
+                    return new Promise((resolve) => {
+                        const unsubscribe = window.auth.onAuthStateChanged(async (user) => {
+                            if (user) {
+                                console.log('User authenticated:', user.uid);
+                                unsubscribe(); // إلغاء الاشتراك بعد المصادقة
+                                try {
+                                    await loadUserData(user.uid);
+                                    resolve();
+                                } catch (error) {
+                                    console.error('Error loading user data:', error);
+                                    alert('حدث خطأ في تحميل البيانات. الرجاء تحديث الصفحة.');
+                                }
+                            } else {
+                                console.log('No authenticated user, redirecting to login');
+                                unsubscribe(); // إلغاء الاشتراك قبل إعادة التوجيه
+                                window.location.href = 'Quran/loginAndsignup.html';
+                            }
+                        });
+                    });
+                } else {
+                    await loadUserData(user.uid);
+                }
+            } catch (error) {
+                console.error('Error in loadUserProfile:', error);
+                if (error.code === 'permission-denied') {
+                    alert('ليس لديك صلاحية للوصول إلى هذا الملف الشخصي.');
+                } else {
+                    alert('حدث خطأ في تحميل الملف الشخصي. الرجاء تحديث الصفحة.');
+                }
+            }
+        }
+
+        // تحسين دالة تحميل بيانات المستخدم
+        async function loadUserData(userId) {
+            try {
+                if (!userId) {
+                    throw new Error('User ID is required');
+                }
+
+                console.log('Loading data for user:', userId);
+                const userRef = window.doc(window.db, 'users', userId);
+                const userSnap = await getDoc(userRef);
+
+                if (userSnap.exists()) {
+                    console.log('User data found:', userSnap.data());
+                    const userData = userSnap.data();
+                    updateUIWithUserData(userData);
+                } else {
+                    console.log('Creating new user profile');
+                    const newUserData = {
+                        name: 'مستخدم جديد',
+                        plan: 'الخطة الأساسية',
+                        reviewTime: '7:00 صباحاً - 8:00 صباحاً',
+                        rank: '5000',
+                        createdAt: new Date().toISOString()
+                    };
+                    await setDoc(userRef, newUserData); // استخدام setDoc بدلاً من updateDoc
+                    updateUIWithUserData(newUserData);
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                throw new Error('فشل في تحميل بيانات المستخدم: ' + error.message);
+            }
+        }
+
+        // تحسين دالة تحديث واجهة المستخدم
+        function updateUIWithUserData(userData) {
+            try {
+                // تحديث اسم المستخدم
+                const userNameElement = document.querySelector('.user-name');
+                if (userNameElement) {
+                    userNameElement.textContent = userData.name ? `${userData.name} ` : 'مستخدم جديد ';
+                    userNameElement.innerHTML += '<i class="fas fa-user-edit" onclick="editName()" style="cursor: pointer; color: #4CAF50; margin-right: 5px;"></i>';
+                }
+
+                // تحديث الخطة
+                const planElement = document.getElementById('user-plan');
+                if (planElement && userData.selectedPlan) {
+                    planElement.textContent = `حفظ ${userData.selectedPlan} صفحة يوميا`;
+                }
+
+                // تحديث وقت المراجعة
+                const reviewTimeElement = document.getElementById('review-time');
+                if (reviewTimeElement && userData.reviewTime) {
+                    reviewTimeElement.textContent = userData.reviewTime;
+                }
+
+                // تحديث الصورة الشخصية
+                const profileImg = document.getElementById('profile-image');
+                if (profileImg && userData.profileImage) {
+                    profileImg.src = userData.profileImage;
+                    profileImg.onerror = () => {
+                        profileImg.src = 'default-profile.png';
+                    };
+                }
+
+                // تحديث الرتبة
+                const rankElement = document.querySelector('.rank');
+                if (rankElement && userData.currentDay !== undefined) {
+                    let calculatedRank;
+                    if (userData.currentDay <= 5) {
+                        calculatedRank = 200 - userData.currentDay;
+                    } else if (userData.currentDay <= 10) {
+                        calculatedRank = 100 - userData.currentDay;
+                    } else {
+                        calculatedRank = 50 - userData.currentDay;
+                    }
+                    rankElement.textContent = `Rank: ${calculatedRank}`;
+                } else if (rankElement && userData.rank) {
+                    rankElement.textContent = `Rank: ${userData.rank}`;
+                }
+            } catch (error) {
+                console.error('Error updating UI:', error);
+                throw new Error('فشل في تحديث واجهة المستخدم: ' + error.message);
+            }
+        }
+
+        // تحديث مستمع تحميل الصفحة
+        window.addEventListener('DOMContentLoaded', () => {
+            window.auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    console.log('User is signed in:', user.uid);
+                    try {
+                        await loadUserProfile(user.uid);
+                    } catch (error) {
+                        console.error('Error loading profile:', error);
+                        alert('حدث خطأ في تحميل الملف الشخصي. الرجاء المحاولة مرة أخرى.');
+                    }
+                } else {
+                    console.log('No user signed in, redirecting to login');
+                    window.location.href = 'Quran/loginAndsignup.html';
+                }
+            });
+        });
+
+        // Move changePassword to window object
+        window.changePassword = async function() {
+            const user = window.auth.currentUser;
+            if (user) {
+                try {
+                    await sendPasswordResetEmail(window.auth, user.email);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'تم إرسال البريد الإلكتروني!',
+                        text: 'الرجاء التحقق من صندوق الوارد الخاص بك.',
+                        confirmButtonText: 'حسناً'
+                    });
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'خطأ',
+                        text: 'حدث خطأ أثناء إرسال البريد: ' + error.message,
+                        confirmButtonText: 'حسناً'
+                    });
+                }
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'لم يتم تسجيل الدخول',
+                    text: 'الرجاء تسجيل الدخول أولاً.',
+                    confirmButtonText: 'حسناً'
+                });
+            }
+        }
+
+        // Update edit functions to save changes to Firestore
+        window.editPlan = async function() {
+            location.href = "Quran/plans/plans.html";
+        }
+
+        window.editReviewTime = async function() {
+            const newTime = prompt('Enter your new review time:', document.getElementById('review-time').textContent);
+            if (newTime) {
+                const userRef = window.doc(window.db, 'users', window.auth.currentUser.uid);
+                await window.updateDoc(userRef, {
+                    reviewTime: newTime
+                });
+                document.getElementById('review-time').textContent = newTime;
+            }
+        }
+
+        // إضافة وظيفة حذف الحساب
+        window.deleteAccount = async function() {
+            const user = window.auth.currentUser;
+            if (!user) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'لم يتم تسجيل الدخول',
+                    text: 'الرجاء تسجيل الدخول أولاً.',
+                    confirmButtonText: 'حسناً'
+                });
+                return;
+            }
+
+            const { isConfirmed } = await Swal.fire({
+                icon: 'warning',
+                title: 'هل أنت متأكد؟',
+                text: 'هل أنت متأكد أنك تريد حذف حسابك بشكل دائم؟ لن تتمكن من استعادته.',
+                showCancelButton: true,
+                confirmButtonText: 'نعم، احذف',
+                cancelButtonText: 'إلغاء'
+            });
+
+            if (!isConfirmed) return;
+
+            try {
+                const { value: password } = await Swal.fire({
+                    title: 'تأكيد الحذف',
+                    input: 'password',
+                    inputLabel: 'أدخل كلمة المرور لتأكيد الحذف:',
+                    inputPlaceholder: 'كلمة المرور',
+                    showCancelButton: true,
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'يجب إدخال كلمة المرور!';
+                        }
+                    }
+                });
+
+                if (!password) return;
+
+                const { signInWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js");
+                await signInWithEmailAndPassword(window.auth, user.email, password);
+
+                const userRef = doc(db, 'users', user.uid);
+                await deleteDoc(userRef);
+                await user.delete();
+                
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'تم الحذف!',
+                    text: 'تم حذف حسابك بنجاح.',
+                    confirmButtonText: 'حسناً'
+                });
+                window.location.href = 'Quran/loginAndsignup.html';
+
+            } catch (error) {
+                let errorMessage = 'حدث خطأ أثناء محاولة حذف الحساب: ' + error.message;
+                if (error.code === 'auth/wrong-password') {
+                    errorMessage = 'كلمة المرور غير صحيحة. يرجى إدخال كلمة المرور الصحيحة.';
+                } else if (error.code === 'auth/requires-recent-login') {
+                    errorMessage = 'يرجى تسجيل الخروج وإعادة تسجيل الدخول ثم المحاولة مرة أخرى.';
+                }
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطأ',
+                    text: errorMessage,
+                    confirmButtonText: 'حسناً'
+                });
+            }
+        }
+    </script>
+
+    <script>
+        async function editName() {
+            const user = window.auth.currentUser; // استخدام auth من النافذة
+            if (user) {
+                const newName = prompt('Enter your new name:', document.querySelector('.user-name').textContent);
+                if (newName) {
+                    try {
+                        const userRef = window.doc(window.db, 'users', user.uid); // استخدام doc من النافذة
+                        await window.updateDoc(userRef, { // استخدام updateDoc من النافذة
+                            name: newName
+                        });
+                        document.querySelector('.user-name').textContent = newName;
+                        alert('تم تحديث الاسم بنجاح!');
+                    } catch (error) {
+                        console.error('Error updating name:', error);
+                        alert('حدث خطأ أثناء تحديث الاسم. الرجاء المحاولة مرة أخرى.');
+                    }
+                }
+            } else {
+                alert('لم يتم تسجيل الدخول. الرجاء تسجيل الدخول أولاً.');
+            }
+        }
+
+        // إضافة وظيفة تسجيل الخروج
+        window.logout = async function() {
+            try {
+                const { isConfirmed } = await Swal.fire({
+                    icon: 'question',
+                    title: 'تسجيل الخروج',
+                    text: 'هل أنت متأكد أنك تريد تسجيل الخروج؟',
+                    showCancelButton: true,
+                    confirmButtonText: 'نعم، سجل الخروج',
+                    cancelButtonText: 'إلغاء'
+                });
+
+                if (isConfirmed) {
+                    // حذف الكوكيز
+                    document.cookie = 'userId=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                    document.cookie = 'userToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                    document.cookie = 'userSession=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                    
+
+        // حذف جميع عناصر localStorage
+        localStorage.clear();
+        
+        // حذف بيانات sessionStorage
+        sessionStorage.clear();
+                    
+                    // تسجيل الخروج من Firebase
+                    await window.auth.signOut();
+                    
+                    // إعادة التوجيه إلى صفحة تسجيل الدخول
+                    window.location.href = 'Quran/loginAndsignup.html';
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطأ',
+                    text: 'حدث خطأ أثناء تسجيل الخروج. الرجاء المحاولة مرة أخرى.',
+                    confirmButtonText: 'حسناً'
+                });
+            }
+        }
+
+        // دالة لفتح النافذة المنبثقة
+        function openAvatarModal() {
+            const modal = document.getElementById('avatarModal');
+            const avatarGrid = document.getElementById('avatar-grid');
+            modal.style.display = 'block';
+
+            // تحميل الصور من مجلد الـ avatars
+            loadAvatars();
+        }
+
+        // دالة لتحميل الصور المتاحة
+        async function loadAvatars() {
+            const avatarGrid = document.getElementById('avatar-grid');
+            avatarGrid.innerHTML = ''; // مسح المحتوى السابق
+
+            try {
+                // تحميل الصور من المجلد المحلي
+                const localAvatars = ['boy.png', 'cat.png', 'gamer.png' , "astronaut.png" , "hacker.png", "man.png", "man(1).png" , "man(2).png", "panda.png", "user.png"]; // أضف أسماء ملفات الصور هنا
+                for (const avatar of localAvatars) {
+                    const div = document.createElement('div');
+                    div.className = 'avatar-option';
+
+                    const img = document.createElement('img');
+                    img.src = `avatars/${avatar}`;
+                    img.alt = `Local avatar`;
+                    img.onclick = () => selectAvatar(img.src);
+                    div.appendChild(img);
+                    avatarGrid.appendChild(div);
+                }
+
+                // تحميل الصور من الروابط الخارجية
+                const categories = ['upstream', 'notion'];
+                for (const category of categories) {
+                    const baseUrl = `https://cdn.jsdelivr.net/gh/alohe/avatars/png/${category}_`;
+                    for (let i = 1; i <= 15; i++) {
+                        const avatarUrl = `${baseUrl}${i}.png`;
+                        const div = document.createElement('div');
+                        div.className = 'avatar-option';
+
+                        const img = document.createElement('img');
+                        img.src = avatarUrl;
+                        img.alt = `Avatar option from ${category}`;
+                        img.onclick = () => selectAvatar(avatarUrl);
+                        div.appendChild(img);
+                        avatarGrid.appendChild(div);
+                    }
+                }
+
+            } catch (error) {
+                console.error('Error loading avatars:', error);
+                alert('حدث خطأ في تحميل الصور المتاحة');
+            }
+        }
+
+        // دالة لاختيار الصورة
+        async function selectAvatar(imageUrl) {
+            try {
+                const user = auth.currentUser;
+                if (!user) {
+                    throw new Error('User not authenticated');
+                }
+
+                // تحديث الصورة في Firestore
+                const userRef = doc(db, 'users', user.uid);
+                await updateDoc(userRef, {
+                    profileImage: imageUrl
+                });
+
+                // تحديث الصورة في واجهة المستخدم
+                document.getElementById('profile-image').src = imageUrl;
+                
+                // إغلاق النافذة المنبثقة
+                document.getElementById('avatarModal').style.display = 'none';
+                
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'تم التحديث!',
+                    text: 'تم تحديث الصورة الشخصية بنجاح',
+                    confirmButtonText: 'حسناً'
+                });
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطأ',
+                    text: 'حدث خطأ في تحديث الصورة الشخصية',
+                    confirmButtonText: 'حسناً'
+                });
+            }
+        }
+
+        // إغلاق النافذة المنبثقة عند النقر على زر الإغلاق
+        document.querySelector('.close-modal').onclick = function() {
+            document.getElementById('avatarModal').style.display = 'none';
+        }
+
+        // إغلاق النافذة المنبثقة عند النقر خارجها
+        window.onclick = function(event) {
+            const modal = document.getElementById('avatarModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
