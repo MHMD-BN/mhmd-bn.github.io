@@ -556,13 +556,42 @@
         }
 
         window.editReviewTime = async function() {
-            const newTime = prompt('Enter your new review time:', document.getElementById('review-time').textContent);
-            if (newTime) {
-                const userRef = window.doc(window.db, 'users', window.auth.currentUser.uid);
-                await window.updateDoc(userRef, {
-                    reviewTime: newTime
+            try {
+                const { value: newTime } = await Swal.fire({
+                    title: 'تغيير وقت المراجعة',
+                    input: 'text',
+                    inputLabel: ' أدخل وقت المراجعة الجديد بالدقيقة',
+                    inputValue: document.getElementById('review-time').textContent,
+                    showCancelButton: true,
+                    confirmButtonText: 'تحديث',
+                    cancelButtonText: 'إلغاء',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'يجب إدخال وقت المراجعة!';
+                        }
+                    }
                 });
-                document.getElementById('review-time').textContent = newTime;
+
+                if (newTime) {
+                    const userRef = window.doc(window.db, 'users', window.auth.currentUser.uid);
+                    await window.updateDoc(userRef, {
+                        reviewTime: newTime
+                    });
+                    document.getElementById('review-time').textContent = newTime;
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'تم التحديث!',
+                        text: 'تم تحديث وقت المراجعة بنجاح',
+                        confirmButtonText: 'حسناً'
+                    });
+                }
+            } catch (error) {
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'خطأ',
+                    text: 'حدث خطأ أثناء تحديث وقت المراجعة. الرجاء المحاولة مرة أخرى.',
+                    confirmButtonText: 'حسناً'
+                });
             }
         }
 
@@ -641,24 +670,53 @@
 
     <script>
         async function editName() {
-            const user = window.auth.currentUser; // استخدام auth من النافذة
+            const user = window.auth.currentUser;
             if (user) {
-                const newName = prompt('Enter your new name:', document.querySelector('.user-name').textContent);
-                if (newName) {
-                    try {
-                        const userRef = window.doc(window.db, 'users', user.uid); // استخدام doc من النافذة
-                        await window.updateDoc(userRef, { // استخدام updateDoc من النافذة
+                try {
+                    const { value: newName } = await Swal.fire({
+                        title: 'تغيير الاسم',
+                        input: 'text',
+                        inputLabel: 'أدخل اسمك الجديد',
+                        inputValue: document.querySelector('.user-name').textContent,
+                        showCancelButton: true,
+                        confirmButtonText: 'تحديث',
+                        cancelButtonText: 'إلغاء',
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return 'يجب إدخال اسم!';
+                            }
+                        }
+                    });
+
+                    if (newName) {
+                        const userRef = window.doc(window.db, 'users', user.uid);
+                        await window.updateDoc(userRef, {
                             name: newName
                         });
                         document.querySelector('.user-name').textContent = newName;
-                        alert('تم تحديث الاسم بنجاح!');
-                    } catch (error) {
-                        console.error('Error updating name:', error);
-                        alert('حدث خطأ أثناء تحديث الاسم. الرجاء المحاولة مرة أخرى.');
+                        await Swal.fire({
+                            icon: 'success',
+                            title: 'تم التحديث!',
+                            text: 'تم تحديث الاسم بنجاح',
+                            confirmButtonText: 'حسناً'
+                        });
                     }
+                } catch (error) {
+                    console.error('Error updating name:', error);
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'خطأ',
+                        text: 'حدث خطأ أثناء تحديث الاسم. الرجاء المحاولة مرة أخرى.',
+                        confirmButtonText: 'حسناً'
+                    });
                 }
             } else {
-                alert('لم يتم تسجيل الدخول. الرجاء تسجيل الدخول أولاً.');
+                await Swal.fire({
+                    icon: 'warning',
+                    title: 'تنبيه',
+                    text: 'لم يتم تسجيل الدخول. الرجاء تسجيل الدخول أولاً.',
+                    confirmButtonText: 'حسناً'
+                });
             }
         }
 
@@ -713,10 +771,10 @@
             loadAvatars();
         }
 
-        // دالة لتحميل الصور المتاحة
+        // تحديث دالة loadAvatars لاستخدام SweetAlert2 للأخطاء
         async function loadAvatars() {
             const avatarGrid = document.getElementById('avatar-grid');
-            avatarGrid.innerHTML = ''; // مسح المحتوى السابق
+            avatarGrid.innerHTML = '';
 
             try {
                 // تحميل الصور من المجلد المحلي
@@ -753,7 +811,12 @@
 
             } catch (error) {
                 console.error('Error loading avatars:', error);
-                alert('حدث خطأ في تحميل الصور المتاحة');
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'خطأ',
+                    text: 'حدث خطأ في تحميل الصور المتاحة',
+                    confirmButtonText: 'حسناً'
+                });
             }
         }
 
