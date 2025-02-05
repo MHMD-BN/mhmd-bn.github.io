@@ -837,7 +837,6 @@ z-index: 9000000;
   background: rgba(255, 255, 255, 0.98);
   border-radius: 20px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  background: url("background.jpg");
 }
 
 @media (max-width: 768px) {
@@ -1238,8 +1237,7 @@ $(function () {
         const selectedSheikh = sheikhSelect.val();
         const selectedPages = parseInt(pagesInput.val());
         
-        // Improved validation
-        if (!isNaN(selectedPages) && selectedPages >= 1 && selectedPages <= 604) {
+        if (selectedPages) {
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('selectedSheikh', selectedSheikh);
             localStorage.setItem('pagesPerSession', selectedPages);
@@ -1257,8 +1255,6 @@ $(function () {
             playPages();
         } else {
             alert('الرجاء إدخال عدد صفحات صحيح بين 1 و 604');
-            pagesInput.val(''); // Clear the input field
-            pagesInput.focus(); // Focus back on the input field
         }
     });
 
@@ -1486,61 +1482,60 @@ $(function () {
     // Add these event listeners
     $('#edit-settings').on('click', function() {
         $('#settings-modal').fadeIn();
-        $('#edit-sheikh').val(window.currentSheikh || 'Menshawi_32kbps');
-        $('#edit-pages').val(window.pagesPerSession || 10);
-        $('#start-page').val((currentPage + 1) || 1);
+        $('#edit-sheikh').val(window.currentSheikh);
+        $('#edit-pages').val(window.pagesPerSession);
+        $('#start-page').val(currentPage + 1);
     });
 
-    $('#close-settings').on('click', function() {
+    $('#close-settings').on('click', function(e) {
+        e.preventDefault();
         $('#settings-modal').fadeOut();
     });
 
-    $('#save-settings').on('click', function() {
+    $('#save-settings').on('click', function(e) {
+        e.preventDefault();
+        
         const newSheikh = $('#edit-sheikh').val();
         const newPages = $('#edit-pages').val();
         const startPage = $('#start-page').val();
 
-        // تحقق من أن القيم ليست فارغة وأنها أرقام
-        if (newSheikh && newPages && startPage) {
-            
-            window.currentSheikh = newSheikh;
-            window.pagesPerSession = parseInt(newPages);
-            currentPage = parseInt(startPage) - 1; // Adjust to zero-based index
-            
-            // Save to localStorage
-            localStorage.setItem('selectedSheikh', newSheikh);
-            localStorage.setItem('pagesPerSession', window.pagesPerSession);
-            localStorage.setItem('currentDay', currentPage);
-
-            // Update UI
-            updateTrackName(newSheikh);
-            pages = loadPages();
-            
-            // Update surah name for the starting page
-            getSurahName(startPage).then(surahName => {
-                $('#album-name').text(surahName);
-            });
-            
-            $('#settings-modal').fadeOut();
-            
-            // If audio is playing, stop it and start with new settings
-            if (isPlaying) {
-                audio.pause();
-                isPlaying = false;
-                i.attr("class", "fas fa-play");
-                playerTrack.removeClass("active");
-                albumArt.removeClass("active");
-            }
-        } else {
-            alert('الرجاء إدخال قيم صحيحة:\n- عدد الصفحات بين 1 و 604\n- رقم الصفحة بين 1 و 604');
+        // تحقق من وجود القيم أولاً
+        if (!newPages || !startPage) {
+            return; // الخروج بصمت إذا كانت القيم فارغة
         }
+
+        // تحويل القيم إلى أرقام
+        const pagesNum = parseInt(newPages);
+        const startPageNum = parseInt(startPage);
+
+
+        // تحديث الإعدادات
+        window.currentSheikh = newSheikh;
+        window.pagesPerSession = pagesNum;
+        currentPage = startPageNum === 604 ? 0 : startPageNum - 1;
+
+        // حفظ في localStorage
+        localStorage.setItem('selectedSheikh', newSheikh);
+        localStorage.setItem('pagesPerSession', pagesNum);
+        localStorage.setItem('currentDay', currentPage);
+
+        // تحديث واجهة المستخدم
+        updateTrackName(newSheikh);
+        pages = loadPages();
+        
+        getSurahName(startPageNum).then(surahName => {
+            $('#album-name').text(surahName);
+        });
+        
+        $('#settings-modal').fadeOut();
     });
 
-    // Add this event listener for default settings button
-    $('#default-settings').on('click', function() {
+    // تعديل معالج حدث زر "اختر لي"
+    $('#default-settings').on('click', function(e) {
+        e.preventDefault();
         $('#edit-sheikh').val('Menshawi_32kbps');
-        $('#edit-pages').val(10);
-        $('#start-page').val(1);
+        $('#edit-pages').val('10');
+        $('#start-page').val('1');
     });
 
     // Add this event listener for default settings button in login screen
