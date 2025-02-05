@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>السماع الممنهج للقرآن الكريم</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <style>
 
 * {
@@ -1175,6 +1176,7 @@ z-index: 9000000;
   </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(function () {
     // Add these variables at the top
@@ -1255,7 +1257,13 @@ $(function () {
             pages = loadPages();
             playPages();
         } else {
-            alert('الرجاء إدخال عدد صفحات صحيح بين 1 و 604');
+            Swal.fire({
+                icon: 'error',
+                title: 'خطأ في الإدخال',
+                text: 'الرجاء إدخال عدد صفحات صحيح بين 1 و 604',
+                confirmButtonText: 'حسناً'
+            });
+            localStorage.setItem('isLoggedIn', 'false');
         }
     });
 
@@ -1368,7 +1376,7 @@ $(function () {
                     i.attr("class", "fas fa-play");
                     playerTrack.removeClass("active");
                     albumArt.removeClass("active");
-                    $('#completion-message').fadeIn();
+                    showCompletionMessage();
                     updateStreak();
                 }
             };
@@ -1500,9 +1508,16 @@ $(function () {
         const newPages = $('#edit-pages').val();
         const startPage = $('#start-page').val();
 
-        // تحقق من وجود القيم أولاً
         if (!newPages || !startPage) {
-            return; // الخروج بصمت إذا كانت القيم فارغة
+            Swal.fire({
+                icon: 'error',
+                title: 'خطأ في الإدخال',
+                text: 'الرجاء التأكد من ملء جميع الحقول بشكل صحيح',
+                confirmButtonText: 'حسناً'
+            });
+            localStorage.setItem('isLoggedIn', 'false');
+            loginScreen.show();
+            return;
         }
 
         // تحويل القيم إلى أرقام
@@ -1568,16 +1583,47 @@ $(function () {
     // Add this to the JavaScript section:
     $('#logout').on('click', function(e) {
         e.preventDefault();
-        // Clear login status
-        localStorage.removeItem('isLoggedIn');
-        // Reset current page
-        currentPage = 0;
-        localStorage.setItem('currentDay', currentPage);
-        // Show login screen
-        loginScreen.show();
-        // Hide settings modal
-        $('#settings-modal').fadeOut();
+        Swal.fire({
+            title: 'هل أنت متأكد من تسجيل الخروج؟',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'نعم، سجل خروج',
+            cancelButtonText: 'إلغاء'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Clear login status
+                localStorage.removeItem('isLoggedIn');
+                // Reset current page
+                currentPage = 0;
+                localStorage.setItem('currentDay', currentPage);
+                // Show login screen
+                loginScreen.show();
+                // Hide settings modal
+                $('#settings-modal').fadeOut();
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'تم تسجيل الخروج بنجاح',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
     });
+
+    // Update the completion message
+    function showCompletionMessage() {
+        Swal.fire({
+            title: 'مبروك! 🎉',
+            text: 'لقد أتممت ورد اليوم بنجاح',
+            icon: 'success',
+            confirmButtonText: 'حسناً'
+        }).then(() => {
+            // Any additional actions after closing the message
+        });
+    }
 });
 </script>
 </html>
