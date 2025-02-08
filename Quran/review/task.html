@@ -573,7 +573,7 @@ window.addEventListener('DOMContentLoaded', function() {
     const lastCompletionTime = localStorage.getItem('lastChecklistCompletionTime');
     if (lastCompletionTime) {
         const timeDiff = new Date().getTime() - parseInt(lastCompletionTime, 10);
-        const twentyFourHours = 24 * 60 * 60 * 1000;
+        const twentyFourHours = 12 * 60 * 60 * 1000;
         if (timeDiff < twentyFourHours) {
             document.getElementById('checklist').style.display = 'none';
             document.getElementById('countdown-timer').style.display = 'block';
