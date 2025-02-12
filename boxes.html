@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تخصيص Checkboxes</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            direction: rtl;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+        .checkbox-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .checkbox-container label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 60px;
+            height: 60px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            position: relative;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            border-radius: 60px;
+        }
+        .checkbox-container label:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        .checkbox-container input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 100%;
+            width: 100%;
+            z-index: 1;
+        }
+        .checkbox-container input[type="checkbox"]:checked + span {
+            content: "✓";
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: white;
+            background-color: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: checkAnimation 0.2s ease-in-out;
+        }
+        .controls {
+            display: none;
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 999;
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            width: 280px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .controls.visible {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .settings-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .settings-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+        
+        .controls label {
+            color: #34495e;
+            margin-bottom: 10px;
+            display: block;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+        
+        .controls input, .controls select {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+        }
+        
+        .controls input:focus, .controls select:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52,152,219,0.1);
+            outline: none;
+        }
+        
+        #applySettings {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        #applySettings:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(46,204,113,0.3);
+        }
+        
+        #resetSettings {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        #resetSettings:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(231,76,60,0.3);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes checkAnimation {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .edit-button {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            transition: all 0.2s ease;
+        }
+
+        .edit-button:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        h2 {
+color: #2c3e50;
+  margin-top: 60px;
+  font-size: 2em;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+        /* Improved Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            animation: modalFadeIn 0.3s ease;
+            position: relative;
+        }
+
+        .modal-header {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .modal-body {
+            margin-bottom: 25px;
+        }
+
+        .modal-footer {
+            text-align: right;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .modal-input {
+            width: 90%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .modal-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52,152,219,0.1);
+            outline: none;
+        }
+
+        .modal-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .modal-button.primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .modal-button.primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .modal-button.secondary {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .modal-button.secondary:hover {
+            background-color: #e0e0e0;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #888;
+            transition: all 0.2s ease;
+        }
+
+        .close-modal:hover {
+            color: #333;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <button class="settings-button" id="settingsButton">الإعدادات ⚙️</button>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <h2 id="mainTitle">تخصيص Checkboxes</h2>
+        <button class="edit-button" onclick="editTitle()" style="position: static;">✎</button>
+    </div>
+    <div class="controls" id="controls">
+        <label for="numCheckboxes">عدد Checkboxes:</label>
+        <input type="number" id="numCheckboxes" min="1" max="50" value="10">
+        
+        <label for="colorPattern">اختر نمط التلوين:</label>
+        <select id="colorPattern">
+            <option value="1">لون واحد لجميع الخانات</option>
+            <option value="2">لونين بالتناوب (خانة بلون)</option>
+            <option value="3">لونين بالتناوب (خانتين بلون)</option>
+            <option value="4">نمط إكتساب أو التخلص من العادات</option>
+        </select>
+        
+        <label for="color1">اختر اللون الأول:</label>
+        <input type="color" id="color1" value="#3498db">
+        
+        <label for="color2">اختر اللون الثاني:</label>
+        <input type="color" id="color2" value="#2ecc71">
+        
+        <button id="applySettings">تطبيق التغييرات</button>
+        <button id="resetSettings" style="background-color: #e74c3c; margin-top: 10px;">إعادة الضبط</button>
+    </div>
+    <div class="checkbox-container" id="checkboxContainer"></div>
+    
+    <!-- Add modal structure -->
+    <div class="modal" id="customModal">
+        <div class="modal-content">
+            <div class="modal-header" id="modalHeader"></div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer" id="modalFooter"></div>
+        </div>
+    </div>
+    
+    <script>
+        const checkboxContainer = document.getElementById("checkboxContainer");
+        const numCheckboxesInput = document.getElementById("numCheckboxes");
+        const colorPatternSelect = document.getElementById("colorPattern");
+        const applySettingsButton = document.getElementById("applySettings");
+        const color1Input = document.getElementById("color1");
+        const color2Input = document.getElementById("color2");
+        const resetSettingsButton = document.getElementById("resetSettings");
+        
+        let color1 = "#3498db"; // Default color 1
+        let color2 = "#2ecc71"; // Default color 2
+        
+        // Load saved settings from localStorage
+        function loadSettings() {
+            const savedSettings = JSON.parse(localStorage.getItem('flashCardSettings')) || {};
+            numCheckboxesInput.value = savedSettings.numCheckboxes || 10;
+            colorPatternSelect.value = savedSettings.colorPattern || "1";
+            color1Input.value = savedSettings.colors?.color1 || "#3498db";
+            color2Input.value = savedSettings.colors?.color2 || "#2ecc71";
+            
+            // Load saved colors
+            if (savedSettings.colors) {
+                color1 = savedSettings.colors.color1 || color1;
+                color2 = savedSettings.colors.color2 || color2;
+            }
+        }
+        
+        // Save settings to localStorage
+        function saveSettings() {
+            const settings = {
+                numCheckboxes: numCheckboxesInput.value,
+                colorPattern: colorPatternSelect.value,
+                colors: {
+                    color1: color1Input.value,
+                    color2: color2Input.value
+                }
+            };
+            localStorage.setItem('flashCardSettings', JSON.stringify(settings));
+        }
+        
+        // Load saved checkboxes state from localStorage
+        function loadCheckboxesState() {
+            const savedState = JSON.parse(localStorage.getItem('checkboxesState')) || [];
+            const checkboxes = document.querySelectorAll('.checkbox-container input[type="checkbox"]');
+            
+            checkboxes.forEach((checkbox, index) => {
+                if (savedState[index]) {
+                    checkbox.checked = true;
+                }
+            });
+        }
+        
+        // Save checkboxes state to localStorage
+        function saveCheckboxesState() {
+            const checkboxes = document.querySelectorAll('.checkbox-container input[type="checkbox"]');
+            const state = Array.from(checkboxes).map(checkbox => checkbox.checked);
+            localStorage.setItem('checkboxesState', JSON.stringify(state));
+        }
+        
+        function renderCheckboxes() {
+            const numCheckboxes = parseInt(numCheckboxesInput.value);
+            const colorPattern = colorPatternSelect.value;
+            
+            // Update colors from inputs
+            color1 = color1Input.value;
+            color2 = colorPattern !== "1" ? color2Input.value : color1;
+            
+            checkboxContainer.innerHTML = "";
+            for (let i = 0; i < numCheckboxes; i++) {
+                const label = document.createElement("label");
+                
+                // Apply color pattern
+                switch (colorPattern) {
+                    case "1":
+                        label.style.backgroundColor = color1;
+                        break;
+                    case "2":
+                        label.style.backgroundColor = (i % 2 === 0) ? color1 : color2;
+                        break;
+                    case "3":
+                        label.style.backgroundColor = (Math.floor(i / 2) % 2 === 0) ? color1 : color2;
+                        break;
+                    case "4":
+                        label.style.backgroundColor = getHabitBreakingColor(i, color1, color2);
+                        break;
+                }
+                
+                // Load saved color if exists
+                const savedNotes = JSON.parse(localStorage.getItem('boxNotes')) || {};
+                if (savedNotes[i] && savedNotes[i].color) {
+                    label.style.backgroundColor = savedNotes[i].color;
+                }
+                
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                label.appendChild(checkbox);
+                label.appendChild(document.createElement("span"));
+                
+                // Add edit button
+                const editButton = document.createElement("button");
+                editButton.className = "edit-button";
+                editButton.innerHTML = "✎";
+                editButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    editBox(label, i);
+                });
+                
+                // Add click event to show details
+                label.addEventListener('click', () => {
+                    showBoxDetails(label, i);
+                });
+                
+                label.appendChild(editButton);
+                checkboxContainer.appendChild(label);
+            }
+            
+            saveSettings();
+            setTimeout(loadCheckboxesState, 50);
+        }
+        
+        function getHabitBreakingColor(index, color1, color2) {
+            let cycle = [];
+            let color2Count = 1; // يبدأ بعدد 1 لعدد الأيام باللون الثاني
+            
+            while (cycle.length < index + 1) {
+                cycle.push(color1); // يوم 1 لون أول
+                for (let i = 0; i < color2Count; i++) {
+                    cycle.push(color2); // يومان ثم تزداد في كل دورة
+                }
+                cycle.push(color1); // يوم سماح
+                for (let i = 0; i < color2Count + 1; i++) {
+                    cycle.push(color2); // أيام المنع تزيد تدريجياً
+                }
+                color2Count++; // زيادة الأيام باللون الثاني
+            }
+            return cycle[index] || color1;
+        }
+        
+        function changeSingleColor(label) {
+            const newColor = prompt("اختر لونًا جديدًا لهذه الخانة:", label.style.backgroundColor);
+            if (newColor) {
+                label.style.backgroundColor = newColor;
+                saveSettings();
+            }
+        }
+        
+        // Update showModal function to include close button
+        function showModal(title, message, type = 'alert', defaultValue = '') {
+            const modal = document.getElementById('customModal');
+            const header = document.getElementById('modalHeader');
+            const body = document.getElementById('modalBody');
+            const footer = document.getElementById('modalFooter');
+
+            // Set modal content
+            header.innerHTML = `
+                ${title}
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            `;
+            body.innerHTML = '';
+
+            if (type === 'prompt') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'modal-input';
+                input.value = defaultValue;
+                input.placeholder = 'اكتب هنا...';
+                body.appendChild(input);
+            } else {
+                const messageDiv = document.createElement('div');
+                messageDiv.textContent = message;
+                body.appendChild(messageDiv);
+            }
+
+            // Set modal buttons
+            footer.innerHTML = '';
+            if (type === 'prompt') {
+                const okButton = document.createElement('button');
+                okButton.className = 'modal-button primary';
+                okButton.textContent = 'حفظ';
+                okButton.onclick = () => {
+                    modal.style.display = 'none';
+                    if (typeof modal.resolve === 'function') {
+                        modal.resolve(document.querySelector('.modal-input').value);
+                    }
+                };
+
+                const cancelButton = document.createElement('button');
+                cancelButton.className = 'modal-button secondary';
+                cancelButton.textContent = 'إلغاء';
+                cancelButton.onclick = () => {
+                    modal.style.display = 'none';
+                    if (typeof modal.reject === 'function') {
+                        modal.reject();
+                    }
+                };
+
+                footer.appendChild(okButton);
+                footer.appendChild(cancelButton);
+            } else {
+                const okButton = document.createElement('button');
+                okButton.className = 'modal-button primary';
+                okButton.textContent = 'موافق';
+                okButton.onclick = () => {
+                    modal.style.display = 'none';
+                };
+                footer.appendChild(okButton);
+            }
+
+            // Show modal
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('customModal');
+            modal.style.display = 'none';
+        }
+
+        // Custom Alert
+        function customAlert(message) {
+            showModal('تنبيه', message, 'alert');
+        }
+
+        // Custom Prompt
+        function customPrompt(message, defaultValue = '') {
+            return new Promise((resolve, reject) => {
+                const modal = document.getElementById('customModal');
+                modal.resolve = resolve;
+                modal.reject = reject;
+                showModal('أكتب ملاحظاتك ', message, 'prompt', defaultValue);
+            });
+        }
+
+        // Update functions to use custom modals
+        function editBox(label, index) {
+            const savedNotes = JSON.parse(localStorage.getItem('boxNotes')) || {};
+            const currentNote = savedNotes[index] ? savedNotes[index].note : "";
+            const currentColor = label.style.backgroundColor;
+
+            customPrompt("أدخل ملاحظتك لهذه الخانة:", currentNote).then((newNote) => {
+                if (newNote !== null) {
+                    customPrompt("اختر لونًا جديدًا لهذه الخانة:", currentColor).then((newColor) => {
+                        if (newColor) {
+                            // Save notes and color
+                            savedNotes[index] = {
+                                note: newNote,
+                                color: newColor
+                            };
+                            localStorage.setItem('boxNotes', JSON.stringify(savedNotes));
+                            
+                            // Apply changes
+                            label.style.backgroundColor = newColor;
+                        }
+                    });
+                }
+            });
+        }
+
+        function showBoxDetails(label, index) {
+            const savedNotes = JSON.parse(localStorage.getItem('boxNotes')) || {};
+            const boxDetails = savedNotes[index];
+            
+            if (boxDetails) {
+                customAlert(`ملاحظات الخانة:\n${boxDetails.note}`);
+            }
+        }
+        
+        // Add event listener to save state when checkboxes change
+        checkboxContainer.addEventListener('change', (e) => {
+            if (e.target.type === 'checkbox') {
+                saveCheckboxesState();
+            }
+        });
+        
+        // Load settings when page loads
+        window.addEventListener('load', () => {
+            // Load saved title if exists
+            const savedTitle = localStorage.getItem('pageTitle');
+            if (savedTitle) {
+                document.getElementById('mainTitle').textContent = savedTitle;
+            }
+            loadSettings();
+            renderCheckboxes();
+        });
+        
+        // Reset all settings
+        function resetSettings() {
+            if (confirm("هل أنت متأكد أنك تريد إعادة الضبط؟ سيتم حذف جميع الإعدادات والملاحظات!")) {
+                localStorage.clear();
+                loadSettings();
+                renderCheckboxes();
+            }
+        }
+        
+        // Event listeners
+        resetSettingsButton.addEventListener("click", resetSettings);
+        applySettingsButton.addEventListener("click", renderCheckboxes);
+        
+        const settingsButton = document.getElementById("settingsButton");
+        const controls = document.getElementById("controls");
+        
+        settingsButton.addEventListener("click", () => {
+            controls.classList.toggle("visible");
+        });
+
+        // Update the editTitle function
+        function editTitle() {
+            const titleElement = document.getElementById('mainTitle');
+            const currentTitle = titleElement.textContent;
+            
+            customPrompt("عدل العنوان:", currentTitle).then(newTitle => {
+                if (newTitle) {
+                    titleElement.textContent = newTitle;
+                    // Save the new title to localStorage
+                    localStorage.setItem('pageTitle', newTitle);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
