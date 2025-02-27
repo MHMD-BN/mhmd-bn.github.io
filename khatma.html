@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#27ae60" />
+  <title>خطة ختم القرآن والأحاديث</title>
+  <!-- FontAwesome & Google Fonts -->
+  <link rel="stylesheet" href="fontawesome-free-6.7.2-web/css/all.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    /* Reset & Base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    :root {
+      --primary-color: #2c3e50;
+      --accent-color: #27ae60;
+      --light-accent: #2ecc71;
+      --background-color: #f7f9fc;
+      --card-bg: #ffffff;
+      --completed-bg: #d4edda;
+      --border-color: #e1e4e8;
+      --text-color: #2c3e50;
+      --transition-speed: 0.3s;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    body.dark-mode {
+      --primary-color: #e0e0e0;
+      --accent-color: #1abc9c;
+      --light-accent: #16a085;
+      --background-color: #121212;
+      --card-bg: #1e1e1e;
+      --completed-bg: #002d24;
+      --border-color: #333;
+      --text-color: #e0e0e0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+      background: var(--background-color);
+    }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--background-color);
+      color: var(--text-color);
+      direction: rtl;
+      line-height: 1.6;
+      padding: 20px;
+      transition: background var(--transition-speed) ease, color var(--transition-speed) ease;
+    }
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: background var(--transition-speed) ease;
+      border: 1px solid var(--border-color);
+    }
+    header {
+      padding: 40px 20px;
+      background: linear-gradient(135deg, var(--accent-color), var(--light-accent));
+      box-shadow: var(--shadow);
+      color: #fff;
+      text-align: center;
+      position: relative;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    header h1 {
+      font-size: 2.4em;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    header p {
+      font-size: 1.1em;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .dark-mode-toggle {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #fff;
+      font-size: 0.9em;
+      transition: background var(--transition-speed) ease, all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+    .dark-mode-toggle:hover {
+      background: rgba(255,255,255,0.2);
+      transform: scale(1.1);
+    }
+    main {
+      padding: 25px;
+    }
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    form label {
+      font-weight: 600;
+    }
+    input[type=number] {
+      padding: 10px;
+      font-size: 16px;
+      width: 80px;
+      border: 2px solid var(--primary-color);
+      border-radius: 4px;
+      outline: none;
+      transition: border var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    }
+    input[type=number]:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 5px var(--accent-color);
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: var(--accent-color);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color var(--transition-speed) ease, transform 0.2s ease;
+    }
+    button:hover {
+      background-color: #1e8449;
+      transform: scale(1.02);
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .progress-container {
+      position: relative;
+      padding: 25px;
+      margin: 50px 0;
+    }
+    .progress-bar {
+      position: relative;
+      height: 14px;
+      background: rgba(46, 204, 113, 0.1);
+      border-radius: 10px;
+      margin: 30px 0;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .progress {
+      height: 100%;
+      border-radius: 10px;
+      background: linear-gradient(90deg, var(--accent-color), var(--light-accent));
+      position: relative;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .progress-percent {
+      position: absolute;
+      top: -44px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent-color);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      color: #fff;
+      min-width: 80px;
+      text-align: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: float 3s ease-in-out infinite;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .progress-percent:before {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid var(--accent-color);
+    }
+    .progress-percent:after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 10px;
+      height: 10px;
+      background: var(--accent-color);
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    .progress-percent .icon {
+      font-size: 16px;
+      animation: bounce 1.5s infinite;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    @keyframes float {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-5px); }
+    }
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .progress-bar:hover .progress-percent {
+      animation: glow 1.5s ease-in-out infinite;
+      transform: translateX(-50%) scale(1.03);
+    }
+    .plan {
+      margin-top: 20px;
+    }
+    .day-plan {
+      margin-bottom: 20px;
+      border-radius: 12px;
+      padding: 25px;
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid var(--border-color);
+      animation: fadeIn 0.5s ease;
+      cursor: pointer;
+    }
+    .day-plan:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .day-plan.completed {
+      background: var(--completed-bg);
+      border-color: var(--accent-color);
+      opacity: 0.95;
+    }
+    .day-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .reading-info {
+      font-weight: 600;
+      font-size: 1.1em;
+    }
+    .toggle-details {
+      background: none;
+      border: none;
+      color: var(--accent-color);
+      cursor: pointer;
+      font-size: 0.9em;
+      padding: 4px 8px;
+      transition: color var(--transition-speed) ease;
+    }
+    .toggle-details:hover {
+      color: var(--light-accent);
+    }
+    .details-container {
+      transition: max-height 0.4s ease, opacity 0.4s ease;
+      overflow: hidden;
+    }
+    .details-hidden {
+      max-height: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .details-visible {
+      opacity: 1;
+      margin-top: 10px;
+    }
+    .extra-tasks,
+    .day-note {
+      margin-top: 10px;
+    }
+    .extra-tasks input[type=text] {
+      padding: 8px;
+      font-size: 14px;
+      width: 60%;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      outline: none;
+      transition: border var(--transition-speed) ease;
+    }
+    .extra-tasks input[type=text]:focus {
+      border-color: var(--accent-color);
+    }
+    .extra-tasks button {
+      padding: 8px 12px;
+      font-size: 14px;
+      background-color: var(--accent-color);
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color var(--transition-speed) ease;
+    }
+    .extra-tasks button:hover {
+      background-color: #1e8449;
+    }
+    .mark-all-tasks {
+      width: 100%;
+      margin-top: 15px;
+      padding: 12px;
+      font-weight: 500;
+    }
+    .task-list {
+      list-style: none;
+      padding-right: 0;
+      margin-top: 8px;
+    }
+    
+    .task-list li {
+      padding: 12px;
+      border-radius: 8px;
+      margin: 8px 0;
+      background: rgba(0,0,0,0.03);
+      transition: all 0.2s ease;
+      position: relative;
+      display: flex;
+  justify-content: space-between;
+    }
+    .task-list li:last-child {
+      border-bottom: none;
+    }
+    .task-list li:hover {
+      background: rgba(46, 204, 113, 0.1);
+      transform: translateX(5px);
+    }
+    .delete-task {
+      background: none;
+      border: none;
+      color: #e74c3c;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .day-note label {
+      font-size: 0.95em;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .day-note textarea {
+      width: 100%;
+      min-height: 60px;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      resize: vertical;
+      outline: none;
+      transition: all 0.2s ease;
+      background: rgba(0,0,0,0.03);
+      color: var(--text-color)
+    }
+    .day-note textarea:focus {
+      border-color: var(--accent-color);
+      background: var(--card-bg);
+      box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+    }
+    #resetPlan {
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+      background-color: #e74c3c;
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    #resetPlan:hover {
+      background-color: #c0392b;
+    }
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9em;
+      color: var(--primary-color);
+    }
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent-color);
+      color: #fff;
+      padding: 15px 25px;
+      border-radius: 8px;
+      opacity: 0;
+      transform: translateX(100%);
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      min-width: 300px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideIn 0.5s ease;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 768px) {
+      header {
+        padding: 30px 15px;
+      }
+      
+      header h1 {
+        font-size: 2em;
+      }
+      
+      .day-plan {
+        padding: 20px;
+      }
+      
+      .complete-btn {
+        padding: 10px 20px;
+      }
+    }
+    .task-checkbox {
+      accent-color: var(--accent-color);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+    .task-text {
+      flex-grow: 1;
+      transition: color 0.2s ease;
+    }
+    .task-completed .task-text {
+      color: #888;
+    }
+    .dhikr-task {
+      background: rgba(46, 204, 113, 0.1);
+      border-radius: 4px;
+      padding: 6px;
+      margin: 4px 0;
+    }
+    .dhikr-task .task-text {
+      color: var(--accent-color);
+      font-weight: 500;
+    }
+    .complete-btn {
+      position: relative;
+      overflow: hidden;
+    }
+    .complete-btn:after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300%;
+      height: 300%;
+      background: radial-gradient(circle, rgba(255,255,255,0.3) 10%, transparent 10.01%);
+      transform: translate(-50%, -50%) scale(0);
+      transition: transform 0.5s ease;
+      pointer-events: none;
+    }
+    .complete-btn:active:after {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0;
+      transition: 0s;
+    }
+    /* تحسينات جديدة للأيقونات SVG */
+    .icon {
+      font-size: 1.1em;
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .icon-hover:hover {
+      transform: scale(1.1);
+      color: var(--light-accent);
+    }
+
+    .icon path {
+      fill: currentColor;
+      transition: fill 0.2s ease;
+    }
+
+    /* تحسينات جديدة للواجهة */
+    .dark-mode-toggle .icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    body.dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .container {
+      background: #1e1e1e;
+    }
+
+    body.dark-mode .task-list li {
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* إضافة أنماط لعنصر حالة المنافسة */
+    .competition-status {
+      margin-top: 25px;
+      padding: 15px;
+      border: 1px solid rgba(46, 204, 113, 0.2);
+    }
+
+    .competition-status .icon {
+      color: var(--accent-color);
+      font-size: 1.2em;
+      animation: bounce 1.5s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+
+    .toast {
+      transition: all 0.3s ease;
+      animation: slideIn 0.5s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    /* Add these new styles */
+    .toast.success {
+      background: var(--accent-color);
+      border-left: 4px solid #2ecc71;
+    }
+
+    .toast.info {
+      background: #3498db;
+      border-left: 4px solid #2980b9;
+    }
+
+    .toast.warning {
+      background: #f1c40f;
+      border-left: 4px solid #f39c12;
+    }
+
+    .toast.error {
+      background: #e74c3c;
+      border-left: 4px solid #c0392b;
+    }
+
+    .toast i.icon {
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <button class="dark-mode-toggle" id="darkModeToggle" aria-label="تبديل الوضع الليلي">
+        <i class="fas fa-moon icon icon-hover"></i>
+      </button>
+      <h1>خطة ختم القرآن والأحاديث</h1>
+      <p>حدد عدد الختمات وعدد الأحاديث شهريًا لتحصل على خطة يومية مع مهام وملاحظات افتراضية</p>
+    </header>
+    <main>
+      <form id="planForm" aria-label="نموذج إنشاء الخطة">
+        <label for="khatmat">عدد الختمات:</label>
+        <input type="number" id="khatmat" min="1" value="1" required>
+        <label for="hadithCount">عدد الأحاديث:</label>
+        <input type="number" id="hadithCount" min="0" value="0">
+        <button type="submit">
+          <i class="fa-solid fa-play"></i> إنشاء الخطة
+        </button>
+      </form>
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress" id="progress"></div>
+        </div>
+        <p id="progressText">0 من 30 يوم</p>
+        <!-- إضافة عنصر جديد لعرض حالة المنافسة -->
+        <div class="competition-status" id="competitionStatus">
+          <i class="fas fa-trophy icon"></i>
+          <span>أنت متقدم على <span id="aheadOf">0</span> من <span id="totalCompetitors">0</span> شخص</span>
+          <small style="display: block; font-size: 0.8em; margin-top: 4px; color: rgba(255, 255, 255, 0.8);">(نسبة المنافسين تقاس بمتوسط تقدمهم)</small>
+        </div>
+      </div>
+      <section class="plan" id="plan" aria-label="الخطة اليومية"></section>
+      <button id="resetPlan" style="display: none;">
+        <i class="fas fa-sync-alt icon icon-hover"></i>
+        إعادة تعيين الخطة
+      </button>
+    </main>
+    <footer>
+      &copy; 2025 - تطبيق ختم القرآن والأحاديث
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="alert"></div>
+<script src="fontawesome-free-6.7.2-web/js/all.js"></script>
+  <script>
+    const planForm = document.getElementById('planForm');
+    const planContainer = document.getElementById('plan');
+    const progressBar = document.getElementById('progress');
+    const progressText = document.getElementById('progressText');
+    const resetBtn = document.getElementById('resetPlan');
+    const toast = document.getElementById('toast');
+    const darkModeToggle = document.getElementById('darkModeToggle');
+
+    const totalPages = 604; // عدد صفحات القرآن لكل ختمة
+    const daysInMonth = 30;
+    let dailyPages = 0;
+    let completedDays = 0;
+    let totalHadiths = 0;
+    let hadithsPerDay = 0;
+
+    const adhkar = [
+  "لا إله إلا الله",
+  "سبحان الله وبحمده، سبحان الله العظيم",
+  "الله أكبر",
+  "الحمد لله",
+  "اللهم صلِّ وسلِّم وزِد وبارِك على سيدنا محمد",
+  "أستغفر الله العظيم",
+  "لا حول ولا قوة إلا بالله",
+  "سبحان الله والحمد لله ولا إله إلا الله والله أكبر",
+  "اللهم إنك عفوٌ تحب العفو فاعفُ عني",
+  "لا إله إلا أنت سبحانك إني كنت من الظالمين"
+];
+    // استرجاع تفضيل الوضع الليلي من التخزين المحلي
+    if(localStorage.getItem('darkMode') === 'true'){
+      document.body.classList.add('dark-mode');
+      darkModeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    }
+
+    let competitors = Math.floor(Math.random() * 25) + 5; // عدد المنافسين
+    let userProgress = 0; // تقدم المستخدم (0-100)
+    let competitorsProgress = 50; // تقدم المنافسين (0-100)
+
+    function updateCompetitionStatus() {
+      const aheadOf = Math.max(0, userProgress - competitorsProgress);
+      const behindBy = Math.max(0, competitorsProgress - userProgress);
+      
+      let statusText = '';
+      if (userProgress > competitorsProgress) {
+        statusText = `أنت متقدم بنسبة ${aheadOf.toFixed(1)}% عن متوسط تقدم المنافسين`;
+      } else if (userProgress < competitorsProgress) {
+        statusText = `أنت متأخر بنسبة ${behindBy.toFixed(1)}% عن متوسط تقدم المنافسين`;
+      } else {
+        statusText = 'أنت في نفس مستوى متوسط تقدم المنافسين';
+      }
+      
+      document.getElementById('competitionStatus').innerHTML = `
+        <i class="fas fa-trophy icon"></i>
+        <span>${statusText}</span>
+      `;
+    }
+
+    function showMotivationMessage() {
+      const messages = [
+        `أنت متقدم بنسبة ${(userProgress - competitorsProgress).toFixed(1)}%!`,
+        `حافظ على تقدمك بإنجاز المهام اليومية.`,
+        `للتقدم بشكل أسرع، أنجز مهامك قبل الآخرين!`,
+        `هناك ${competitors} يتنافسون معك واصل التقدم عليهم`,
+        `كل خطوة تقربك من هدفك، استمر!`,
+        `أنت على الطريق الصحيح، لا تتوقف!`,
+        `تذكر: الجنة تحتاج إلى جهد، وأنت قادر على ذلك!`,
+        `كل يوم تنجزه هو خطوة نحو النجاح الأكبر`,
+        `التنافس في الخير يرفع من همتك، استمر!`,
+        `كل مهمة تكملها هي نجاح جديد لك`,
+        `أنت تخلق عادة جديدة من التميز، أحسنت!`,
+        `التقدم المستمر هو سر النجاح، أنت على الطريق الصحيح`
+      ];
+      console.log(competitors);
+      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      showToast(randomMessage);
+    }
+
+    function updateCompetitorsProgress() {
+      // زيادة تقدم المنافسين بنسبة 1% كل 6 ساعات
+      competitorsProgress = Math.min(100, competitorsProgress + 1);
+      updateCompetitionStatus();
+      savePlan();
+    }
+
+    // تحديث تقدم المنافسين كل 6 ساعات
+    setInterval(updateCompetitorsProgress, 6 * 60 * 60 * 1000);
+
+    function showCompetitionMessage() {
+        const messages = [
+            `هناك ${competitors} شخصًا قاموا بإنشاء خطط مشابهة لخطتك!`,
+            `أنت الآن في منافسة مع ${competitors} شخصًا يهدفون لنفس هدفك!`,
+            `${competitors} من الأشخاص بدأوا رحلتهم معك، فلنكن الأفضل!`,
+            `أنت لست وحدك! ${competitors} شخصًا يشاركونك نفس الهدف!`,
+            `تذكر: ${competitors} شخصًا يتنافسون معك على الخير، فلنسبقهم!`,
+            `أنت الآن جزء من مجتمع ${competitors} شخصًا يتنافسون في الخير!`,
+            `لقد بدأت رحلة مع ${competitors} شخصًا، فلنكن الأكثر إصرارًا!`,
+            `${competitors} شخصًا بدأوا معك، فلنكن الأكثر إنجازًا!`,
+            `أنت الآن في سباق مع ${competitors} شخصًا نحو الخير، فلنكن الأسرع!`,
+            `تذكر: ${competitors} شخصًا يتنافسون معك، فلنكن الأكثر تفانيًا!`
+        ];
+        
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+        const tips = [
+            "يمكنك التفوق عليهم بإكمال مهامك اليومية بانتظام.",
+            "حافظ على تقدمك اليومي لتكون في المقدمة.",
+            "إكمال المهام مبكرًا يجعلك متقدمًا عليهم.",
+            "المراجعة اليومية تساعدك على البقاء في الصدارة.",
+            "تتبع تقدمك باستمرار لضمان تفوقك.",
+            "استخدم الملاحظات اليومية لتحسين أدائك.",
+            "إكمال المهام الإضافية يعزز تقدمك.",
+            "الالتزام بالخطة اليومية هو مفتاح تفوقك.",
+            "استخدم التحفيز الذاتي للبقاء في المقدمة.",
+            "تذكر أن كل يوم مكتمل يقربك من التفوق عليهم."
+        ];
+        
+        const randomTip = tips[Math.floor(Math.random() * tips.length)];
+        
+        showToast(`${randomMessage} ${randomTip}`);
+    }
+
+    // Modify the toast function
+    function showToast(message, type = 'info', duration = 4000) {
+        const toast = document.getElementById('toast');
+        const icons = {
+            success: 'fa-check-circle',
+            info: 'fa-info-circle',
+            warning: 'fa-exclamation-circle',
+            error: 'fa-times-circle'
+        };
+        
+        // Clear any existing timeout
+        if(toast.timeoutId) clearTimeout(toast.timeoutId);
+        
+        // Set new content
+        toast.innerHTML = `
+            <i class="fas ${icons[type]} icon"></i> 
+            <span>${message}</span>
+        `;
+        
+        // Add classes and show
+        toast.classList.add('show', type);
+        toast.style.animation = 'slideIn 0.5s ease';
+        
+        // Set timeout to hide
+        toast.timeoutId = setTimeout(() => {
+            toast.style.animation = 'slideOut 0.5s ease';
+            setTimeout(() => {
+                toast.classList.remove('show', type);
+            }, 500); // Wait for animation to complete
+        }, duration);
+    }
+
+    // Modify the message sequence function
+    function showPlanCreationMessages() {
+        // Show initial confirmation
+        showToast('تم إنشاء الخطة بنجاح', 'success', 5000);
+        
+        // Show competition message after 2 seconds
+        setTimeout(() => {
+            showCompetitionMessage('info', 6000);
+        }, 2000);
+        
+        // Show motivation message after 5 seconds
+        setTimeout(() => {
+            showMotivationMessage('info', 6000);
+        }, 5000);
+        
+        // Show first tip after 8 seconds
+        setTimeout(() => {
+            showRandomTip('info', 6000);
+        }, 8000);
+    }
+
+    // Update related functions to support duration
+    function showCompetitionMessage(type = 'info', duration = 5000) {
+        const messages = [
+            `هناك ${competitors} شخصًا قاموا بإنشاء خطط مشابهة لخطتك!`,
+            `أنت الآن في منافسة مع ${competitors} شخصًا يهدفون لنفس هدفك!`,
+            `${competitors} من الأشخاص بدأوا رحلتهم معك، فلنكن الأفضل!`,
+            `أنت لست وحدك! ${competitors} شخصًا يشاركونك نفس الهدف!`,
+            `تذكر: ${competitors} شخصًا يتنافسون معك على الخير، فلنسبقهم!`,
+            `أنت الآن جزء من مجتمع ${competitors} شخصًا يتنافسون في الخير!`,
+            `لقد بدأت رحلة مع ${competitors} شخصًا، فلنكن الأكثر إصرارًا!`,
+            `${competitors} شخصًا بدأوا معك، فلنكن الأكثر إنجازًا!`,
+            `أنت الآن في سباق مع ${competitors} شخصًا نحو الخير، فلنكن الأسرع!`,
+            `تذكر: ${competitors} شخصًا يتنافسون معك، فلنكن الأكثر تفانيًا!`
+        ];
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+        showToast(randomMessage, type, duration);
+    }
+
+    function showMotivationMessage(type = 'info', duration = 5000) {
+        const messages = [
+            `أنت متقدم بنسبة ${(userProgress - competitorsProgress).toFixed(1)}%!`,
+            `حافظ على تقدمك بإنجاز المهام اليومية.`,
+            `للتقدم بشكل أسرع، أنجز مهامك قبل الآخرين!`,
+            `هناك ${competitors} يتنافسون معك واصل التقدم عليهم`,
+            `كل خطوة تقربك من هدفك، استمر!`,
+            `أنت على الطريق الصحيح، لا تتوقف!`,
+            `تذكر: الجنة تحتاج إلى جهد، وأنت قادر على ذلك!`,
+            `كل يوم تنجزه هو خطوة نحو النجاح الأكبر`,
+            `التنافس في الخير يرفع من همتك، استمر!`,
+            `كل مهمة تكملها هي نجاح جديد لك`,
+            `أنت تخلق عادة جديدة من التميز، أحسنت!`,
+            `التقدم المستمر هو سر النجاح، أنت على الطريق الصحيح`
+        ];
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+        showToast(randomMessage, type, duration);
+    }
+
+    function showRandomTip(type = 'info', duration = 5000) {
+        const tips = [
+            "يمكنك إضافة مهام إضافية لزيادة إنتاجيتك.",
+            "استخدم الملاحظات اليومية لتتبع تقدمك.",
+            "حاول إكمال المهام في الصباح الباكر.",
+            "المراجعة اليومية تساعد على تثبيت الحفظ.",
+            "استخدم خاصية التنبيهات لتذكيرك بالمهام.",
+            "شارك تقدمك مع الأصدقاء للتحفيز.",
+            "حافظ على جدول منتظم لإنجاز المهام.",
+            "استخدم خاصية الوضع الليلي للراحة البصرية.",
+            "قم بتحديد أهداف يومية صغيرة.",
+            "احتفل بإنجازاتك الصغيرة لتحفيز نفسك."
+        ];
+        const randomTip = tips[Math.floor(Math.random() * tips.length)];
+        showToast(`نصيحة اليوم: ${randomTip}`, type, duration);
+    }
+
+    planForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const khatmat = parseInt(document.getElementById('khatmat').value);
+      const hadithCount = parseInt(document.getElementById('hadithCount').value) || 0;
+      if(khatmat < 1) return;
+      dailyPages = (totalPages * khatmat) / daysInMonth;
+      totalHadiths = hadithCount;
+      if(totalHadiths > 0) {
+        hadithsPerDay = totalHadiths / daysInMonth;
+      }
+      generatePlan();
+      resetBtn.style.display = 'block';
+      competitors = Math.floor(Math.random() * 25) + 5;
+      showPlanCreationMessages(); // Use the new message sequence
+    });
+
+    darkModeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      darkModeToggle.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+      localStorage.setItem('darkMode', isDark);
+    });
+
+    function getSegments(day, dailyPages) {
+      const segments = [];
+      const globalStart = Math.ceil((day - 1) * dailyPages) + 1;
+      const globalEnd = Math.ceil(day * dailyPages);
+      let current = globalStart;
+      while (current <= globalEnd) {
+        const currentCycle = Math.ceil(current / totalPages);
+        const cycleEndGlobal = currentCycle * totalPages;
+        const segmentEndGlobal = Math.min(cycleEndGlobal, globalEnd);
+        const localStart = current - (currentCycle - 1) * totalPages;
+        const localEnd = segmentEndGlobal - (currentCycle - 1) * totalPages;
+        segments.push({ cycle: currentCycle, localStart, localEnd });
+        current = segmentEndGlobal + 1;
+      }
+      return segments;
+    }
+
+    // إضافة المهام مع إمكانية التعديل
+    function addTaskToList(taskList, taskData) {
+      const task = typeof taskData === 'object' ? taskData : { text: taskData, completed: false };
+      const li = document.createElement('li');
+      
+      // إضافة كلاس خاص لمهام الأذكار
+      if(task.text.includes("إتمام الأذكار")) {
+        li.classList.add('dhikr-task');
+      }
+
+      const taskContainer = document.createElement('div');
+      taskContainer.style.display = 'flex';
+      taskContainer.style.alignItems = 'center';
+      taskContainer.style.gap = '12px';
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.className = 'task-checkbox';
+      checkbox.checked = task.completed;
+      checkbox.addEventListener('change', () => {
+        task.completed = checkbox.checked;
+        li.classList.toggle('task-completed', checkbox.checked);
+        savePlan();
+      });
+
+      const textSpan = document.createElement('span');
+      textSpan.className = 'task-text';
+      textSpan.textContent = task.text;
+      if (task.completed) li.classList.add('task-completed');
+
+      taskContainer.appendChild(checkbox);
+      taskContainer.appendChild(textSpan);
+      li.appendChild(taskContainer);
+
+      const delBtn = document.createElement('button');
+      delBtn.innerHTML = '<i class="fas fa-trash-alt icon icon-hover"></i>';
+      delBtn.className = 'delete-task';
+      delBtn.addEventListener('click', () => {
+        taskList.removeChild(li);
+        savePlan();
+      });
+      li.appendChild(delBtn);
+
+      taskList.appendChild(li);
+    }
+
+    function createDayPlan(day, segments, dayData = {}) {
+      let tasks = dayData.tasks;
+      if(!tasks || tasks.length === 0) {
+        tasks = [];
+        if(totalHadiths > 0) {
+          const hadithStart = Math.ceil((day - 1) * hadithsPerDay) + 1;
+          const hadithEnd = Math.ceil(day * hadithsPerDay);
+          tasks.push({ text: "حفظ الأحاديث: من الحديث " + hadithStart + " إلى " + hadithEnd, completed: false });
+        }
+        tasks.push({ text: "حفظ لوح اليوم", completed: false });
+        tasks.push({ text: "سماع محاضرة", completed: false });
+        tasks.push({ text: "إتمام المراجعة", completed: false });
+        tasks.push({ text: "إتمام صلاة الفجر", completed: false });
+        tasks.push({ text: "إتمام صلاة الظهر", completed: false });
+        tasks.push({ text: "إتمام صلاة العصر", completed: false });
+        tasks.push({ text: "إتمام صلاة المغرب", completed: false });
+        tasks.push({ text: "إتمام صلاة العشاء", completed: false });
+        // إضافة ذكر عشوائي
+        const randomDhikr = adhkar[Math.floor(Math.random() * adhkar.length)];
+        tasks.push({ text: `إتمام الأذكار (100 مرة): ${randomDhikr}`, completed: false });
+      }
+      
+      const note = dayData.note || "";
+      const completed = dayData.completed || false;
+
+      const dayDiv = document.createElement('div');
+      dayDiv.className = 'day-plan';
+      dayDiv.dataset.day = day;
+      if (completed) dayDiv.classList.add('completed');
+
+      const dayHeader = document.createElement('div');
+      dayHeader.className = 'day-header';
+      const readingInfo = document.createElement('div');
+      readingInfo.className = 'reading-info';
+      let segmentsText = getSegments(day, dailyPages).map(seg => {
+        return `من صفحة ${seg.localStart} إلى ${seg.localEnd} (ختمة ${seg.cycle})`;
+      }).join('، ثم ');
+      readingInfo.textContent = `اليوم ${day}: ${segmentsText}`;
+      dayHeader.appendChild(readingInfo);
+      
+      const completeBtn = document.createElement('button');
+      completeBtn.className = 'complete-btn';
+      completeBtn.innerHTML = completed ? 
+        '<i class="fas fa-check-circle icon"></i> مكتمل' : 
+        '<i class="fas fa-plus-circle icon"></i> إكمال اليوم';
+      completeBtn.disabled = completed;
+      completeBtn.addEventListener('click', () => {
+        if (!dayDiv.classList.contains('completed')) {
+          addConfettiEffect(dayDiv);
+          dayDiv.classList.add('completed');
+          completeBtn.disabled = true;
+          completeBtn.innerHTML = '<i class="fas fa-check-circle icon"></i> مكتمل';
+          completedDays++;
+          userProgress = (completedDays / daysInMonth) * 100;
+          userProgress = Math.min(100, userProgress + 3); // زيادة تقدم المستخدم بنسبة 3%
+          updateProgress();
+          updateCompetitionStatus();
+          savePlan();
+          showToast(`اليوم ${day} مكتمل`);
+          showMotivationMessage();
+        }
+      });
+      dayHeader.appendChild(completeBtn);
+      
+      const toggleDetailsBtn = document.createElement('button');
+      toggleDetailsBtn.className = 'toggle-details';
+      toggleDetailsBtn.innerHTML = '<i class="fa-solid fa-plus"></i> عرض التفاصيل';
+      dayHeader.appendChild(toggleDetailsBtn);
+      
+      dayDiv.appendChild(dayHeader);
+
+      const detailsContainer = document.createElement('div');
+      detailsContainer.className = 'details-container details-hidden';
+      
+      // قسم المهام
+      const tasksDiv = document.createElement('div');
+      tasksDiv.className = 'extra-tasks';
+      const taskInput = document.createElement('input');
+      taskInput.type = 'text';
+      taskInput.placeholder = 'أضف مهمة جديدة';
+      tasksDiv.appendChild(taskInput);
+      const addTaskBtn = document.createElement('button');
+      addTaskBtn.innerHTML = '<i class="fa-solid fa-plus"></i> أضف';
+      addTaskBtn.addEventListener('click', () => {
+        const taskText = taskInput.value.trim();
+        if(taskText !== '') {
+          addTaskToList(taskList, { text: taskText, completed: false });
+          taskInput.value = '';
+          savePlan();
+        }
+      });
+      tasksDiv.appendChild(addTaskBtn);
+      const taskList = document.createElement('ul');
+      taskList.className = 'task-list';
+      tasks.forEach(task => addTaskToList(taskList, task));
+      tasksDiv.appendChild(taskList);
+      
+      // زر إكمال جميع المهام
+      const markAllBtn = document.createElement('button');
+      markAllBtn.className = 'mark-all-tasks';
+      markAllBtn.innerHTML = '<i class="fas fa-tasks icon"></i> إكمال جميع المهام';
+      markAllBtn.addEventListener('click', () => {
+        taskList.querySelectorAll('li').forEach(li => {
+          const checkbox = li.querySelector('input[type="checkbox"]');
+          const textSpan = li.querySelector('span');
+          checkbox.checked = true;
+          textSpan.style.textDecoration = 'line-through';
+        });
+        savePlan();
+        showToast('تم إكمال جميع المهام');
+      });
+      tasksDiv.appendChild(markAllBtn);
+      
+      detailsContainer.appendChild(tasksDiv);
+
+      // قسم الملاحظات
+      const noteDiv = document.createElement('div');
+      noteDiv.className = 'day-note';
+      const noteLabel = document.createElement('label');
+      noteLabel.textContent = "ملاحظات اليوم:";
+      noteDiv.appendChild(noteLabel);
+      const noteTextarea = document.createElement('textarea');
+      noteTextarea.placeholder = 'اكتب ملاحظات اليوم هنا...';
+      noteTextarea.value = note;
+      noteTextarea.addEventListener('input', () => savePlan());
+      noteDiv.appendChild(noteTextarea);
+      detailsContainer.appendChild(noteDiv);
+      
+      dayDiv.appendChild(detailsContainer);
+      
+      toggleDetailsBtn.addEventListener('click', () => {
+        if(detailsContainer.classList.contains('details-visible')){
+          detailsContainer.classList.remove('details-visible');
+          detailsContainer.classList.add('details-hidden');
+          toggleDetailsBtn.innerHTML = '<i class="fa-solid fa-plus"></i> عرض التفاصيل';
+        } else {
+          detailsContainer.classList.remove('details-hidden');
+          detailsContainer.classList.add('details-visible');
+          toggleDetailsBtn.innerHTML = '<i class="fa-solid fa-minus"></i> إخفاء التفاصيل';
+        }
+      });
+      
+      return dayDiv;
+    }
+
+    function generatePlan() {
+      planContainer.innerHTML = '';
+      completedDays = 0;
+      updateProgress();
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayPlanEl = createDayPlan(day, getSegments(day, dailyPages));
+        planContainer.appendChild(dayPlanEl);
+      }
+      savePlan();
+    }
+
+    function updateProgress() {
+      const percent = (completedDays / daysInMonth) * 100;
+      progressBar.style.width = percent + '%';
+      progressText.textContent = `${completedDays} من ${daysInMonth} يوم`;
+      
+      // إضافة النسبة المئوية على شريط التقدم
+      const percentElement = document.createElement('div');
+      percentElement.className = 'progress-percent';
+      percentElement.textContent = `${Math.round(percent)}%`;
+      progressBar.innerHTML = '';
+      progressBar.appendChild(percentElement);
+    }
+
+    function savePlan() {
+      const planData = [];
+      document.querySelectorAll('.day-plan').forEach(dayDiv => {
+        const day = dayDiv.dataset.day;
+        const completed = dayDiv.classList.contains('completed');
+        const tasks = [];
+        dayDiv.querySelectorAll('.task-list li').forEach(li => {
+          const checkbox = li.querySelector('input[type="checkbox"]');
+          const textSpan = li.querySelector('span');
+          tasks.push({ text: textSpan.textContent.trim(), completed: checkbox.checked });
+        });
+        const note = dayDiv.querySelector('.day-note textarea').value;
+        planData.push({ day, completed, tasks, note });
+      });
+      const khatmat = document.getElementById('khatmat').value;
+      localStorage.setItem('quranPlan', JSON.stringify({ 
+        khatmat, 
+        planData, 
+        completedDays,
+        competitors,
+        userProgress,
+        competitorsProgress
+      }));
+    }
+
+    function loadPlan() {
+      const savedPlan = localStorage.getItem('quranPlan');
+      if (savedPlan) {
+        const { khatmat, planData, competitors: savedCompetitors, userProgress: savedUserProgress, competitorsProgress: savedCompetitorsProgress } = JSON.parse(savedPlan);
+        if(savedCompetitors) competitors = savedCompetitors;
+        if(savedUserProgress) userProgress = savedUserProgress;
+        if(savedCompetitorsProgress) competitorsProgress = savedCompetitorsProgress;
+        updateCompetitionStatus();
+        document.getElementById('khatmat').value = khatmat;
+        const hadithCount = parseInt(document.getElementById('hadithCount').value) || 0;
+        totalHadiths = hadithCount;
+        if(totalHadiths > 0) {
+          hadithsPerDay = totalHadiths / daysInMonth;
+        }
+        dailyPages = (totalPages * khatmat) / daysInMonth;
+        planContainer.innerHTML = '';
+        completedDays = 0;
+        planData.forEach(data => {
+          const day = parseInt(data.day);
+          const dayPlanEl = createDayPlan(day, getSegments(day, dailyPages), data);
+          if(data.completed) completedDays++;
+          planContainer.appendChild(dayPlanEl);
+        });
+        updateProgress();
+        resetBtn.style.display = 'block';
+      }
+    }
+
+    resetBtn.addEventListener('click', () => {
+      if(confirm('هل أنت متأكد من إعادة تعيين الخطة؟')) {
+        localStorage.removeItem('quranPlan');
+        planContainer.innerHTML = '';
+        document.getElementById('khatmat').value = 1;
+        document.getElementById('hadithCount').value = 0;
+        completedDays = 0;
+        updateProgress();
+        resetBtn.style.display = 'none';
+        showToast('تم إعادة تعيين الخطة');
+      }
+    });
+
+    function animateProgressBar() {
+      const progress = document.querySelector('.progress');
+      progress.style.transition = 'none';
+      progress.style.width = '0';
+      setTimeout(() => {
+        progress.style.transition = 'width 0.5s ease';
+        progress.style.width = `${(completedDays / daysInMonth) * 100}%`;
+      }, 50);
+    }
+
+    function addHoverEffects() {
+      document.querySelectorAll('.day-plan').forEach(plan => {
+        plan.addEventListener('mouseenter', () => {
+          if(!plan.classList.contains('completed')) {
+            plan.style.zIndex = 1;
+          }
+        });
+        plan.addEventListener('mouseleave', () => {
+          plan.style.zIndex = 0;
+        });
+      });
+    }
+
+    function initSmoothScrolling() {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+          });
+        });
+      });
+    }
+
+    function addConfettiEffect(element) {
+      const confettiCount = 20;
+      const confettiColors = ['#2ecc71', '#27ae60', '#1abc9c', '#16a085'];
+      
+      for(let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+        confetti.style.left = `${Math.random() * 100}%`;
+        confetti.style.animationDuration = `${Math.random() * 0.5 + 0.5}s`;
+        element.appendChild(confetti);
+        
+        setTimeout(() => {
+          confetti.remove();
+        }, 1000);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadPlan();
+      animateProgressBar();
+      addHoverEffects();
+      initSmoothScrolling();
+    });
+  </script>
+</body>
+</html>
+
