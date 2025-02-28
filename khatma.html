@@ -1712,58 +1712,53 @@
         exportPdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التصدير...';
         exportPdfBtn.disabled = true;
 
-        // Create temporary container
+        // Create temporary container with full width
         const pageContainer = document.createElement('div');
-        pageContainer.style.width = '1200px'; // زيادة العرض لاستيعاب الأعمدة الإضافية
-        pageContainer.style.padding = '30px';
+        pageContainer.style.width = '2000px';
+        pageContainer.style.padding = '40px';
         pageContainer.style.position = 'absolute';
         pageContainer.style.left = '-9999px';
         pageContainer.style.backgroundColor = '#ffffff';
         pageContainer.style.fontFamily = 'Arial, sans-serif';
         document.body.appendChild(pageContainer);
 
-        // Add header
+        // Update header styles
         const headerDiv = document.createElement('div');
         headerDiv.style.textAlign = 'center';
-        headerDiv.style.marginBottom = '30px';
-        headerDiv.style.padding = '20px';
-        headerDiv.style.background = 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)';
-        headerDiv.style.borderRadius = '10px';
-        headerDiv.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
-
-        const title = document.createElement('h1');
-        title.style.color = '#ffffff';
-        title.style.fontSize = '28px';
-        title.style.margin = '0';
-        title.style.textShadow = '0 2px 4px rgba(0,0,0,0.2)';
-        title.textContent = 'ملخص الإنجازات الشهرية';
-        headerDiv.appendChild(title);
-
-        const date = document.createElement('p');
-        date.style.color = '#ffffff';
-        date.style.fontSize = '14px';
-        date.style.marginTop = '10px';
-        date.style.opacity = '0.9';
-        date.textContent = 'تاريخ التصدير: ' + new Date().toLocaleDateString('ar-EG');
-        headerDiv.appendChild(date);
-
+        headerDiv.style.marginBottom = '40px';
+        headerDiv.style.padding = '30px';
+        headerDiv.style.background = 'linear-gradient(135deg, #1a5f7a 0%, #159957 100%)';
+        headerDiv.style.borderRadius = '15px';
+        headerDiv.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
         pageContainer.appendChild(headerDiv);
 
-        // Create main table with new columns
+        // Define color scheme
+        const colors = {
+          header: '#1a5f7a',
+          headerText: '#ffffff',
+          altRow: '#f8f9fa',
+          success: '#28a745',
+          error: '#dc3545',
+          border: '#dee2e6'
+        };
+
+        // Create table
         const table = document.createElement('table');
         table.style.width = '100%';
         table.style.borderCollapse = 'separate';
         table.style.borderSpacing = '0';
-        table.style.fontSize = '12px'; // تصغير حجم الخط لاستيعاب المزيد من الأعمدة
+        table.style.fontSize = '16px';
         table.style.backgroundColor = '#ffffff';
-        table.style.boxShadow = '0 0 10px rgba(0,0,0,0.1)';
-        table.style.borderRadius = '8px';
+        table.style.boxShadow = '0 0 20px rgba(0,0,0,0.1)';
+        table.style.borderRadius = '12px';
         table.style.overflow = 'hidden';
+        table.style.marginBottom = '40px';
 
-        // Create header row with new columns
+        // Create header row
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
         
+        // Define headers array
         const headers = [
           'اليوم',
           'القرآن',
@@ -1779,131 +1774,213 @@
           'الأذكار'
         ];
 
+        // Create header cells
         headers.forEach(headerText => {
           const th = document.createElement('th');
-          th.style.padding = '10px';
-          th.style.backgroundColor = '#2ecc71';
-          th.style.color = '#ffffff';
+          th.style.padding = '20px 25px';
+          th.style.backgroundColor = colors.header;
+          th.style.color = colors.headerText;
           th.style.fontWeight = 'bold';
-          th.style.fontSize = '11px'; // تصغير حجم خط العناوين
+          th.style.fontSize = '16px';
+          th.style.textAlign = 'center';
+          th.style.position = 'sticky';
+          th.style.top = '0';
           th.textContent = headerText;
           headerRow.appendChild(th);
         });
+
         thead.appendChild(headerRow);
         table.appendChild(thead);
 
-        // Create table body with new columns
+        // Create table body
         const tbody = document.createElement('tbody');
         const days = preparePlanData();
-        
-        days.forEach(day => {
-          const row = document.createElement('tr');
-          
-          // اليوم
-          const dayCell = createCell(day.day);
-          row.appendChild(dayCell);
-          
-          // القرآن
-          const quranCompleted = day.tasks.some(t => t.task.includes('قراءة') && t.status === '✓');
-          row.appendChild(createCell(quranCompleted ? '✓' : '✗', quranCompleted));
-          
-          // الأحاديث
-          const hadithCompleted = day.tasks.some(t => t.task.includes('حفظ الأحاديث') && t.status === '✓');
-          row.appendChild(createCell(hadithCompleted ? '✓' : '✗', hadithCompleted));
-          
-          // الكتب
-          const booksCompleted = day.tasks.some(t => t.task.includes('قراءة: الكتاب') && t.status === '✓');
-          row.appendChild(createCell(booksCompleted ? '✓' : '✗', booksCompleted));
-          
-          // المحاضرة
-          const lectureCompleted = day.tasks.some(t => t.task.includes('سماع محاضرة') && t.status === '✓');
-          row.appendChild(createCell(lectureCompleted ? '✓' : '✗', lectureCompleted));
-          
-          // المراجعة
-          const reviewCompleted = day.tasks.some(t => t.task.includes('إتمام المراجعة') && t.status === '✓');
-          row.appendChild(createCell(reviewCompleted ? '✓' : '✗', reviewCompleted));
-          
-          // الصلوات
-          const fajrCompleted = day.tasks.some(t => t.task.includes('صلاة الفجر') && t.status === '✓');
-          row.appendChild(createCell(fajrCompleted ? '✓' : '✗', fajrCompleted));
-          
-          const dhuhrCompleted = day.tasks.some(t => t.task.includes('صلاة الظهر') && t.status === '✓');
-          row.appendChild(createCell(dhuhrCompleted ? '✓' : '✗', dhuhrCompleted));
-          
-          const asrCompleted = day.tasks.some(t => t.task.includes('صلاة العصر') && t.status === '✓');
-          row.appendChild(createCell(asrCompleted ? '✓' : '✗', asrCompleted));
-          
-          const maghribCompleted = day.tasks.some(t => t.task.includes('صلاة المغرب') && t.status === '✓');
-          row.appendChild(createCell(maghribCompleted ? '✓' : '✗', maghribCompleted));
-          
-          const ishaCompleted = day.tasks.some(t => t.task.includes('صلاة العشاء') && t.status === '✓');
-          row.appendChild(createCell(ishaCompleted ? '✓' : '✗', ishaCompleted));
-          
-          // الأذكار
-          const adhkarCompleted = day.tasks.some(t => t.task.includes('إتمام الأذكار') && t.status === '✓');
-          row.appendChild(createCell(adhkarCompleted ? '✓' : '✗', adhkarCompleted));
-          
-          tbody.appendChild(row);
-        });
 
         // Helper function to create table cells
         function createCell(content, isCompleted = null) {
           const cell = document.createElement('td');
-          cell.style.padding = '8px';
+          cell.style.padding = '15px 25px';
           cell.style.textAlign = 'center';
-          cell.style.borderBottom = '1px solid #e9ecef';
-          cell.textContent = content;
+          cell.style.borderBottom = `1px solid ${colors.border}`;
+          cell.style.fontSize = '16px';
+          cell.style.transition = 'background-color 0.3s';
+          
           if (isCompleted !== null) {
-            cell.style.color = isCompleted ? '#2ecc71' : '#e74c3c';
+            cell.textContent = isCompleted ? '✓' : '✗';
+            cell.style.color = isCompleted ? colors.success : colors.error;
             cell.style.fontWeight = 'bold';
+            cell.style.fontSize = '18px';
+          } else {
+            cell.textContent = content;
           }
+          
           return cell;
         }
+
+        // Create rows
+        days.forEach((day, index) => {
+          const row = document.createElement('tr');
+          row.style.backgroundColor = index % 2 === 0 ? '#ffffff' : colors.altRow;
+          row.style.transition = 'background-color 0.3s';
+          
+          // Hover effect
+          row.addEventListener('mouseenter', () => {
+            row.style.backgroundColor = '#e8f4f8';
+          });
+          row.addEventListener('mouseleave', () => {
+            row.style.backgroundColor = index % 2 === 0 ? '#ffffff' : colors.altRow;
+          });
+
+          // Add cells
+          row.appendChild(createCell(day.day));
+          
+          const quranCompleted = day.tasks.some(t => t.task.includes('قراءة') && t.status === '✓');
+          row.appendChild(createCell(null, quranCompleted));
+          
+          const hadithCompleted = day.tasks.some(t => t.task.includes('حفظ الأحاديث') && t.status === '✓');
+          row.appendChild(createCell(null, hadithCompleted));
+          
+          const booksCompleted = day.tasks.some(t => t.task.includes('قراءة: الكتاب') && t.status === '✓');
+          row.appendChild(createCell(null, booksCompleted));
+          
+          const lectureCompleted = day.tasks.some(t => t.task.includes('سماع محاضرة') && t.status === '✓');
+          row.appendChild(createCell(null, lectureCompleted));
+          
+          const reviewCompleted = day.tasks.some(t => t.task.includes('إتمام المراجعة') && t.status === '✓');
+          row.appendChild(createCell(null, reviewCompleted));
+          
+          const fajrCompleted = day.tasks.some(t => t.task.includes('صلاة الفجر') && t.status === '✓');
+          row.appendChild(createCell(null, fajrCompleted));
+          
+          const dhuhrCompleted = day.tasks.some(t => t.task.includes('صلاة الظهر') && t.status === '✓');
+          row.appendChild(createCell(null, dhuhrCompleted));
+          
+          const asrCompleted = day.tasks.some(t => t.task.includes('صلاة العصر') && t.status === '✓');
+          row.appendChild(createCell(null, asrCompleted));
+          
+          const maghribCompleted = day.tasks.some(t => t.task.includes('صلاة المغرب') && t.status === '✓');
+          row.appendChild(createCell(null, maghribCompleted));
+          
+          const ishaCompleted = day.tasks.some(t => t.task.includes('صلاة العشاء') && t.status === '✓');
+          row.appendChild(createCell(null, ishaCompleted));
+          
+          const adhkarCompleted = day.tasks.some(t => t.task.includes('إتمام الأذكار') && t.status === '✓');
+          row.appendChild(createCell(null, adhkarCompleted));
+          
+          tbody.appendChild(row);
+        });
 
         table.appendChild(tbody);
         pageContainer.appendChild(table);
 
-        // Add enhanced summary section
-        const summaryDiv = document.createElement('div');
-        summaryDiv.style.marginTop = '30px';
-        summaryDiv.style.padding = '20px';
-        summaryDiv.style.backgroundColor = '#f8f9fa';
-        summaryDiv.style.borderRadius = '8px';
-
-        // Calculate completion percentages for each category
-        const calculateCompletion = (taskType) => {
-          const completed = days.filter(day => 
-            day.tasks.some(t => t.task.includes(taskType) && t.status === '✓')
-          ).length;
-          return Math.round((completed / days.length) * 100);
+        // Define tasks mapping
+        const tasks = {
+          'قراءة': 'القرآن',
+          'حفظ الأحاديث': 'الأحاديث',
+          'قراءة: الكتاب': 'الكتب',
+          'سماع محاضرة': 'المحاضرات',
+          'إتمام المراجعة': 'المراجعة',
+          'صلاة الفجر': 'الفجر',
+          'صلاة الظهر': 'الظهر',
+          'صلاة العصر': 'العصر',
+          'صلاة المغرب': 'المغرب',
+          'صلاة العشاء': 'العشاء',
+          'إتمام الأذكار': 'الأذكار'
         };
 
-        summaryDiv.innerHTML = `
-          <h3 style="color: #2c3e50; margin-bottom: 15px;">ملخص الإنجازات:</h3>
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-            <p>القرآن: ${calculateCompletion('قراءة')}%</p>
-            <p>الأحاديث: ${calculateCompletion('حفظ الأحاديث')}%</p>
-            <p>الكتب: ${calculateCompletion('قراءة: الكتاب')}%</p>
-            <p>المحاضرات: ${calculateCompletion('سماع محاضرة')}%</p>
-            <p>المراجعة: ${calculateCompletion('إتمام المراجعة')}%</p>
-            <p>الصلوات: ${calculateCompletion('صلاة')}%</p>
-            <p>الأذكار: ${calculateCompletion('إتمام الأذكار')}%</p>
+        // Add analytics section
+        const analyticsDiv = document.createElement('div');
+        analyticsDiv.style.marginTop = '50px';
+        analyticsDiv.style.padding = '40px';
+        analyticsDiv.style.backgroundColor = '#f8f9fa';
+        analyticsDiv.style.borderRadius = '15px';
+        analyticsDiv.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
+
+        // Calculate analytics data
+        const calculateStats = (taskType) => {
+          const daysCompleted = days.filter(day => 
+            day.tasks.some(t => t.task.includes(taskType) && t.status === '✓')
+          ).length;
+          const percentage = Math.round((daysCompleted / days.length) * 100);
+          const streak = calculateStreak(days, taskType);
+          return { daysCompleted, percentage, streak };
+        };
+
+        // Calculate streak
+        function calculateStreak(days, taskType) {
+          let currentStreak = 0;
+          let maxStreak = 0;
+          
+          days.forEach(day => {
+            const completed = day.tasks.some(t => t.task.includes(taskType) && t.status === '✓');
+            if (completed) {
+              currentStreak++;
+              maxStreak = Math.max(maxStreak, currentStreak);
+            } else {
+              currentStreak = 0;
+            }
+          });
+          
+          return maxStreak;
+        }
+
+        // Generate analytics content
+        let analyticsContent = `
+          <h2 style="color: #1a5f7a; margin-bottom: 30px; text-align: center; font-size: 24px;">التحليل التفصيلي</h2>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
+        `;
+
+        for (const [taskType, taskName] of Object.entries(tasks)) {
+          const stats = calculateStats(taskType);
+          analyticsContent += `
+            <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+              <h3 style="color: #1a5f7a; margin-bottom: 20px; font-size: 20px;">${taskName}</h3>
+              <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span>عدد الأيام المكتملة:</span>
+                  <strong style="color: #28a745">${stats.daysCompleted}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span>نسبة الإنجاز:</span>
+                  <strong style="color: #28a745">${stats.percentage}%</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span>أطول سلسلة إنجاز:</span>
+                  <strong style="color: #1a5f7a">${stats.streak} أيام</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span>المتبقي:</span>
+                  <strong style="color: #dc3545">${days.length - stats.daysCompleted} أيام</strong>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        analyticsContent += `
+          </div>
+          <div style="margin-top: 30px; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <h3 style="color: #2c3e50; margin-bottom: 15px;">التقييم العام</h3>
+            <p>إجمالي الأيام: <strong>${days.length}</strong></p>
+            <p>متوسط الإنجاز اليومي: <strong>${Math.round(Object.values(tasks).reduce((acc, _, i) => acc + calculateStats(Object.keys(tasks)[i]).percentage, 0) / Object.keys(tasks).length)}%</strong></p>
           </div>
         `;
 
-        pageContainer.appendChild(summaryDiv);
+        analyticsDiv.innerHTML = analyticsContent;
+        pageContainer.appendChild(analyticsDiv);
 
-        // Convert to PDF with landscape orientation
+        // Update PDF creation settings for better quality
         const canvas = await html2canvas(pageContainer, {
-          scale: 2,
+          scale: 3, // زيادة جودة الصورة
           useCORS: true,
-          logging: false
+          logging: false,
+          backgroundColor: '#ffffff'
         });
 
-        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
         
-        // Create PDF in landscape orientation for better fit
-        const pdf = new jsPDF('l', 'mm', 'a4');
+        // Create PDF in landscape orientation with better dimensions
+        const pdf = new jsPDF('l', 'mm', [297, 420]); // A3 size for better readability
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
         const imgWidth = canvas.width;
@@ -1914,19 +1991,16 @@
 
         pdf.addImage(imgData, 'JPEG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
 
-        // Save PDF
-        pdf.save('quran_plan_summary.pdf');
+        // Save PDF with better name
+        pdf.save('تقرير_الختم_والأحاديث.pdf');
         
-        // Cleanup
+        // Cleanup and show success message
         document.body.removeChild(pageContainer);
-        
-        // Show success message
-        showToast('تم تصدير الملخص بنجاح', 'success');
+        showToast('تم تصدير التحليل بنجاح', 'success');
       } catch (error) {
         console.error('Error exporting PDF:', error);
         showToast('حدث خطأ أثناء التصدير: ' + error.message, 'error');
       } finally {
-        // Reset button state
         exportPdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i> تصدير إلى PDF';
         exportPdfBtn.disabled = false;
       }
@@ -1950,3 +2024,4 @@
   </script>
 </body>
 </html>
+
