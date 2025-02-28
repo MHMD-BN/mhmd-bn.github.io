@@ -8,6 +8,10 @@
   <!-- FontAwesome & Google Fonts -->
   <link rel="stylesheet" href="fontawesome-free-6.7.2-web/css/all.css" />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     /* Reset & Base */
     * {
@@ -48,32 +52,50 @@
       color: var(--text-color);
       direction: rtl;
       line-height: 1.6;
-      padding: 20px;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
       transition: background var(--transition-speed) ease, color var(--transition-speed) ease;
     }
     .container {
-      max-width: 900px;
-      margin: 2rem auto;
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      border-radius: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
       background: var(--card-bg);
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      transition: background var(--transition-speed) ease;
+      transition: all 0.3s ease;
       border: 1px solid var(--border-color);
     }
+    .container:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
     header {
-      padding: 40px 20px;
-      background: linear-gradient(135deg, var(--accent-color), var(--light-accent));
+      padding: 50px 20px;
+      background: linear-gradient(145deg, var(--accent-color), var(--light-accent));
       box-shadow: var(--shadow);
       color: #fff;
       text-align: center;
       position: relative;
       border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-radius: 0;
     }
     header h1 {
-      font-size: 2.4em;
+      font-size: 2.6em;
       margin-bottom: 10px;
       text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      animation: fadeInDown 0.8s ease;
+    }
+    @keyframes fadeInDown {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
     header p {
       font-size: 1.1em;
@@ -100,7 +122,8 @@
       transform: scale(1.1);
     }
     main {
-      padding: 25px;
+      flex: 1;
+      padding: 15px;
     }
     form {
       display: flex;
@@ -146,16 +169,15 @@
     }
     .progress-container {
       position: relative;
-      padding: 25px;
-      margin: 50px 0;
+      padding: 30px;
+      margin: 40px 0;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
     }
     .progress-bar {
       position: relative;
-      height: 14px;
-      background: rgba(46, 204, 113, 0.1);
-      border-radius: 10px;
-      margin: 30px 0;
-      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      height: 16px;
+      background: rgba(46, 204, 113, 0.15);
     }
     .progress {
       height: 100%;
@@ -163,7 +185,7 @@
       background: linear-gradient(90deg, var(--accent-color), var(--light-accent));
       position: relative;
       transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3);
     }
     .progress-percent {
       position: absolute;
@@ -234,22 +256,24 @@
       transform: translateX(-50%) scale(1.03);
     }
     .plan {
-      margin-top: 20px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      flex: 1;
     }
     .day-plan {
-      margin-bottom: 20px;
+      margin-bottom: 10px;
+      padding: 15px;
       border-radius: 12px;
-      padding: 25px;
       background: var(--card-bg);
       box-shadow: var(--shadow);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border: 1px solid var(--border-color);
       animation: fadeIn 0.5s ease;
       cursor: pointer;
     }
     .day-plan:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.2);
     }
     .day-plan.completed {
       background: var(--completed-bg);
@@ -335,21 +359,21 @@
     }
     
     .task-list li {
-      padding: 12px;
+      padding: 14px;
       border-radius: 8px;
-      margin: 8px 0;
+      margin: 10px 0;
       background: rgba(0,0,0,0.03);
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
       position: relative;
       display: flex;
-  justify-content: space-between;
+      justify-content: space-between;
     }
     .task-list li:last-child {
       border-bottom: none;
     }
     .task-list li:hover {
-      background: rgba(46, 204, 113, 0.1);
       transform: translateX(5px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     .delete-task {
       background: none;
@@ -398,6 +422,7 @@
       padding: 15px;
       font-size: 0.9em;
       color: var(--primary-color);
+      border-radius: 0;
     }
     /* Toast Notification */
     .toast {
@@ -406,18 +431,19 @@
       right: 20px;
       background: var(--accent-color);
       color: #fff;
-      padding: 15px 25px;
-      border-radius: 8px;
+      padding: 18px 25px;
+      border-radius: 12px;
       opacity: 0;
       transform: translateX(100%);
       pointer-events: none;
       transition: all 0.3s ease;
       z-index: 1000;
-      min-width: 300px;
+      min-width: 350px;
       display: flex;
       align-items: center;
       gap: 12px;
       animation: slideIn 0.5s ease;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
     }
     .toast.show {
       opacity: 1;
@@ -429,20 +455,51 @@
       to { opacity: 1; transform: translateY(0); }
     }
     @media (max-width: 768px) {
+
+      .container {
+        min-height: 100vh;
+      }
+
       header {
-        padding: 30px 15px;
+        padding: 25px 15px;
       }
-      
+
       header h1 {
-        font-size: 2em;
+        font-size: 1.8em;
       }
-      
+
+      .progress-container {
+        margin: 20px 0;
+        padding: 15px;
+      }
+
       .day-plan {
-        padding: 20px;
+        margin-bottom: 15px;
+        padding: 15px;
       }
-      
-      .complete-btn {
-        padding: 10px 20px;
+
+      form {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      input[type="number"] {
+        width: 100%;
+      }
+
+      button {
+        margin-top: 10px;
+      }
+
+      .task-list li {
+        padding: 10px;
+      }
+
+      .toast {
+        width: 95%;
+        right: 2.5%;
+        bottom: 5px;
+        padding: 15px;
       }
     }
     .task-checkbox {
@@ -471,6 +528,12 @@
     .complete-btn {
       position: relative;
       overflow: hidden;
+      background: linear-gradient(145deg, var(--accent-color), var(--light-accent));
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .complete-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
     }
     .complete-btn:after {
       content: '';
@@ -587,6 +650,241 @@
     .toast i.icon {
       margin-left: 10px;
     }
+
+    /* Add these new styles */
+    .container {
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+
+    .container:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    header {
+      padding: 50px 20px;
+      background: linear-gradient(145deg, var(--accent-color), var(--light-accent));
+    }
+
+    header h1 {
+      font-size: 2.6em;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    @keyframes fadeInDown {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .progress-container {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 30px;
+      margin: 40px 0;
+    }
+
+    .progress-bar {
+      height: 16px;
+      background: rgba(46, 204, 113, 0.15);
+    }
+
+    .progress {
+      box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3);
+    }
+
+    .day-plan {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .day-plan:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.2);
+    }
+
+    .complete-btn {
+      background: linear-gradient(145deg, var(--accent-color), var(--light-accent));
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .complete-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    .task-list li {
+      padding: 14px;
+      border-radius: 8px;
+      margin: 10px 0;
+      background: rgba(0,0,0,0.03);
+      transition: all 0.3s ease;
+    }
+
+    .task-list li:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .toast {
+      min-width: 350px;
+      padding: 18px 25px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    /* Add these new styles */
+    .book-section {
+      background: rgba(46, 204, 113, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+    }
+
+    .book-section label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--accent-color);
+    }
+
+    .book-section input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: var(--card-bg);
+      color: var(--text-color);
+    }
+
+    .book-section input:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+    }
+
+    .book-section input::placeholder {
+      color: #999;
+    }
+
+    .book-section .input-group {
+      margin-bottom: 15px;
+    }
+
+    .book-section .input-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .book-section .info-text {
+      font-size: 0.9em;
+      color: #666;
+      margin-top: 8px;
+    }
+
+    /* Add these animations */
+    @keyframes slideIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    /* Add these utility classes */
+    .animated {
+      animation-duration: 0.5s;
+      animation-fill-mode: both;
+    }
+
+    .slideIn {
+      animation-name: slideIn;
+    }
+
+    .fadeIn {
+      animation-name: fadeIn;
+    }
+
+    /* Add these responsive styles */
+    @media (max-width: 768px) {
+      .book-section {
+        padding: 12px;
+      }
+
+      .book-section input {
+        padding: 8px;
+        font-size: 14px;
+      }
+
+      .book-section .info-text {
+        font-size: 0.8em;
+      }
+    }
+
+    /* Add these hover effects */
+    .book-section:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+
+    /* Add these focus styles */
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+    }
+
+    /* Add these new styles for better visual hierarchy */
+    .book-section h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: var(--accent-color);
+      font-size: 1.2em;
+    }
+
+    .book-section .input-container {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .book-section .input-container label {
+      flex: 1;
+    }
+
+    .book-section .input-container input {
+      flex: 2;
+    }
+
+    /* Add these styles for better spacing */
+    .book-section {
+      margin: 20px 0;
+    }
+
+    .book-section + .book-section {
+      margin-top: 30px;
+    }
+
+    /* Add these styles for better readability */
+    .book-section p {
+      line-height: 1.6;
+      margin: 10px 0;
+    }
+
+    /* Add these styles for better mobile experience */
+    @media (max-width: 480px) {
+      .book-section .input-container {
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .book-section .input-container label,
+      .book-section .input-container input {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
@@ -604,6 +902,10 @@
         <input type="number" id="khatmat" min="1" value="1" required>
         <label for="hadithCount">عدد الأحاديث:</label>
         <input type="number" id="hadithCount" min="0" value="0">
+        <div class="book-section">
+          <label for="bookPages">صفحات الكتب (مفصولة بفاصلة):</label>
+          <input type="text" id="bookPages" placeholder="مثال: 298,578,410,524">
+        </div>
         <button type="submit">
           <i class="fa-solid fa-play"></i> إنشاء الخطة
         </button>
@@ -624,6 +926,9 @@
       <button id="resetPlan" style="display: none;">
         <i class="fas fa-sync-alt icon icon-hover"></i>
         إعادة تعيين الخطة
+      </button>
+      <button id="exportPdf" style="margin-top: 20px; background-color: #3498db;">
+        <i class="fas fa-file-pdf"></i> تصدير إلى PDF
       </button>
     </main>
     <footer>
@@ -647,6 +952,7 @@
     const resetBtn = document.getElementById('resetPlan');
     const toast = document.getElementById('toast');
     const darkModeToggle = document.getElementById('darkModeToggle');
+    const exportPdfBtn = document.getElementById('exportPdf');
 
     const totalPages = 604; // عدد صفحات القرآن لكل ختمة
     const daysInMonth = 30;
@@ -654,6 +960,7 @@
     let completedDays = 0;
     let totalHadiths = 0;
     let hadithsPerDay = 0;
+    let bookPages = [];
 
     const adhkar = [
   "لا إله إلا الله",
@@ -675,7 +982,7 @@
 
     let competitors = Math.floor(Math.random() * 25) + 5; // عدد المنافسين
     let userProgress = 0; // تقدم المستخدم (0-100)
-    let competitorsProgress = 50; // تقدم المنافسين (0-100)
+    let competitorsProgress = 5; // تقدم المنافسين (0-9%)
 
     function updateCompetitionStatus() {
       const aheadOf = Math.max(0, userProgress - competitorsProgress);
@@ -724,7 +1031,7 @@
     }
 
     // تحديث تقدم المنافسين كل 6 ساعات
-    setInterval(updateCompetitorsProgress, 6 * 60 * 60 * 1000);
+    setInterval(updateCompetitorsProgress, 5 * 60 * 60 * 1000);
 
     function showCompetitionMessage() {
         const messages = [
@@ -868,8 +1175,18 @@
 
     planForm.addEventListener('submit', e => {
       e.preventDefault();
+      
+      const bookPagesInput = document.getElementById('bookPages');
+      if (!validateBookPagesInput(bookPagesInput)) return;
+      formatBookPagesInput(bookPagesInput);
+      
       const khatmat = parseInt(document.getElementById('khatmat').value);
       const hadithCount = parseInt(document.getElementById('hadithCount').value) || 0;
+      const pagesInput = document.getElementById('bookPages').value;
+      
+      // Process book pages
+      bookPages = pagesInput.split(',').map(Number).filter(n => !isNaN(n) && n > 0);
+      
       if(khatmat < 1) return;
       dailyPages = (totalPages * khatmat) / daysInMonth;
       totalHadiths = hadithCount;
@@ -879,7 +1196,7 @@
       generatePlan();
       resetBtn.style.display = 'block';
       competitors = Math.floor(Math.random() * 25) + 5;
-      showPlanCreationMessages(); // Use the new message sequence
+      showPlanCreationMessages();
     });
 
     darkModeToggle.addEventListener('click', () => {
@@ -952,6 +1269,33 @@
       taskList.appendChild(li);
     }
 
+    function getBookReadingTask(day) {
+      if (bookPages.length === 0) return null;
+      
+      const pagesPerDay = Math.ceil(bookPages.reduce((a, b) => a + b, 0) / daysInMonth);
+      let currentPage = (day - 1) * pagesPerDay;
+      let tasks = [];
+      
+      for (let i = 0; i < bookPages.length; i++) {
+        if (currentPage >= bookPages[i]) {
+          currentPage -= bookPages[i];
+          continue;
+        }
+        
+        const startPage = currentPage + 1;
+        const endPage = Math.min(startPage + pagesPerDay - 1, bookPages[i]);
+        tasks.push(`الكتاب ${i + 1}: من صفحة ${startPage} إلى ${endPage}`);
+        
+        if (endPage === bookPages[i]) {
+          currentPage = 0;
+        } else {
+          break;
+        }
+      }
+      
+      return tasks.length > 0 ? tasks.join('، ') : null;
+    }
+
     function createDayPlan(day, segments, dayData = {}) {
       let tasks = dayData.tasks;
       if(!tasks || tasks.length === 0) {
@@ -961,6 +1305,16 @@
           const hadithEnd = Math.ceil(day * hadithsPerDay);
           tasks.push({ text: "حفظ الأحاديث: من الحديث " + hadithStart + " إلى " + hadithEnd, completed: false });
         }
+        
+        // Add book reading tasks
+        const bookTask = getBookReadingTask(day);
+        if (bookTask) {
+          tasks.push({ 
+            text: `قراءة: ${bookTask}`,
+            completed: false 
+          });
+        }
+
         tasks.push({ text: "حفظ لوح اليوم", completed: false });
         tasks.push({ text: "سماع محاضرة", completed: false });
         tasks.push({ text: "إتمام المراجعة", completed: false });
@@ -969,7 +1323,6 @@
         tasks.push({ text: "إتمام صلاة العصر", completed: false });
         tasks.push({ text: "إتمام صلاة المغرب", completed: false });
         tasks.push({ text: "إتمام صلاة العشاء", completed: false });
-        // إضافة ذكر عشوائي
         const randomDhikr = adhkar[Math.floor(Math.random() * adhkar.length)];
         tasks.push({ text: `إتمام الأذكار (100 مرة): ${randomDhikr}`, completed: false });
       }
@@ -1043,6 +1396,7 @@
           savePlan();
         }
       });
+      tasksDiv.appendChild(taskInput);
       tasksDiv.appendChild(addTaskBtn);
       const taskList = document.createElement('ul');
       taskList.className = 'task-list';
@@ -1142,19 +1496,32 @@
         completedDays,
         competitors,
         userProgress,
-        competitorsProgress
+        competitorsProgress,
+        bookPages
       }));
     }
 
     function loadPlan() {
       const savedPlan = localStorage.getItem('quranPlan');
       if (savedPlan) {
-        const { khatmat, planData, competitors: savedCompetitors, userProgress: savedUserProgress, competitorsProgress: savedCompetitorsProgress } = JSON.parse(savedPlan);
+        const { 
+          khatmat, 
+          planData, 
+          competitors: savedCompetitors, 
+          userProgress: savedUserProgress, 
+          competitorsProgress: savedCompetitorsProgress,
+          bookPages: savedBookPages
+        } = JSON.parse(savedPlan);
+        
         if(savedCompetitors) competitors = savedCompetitors;
         if(savedUserProgress) userProgress = savedUserProgress;
         if(savedCompetitorsProgress) competitorsProgress = savedCompetitorsProgress;
+        if(savedBookPages) bookPages = savedBookPages;
+        
         updateCompetitionStatus();
         document.getElementById('khatmat').value = khatmat;
+        document.getElementById('bookPages').value = savedBookPages.join(',');
+        
         const hadithCount = parseInt(document.getElementById('hadithCount').value) || 0;
         totalHadiths = hadithCount;
         if(totalHadiths > 0) {
@@ -1180,6 +1547,7 @@
         planContainer.innerHTML = '';
         document.getElementById('khatmat').value = 1;
         document.getElementById('hadithCount').value = 0;
+        document.getElementById('bookPages').value = '';
         completedDays = 0;
         updateProgress();
         resetBtn.style.display = 'none';
@@ -1239,13 +1607,346 @@
       }
     }
 
+    // Add these new functions
+    function addPulseAnimation(element) {
+      element.classList.add('pulse-animation');
+      setTimeout(() => {
+        element.classList.remove('pulse-animation');
+      }, 1000);
+    }
+
+    function addRippleEffect(button) {
+      const ripple = document.createElement('span');
+      ripple.classList.add('ripple');
+      const rect = button.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.width = ripple.style.height = `${size}px`;
+      ripple.style.left = `${event.clientX - rect.left - size/2}px`;
+      ripple.style.top = `${event.clientY - rect.top - size/2}px`;
+      button.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    }
+
+    function addTooltip(element, text) {
+      const tooltip = document.createElement('div');
+      tooltip.className = 'tooltip';
+      tooltip.textContent = text;
+      element.appendChild(tooltip);
+      element.addEventListener('mouseleave', () => tooltip.remove());
+    }
+
+    // Modify existing event listeners
+    document.querySelectorAll('button').forEach(button => {
+      button.addEventListener('click', (e) => {
+        addRippleEffect(e.target);
+      });
+    });
+
+    document.querySelectorAll('.day-plan').forEach(plan => {
+      plan.addEventListener('mouseenter', () => {
+        addPulseAnimation(plan);
+      });
+    });
+
+    // Add tooltips to important elements
+    document.querySelectorAll('.complete-btn').forEach(button => {
+      addTooltip(button, 'انقر لإكمال اليوم');
+    });
+
+    document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+      addTooltip(checkbox, 'انقر لإكمال المهمة');
+    });
+
+    // Add smooth transitions for all elements
+    document.querySelectorAll('*').forEach(element => {
+      element.style.transition = 'all 0.3s ease';
+    });
+
     window.addEventListener('DOMContentLoaded', () => {
       loadPlan();
       animateProgressBar();
       addHoverEffects();
       initSmoothScrolling();
     });
+
+    // Add these new functions for better UX
+    function validateBookPagesInput(input) {
+      const value = input.value.trim();
+      const isValid = /^\d+(,\d+)*$/.test(value);
+      if (!isValid) {
+        input.classList.add('error');
+        showToast('الرجاء إدخال أرقام صحيحة مفصولة بفواصل', 'error');
+        return false;
+      }
+      input.classList.remove('error');
+      return true;
+    }
+
+    function formatBookPagesInput(input) {
+      const value = input.value.trim();
+      const formattedValue = value
+        .split(',')
+        .map(num => num.trim())
+        .filter(num => num !== '')
+        .join(',');
+      input.value = formattedValue;
+    }
+
+    // Add event listeners for better UX
+    document.getElementById('bookPages').addEventListener('input', function() {
+      validateBookPagesInput(this);
+    });
+
+    document.getElementById('bookPages').addEventListener('blur', function() {
+      formatBookPagesInput(this);
+    });
+
+    // Add animation to book section
+    document.querySelector('.book-section').classList.add('animated', 'slideIn');
+
+    exportPdfBtn.addEventListener('click', async () => {
+      try {
+        const { jsPDF } = window.jspdf;
+        
+        // Show loading state
+        exportPdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التصدير...';
+        exportPdfBtn.disabled = true;
+
+        // Create temporary container
+        const pageContainer = document.createElement('div');
+        pageContainer.style.width = '1200px'; // زيادة العرض لاستيعاب الأعمدة الإضافية
+        pageContainer.style.padding = '30px';
+        pageContainer.style.position = 'absolute';
+        pageContainer.style.left = '-9999px';
+        pageContainer.style.backgroundColor = '#ffffff';
+        pageContainer.style.fontFamily = 'Arial, sans-serif';
+        document.body.appendChild(pageContainer);
+
+        // Add header
+        const headerDiv = document.createElement('div');
+        headerDiv.style.textAlign = 'center';
+        headerDiv.style.marginBottom = '30px';
+        headerDiv.style.padding = '20px';
+        headerDiv.style.background = 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)';
+        headerDiv.style.borderRadius = '10px';
+        headerDiv.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+
+        const title = document.createElement('h1');
+        title.style.color = '#ffffff';
+        title.style.fontSize = '28px';
+        title.style.margin = '0';
+        title.style.textShadow = '0 2px 4px rgba(0,0,0,0.2)';
+        title.textContent = 'ملخص الإنجازات الشهرية';
+        headerDiv.appendChild(title);
+
+        const date = document.createElement('p');
+        date.style.color = '#ffffff';
+        date.style.fontSize = '14px';
+        date.style.marginTop = '10px';
+        date.style.opacity = '0.9';
+        date.textContent = 'تاريخ التصدير: ' + new Date().toLocaleDateString('ar-EG');
+        headerDiv.appendChild(date);
+
+        pageContainer.appendChild(headerDiv);
+
+        // Create main table with new columns
+        const table = document.createElement('table');
+        table.style.width = '100%';
+        table.style.borderCollapse = 'separate';
+        table.style.borderSpacing = '0';
+        table.style.fontSize = '12px'; // تصغير حجم الخط لاستيعاب المزيد من الأعمدة
+        table.style.backgroundColor = '#ffffff';
+        table.style.boxShadow = '0 0 10px rgba(0,0,0,0.1)';
+        table.style.borderRadius = '8px';
+        table.style.overflow = 'hidden';
+
+        // Create header row with new columns
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        
+        const headers = [
+          'اليوم',
+          'القرآن',
+          'الأحاديث',
+          'الكتب',
+          'المحاضرة',
+          'المراجعة',
+          'الفجر',
+          'الظهر',
+          'العصر',
+          'المغرب',
+          'العشاء',
+          'الأذكار'
+        ];
+
+        headers.forEach(headerText => {
+          const th = document.createElement('th');
+          th.style.padding = '10px';
+          th.style.backgroundColor = '#2ecc71';
+          th.style.color = '#ffffff';
+          th.style.fontWeight = 'bold';
+          th.style.fontSize = '11px'; // تصغير حجم خط العناوين
+          th.textContent = headerText;
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        // Create table body with new columns
+        const tbody = document.createElement('tbody');
+        const days = preparePlanData();
+        
+        days.forEach(day => {
+          const row = document.createElement('tr');
+          
+          // اليوم
+          const dayCell = createCell(day.day);
+          row.appendChild(dayCell);
+          
+          // القرآن
+          const quranCompleted = day.tasks.some(t => t.task.includes('قراءة') && t.status === '✓');
+          row.appendChild(createCell(quranCompleted ? '✓' : '✗', quranCompleted));
+          
+          // الأحاديث
+          const hadithCompleted = day.tasks.some(t => t.task.includes('حفظ الأحاديث') && t.status === '✓');
+          row.appendChild(createCell(hadithCompleted ? '✓' : '✗', hadithCompleted));
+          
+          // الكتب
+          const booksCompleted = day.tasks.some(t => t.task.includes('قراءة: الكتاب') && t.status === '✓');
+          row.appendChild(createCell(booksCompleted ? '✓' : '✗', booksCompleted));
+          
+          // المحاضرة
+          const lectureCompleted = day.tasks.some(t => t.task.includes('سماع محاضرة') && t.status === '✓');
+          row.appendChild(createCell(lectureCompleted ? '✓' : '✗', lectureCompleted));
+          
+          // المراجعة
+          const reviewCompleted = day.tasks.some(t => t.task.includes('إتمام المراجعة') && t.status === '✓');
+          row.appendChild(createCell(reviewCompleted ? '✓' : '✗', reviewCompleted));
+          
+          // الصلوات
+          const fajrCompleted = day.tasks.some(t => t.task.includes('صلاة الفجر') && t.status === '✓');
+          row.appendChild(createCell(fajrCompleted ? '✓' : '✗', fajrCompleted));
+          
+          const dhuhrCompleted = day.tasks.some(t => t.task.includes('صلاة الظهر') && t.status === '✓');
+          row.appendChild(createCell(dhuhrCompleted ? '✓' : '✗', dhuhrCompleted));
+          
+          const asrCompleted = day.tasks.some(t => t.task.includes('صلاة العصر') && t.status === '✓');
+          row.appendChild(createCell(asrCompleted ? '✓' : '✗', asrCompleted));
+          
+          const maghribCompleted = day.tasks.some(t => t.task.includes('صلاة المغرب') && t.status === '✓');
+          row.appendChild(createCell(maghribCompleted ? '✓' : '✗', maghribCompleted));
+          
+          const ishaCompleted = day.tasks.some(t => t.task.includes('صلاة العشاء') && t.status === '✓');
+          row.appendChild(createCell(ishaCompleted ? '✓' : '✗', ishaCompleted));
+          
+          // الأذكار
+          const adhkarCompleted = day.tasks.some(t => t.task.includes('إتمام الأذكار') && t.status === '✓');
+          row.appendChild(createCell(adhkarCompleted ? '✓' : '✗', adhkarCompleted));
+          
+          tbody.appendChild(row);
+        });
+
+        // Helper function to create table cells
+        function createCell(content, isCompleted = null) {
+          const cell = document.createElement('td');
+          cell.style.padding = '8px';
+          cell.style.textAlign = 'center';
+          cell.style.borderBottom = '1px solid #e9ecef';
+          cell.textContent = content;
+          if (isCompleted !== null) {
+            cell.style.color = isCompleted ? '#2ecc71' : '#e74c3c';
+            cell.style.fontWeight = 'bold';
+          }
+          return cell;
+        }
+
+        table.appendChild(tbody);
+        pageContainer.appendChild(table);
+
+        // Add enhanced summary section
+        const summaryDiv = document.createElement('div');
+        summaryDiv.style.marginTop = '30px';
+        summaryDiv.style.padding = '20px';
+        summaryDiv.style.backgroundColor = '#f8f9fa';
+        summaryDiv.style.borderRadius = '8px';
+
+        // Calculate completion percentages for each category
+        const calculateCompletion = (taskType) => {
+          const completed = days.filter(day => 
+            day.tasks.some(t => t.task.includes(taskType) && t.status === '✓')
+          ).length;
+          return Math.round((completed / days.length) * 100);
+        };
+
+        summaryDiv.innerHTML = `
+          <h3 style="color: #2c3e50; margin-bottom: 15px;">ملخص الإنجازات:</h3>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+            <p>القرآن: ${calculateCompletion('قراءة')}%</p>
+            <p>الأحاديث: ${calculateCompletion('حفظ الأحاديث')}%</p>
+            <p>الكتب: ${calculateCompletion('قراءة: الكتاب')}%</p>
+            <p>المحاضرات: ${calculateCompletion('سماع محاضرة')}%</p>
+            <p>المراجعة: ${calculateCompletion('إتمام المراجعة')}%</p>
+            <p>الصلوات: ${calculateCompletion('صلاة')}%</p>
+            <p>الأذكار: ${calculateCompletion('إتمام الأذكار')}%</p>
+          </div>
+        `;
+
+        pageContainer.appendChild(summaryDiv);
+
+        // Convert to PDF with landscape orientation
+        const canvas = await html2canvas(pageContainer, {
+          scale: 2,
+          useCORS: true,
+          logging: false
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+        
+        // Create PDF in landscape orientation for better fit
+        const pdf = new jsPDF('l', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+        const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+        const imgX = (pdfWidth - imgWidth * ratio) / 2;
+        const imgY = 10;
+
+        pdf.addImage(imgData, 'JPEG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+
+        // Save PDF
+        pdf.save('quran_plan_summary.pdf');
+        
+        // Cleanup
+        document.body.removeChild(pageContainer);
+        
+        // Show success message
+        showToast('تم تصدير الملخص بنجاح', 'success');
+      } catch (error) {
+        console.error('Error exporting PDF:', error);
+        showToast('حدث خطأ أثناء التصدير: ' + error.message, 'error');
+      } finally {
+        // Reset button state
+        exportPdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i> تصدير إلى PDF';
+        exportPdfBtn.disabled = false;
+      }
+    });
+
+    function preparePlanData() {
+      const days = [];
+      document.querySelectorAll('.day-plan').forEach(dayPlan => {
+        const day = dayPlan.dataset.day;
+        const tasks = [];
+        dayPlan.querySelectorAll('.task-list li').forEach(li => {
+          const taskText = li.querySelector('.task-text').textContent;
+          const completed = li.querySelector('.task-checkbox').checked ? '✓' : '✗';
+          tasks.push({ task: taskText, status: completed });
+        });
+        const note = dayPlan.querySelector('.day-note textarea').value;
+        days.push({ day, tasks, note });
+      });
+      return days;
+    }
   </script>
 </body>
 </html>
-
