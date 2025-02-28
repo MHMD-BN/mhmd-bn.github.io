@@ -885,6 +885,25 @@
         width: 100%;
       }
     }
+
+    // Add these styles to make the table fit better
+    table {
+      width: 100%;
+      font-size: 12px; // Reduce font size
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 8px; // Reduce padding
+      text-align: center;
+      white-space: nowrap; // Prevent text wrapping
+    }
+
+    // Adjust the container width
+    .pageContainer {
+      width: 1000px; // Reduce container width
+      padding: 20px;
+    }
   </style>
 </head>
 <body>
@@ -1704,6 +1723,69 @@
     // Add animation to book section
     document.querySelector('.book-section').classList.add('animated', 'slideIn');
 
+    // Add this function before the exportPdfBtn event listener:
+
+    function calculateStats(taskType) {
+      const days = preparePlanData();
+      let daysCompleted = 0;
+      let currentStreak = 0;
+      let maxStreak = 0;
+
+      days.forEach(day => {
+        const taskCompleted = day.tasks.some(t => 
+          t.task.includes(taskType) && t.status === '✓'
+        );
+
+        if (taskCompleted) {
+          daysCompleted++;
+          currentStreak++;
+          maxStreak = Math.max(maxStreak, currentStreak);
+        } else {
+          currentStreak = 0;
+        }
+      });
+
+      return {
+        daysCompleted,
+        streak: maxStreak,
+        percentage: Math.round((daysCompleted / days.length) * 100)
+      };
+    }
+
+    // Add this function before the exportPdfBtn event listener:
+
+    function getHijriDate() {
+      const hijriMonths = [
+        'محرم', 'صفر', 'ربيع الأول', 'ربيع الآخر', 
+        'جمادى الأولى', 'جمادى الآخرة', 'رجب', 
+        'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
+      ];
+      
+      const days = [
+        'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 
+        'الخميس', 'الجمعة', 'السبت'
+      ];
+      
+      const today = new Date();
+      const hijriDate = new Intl.DateTimeFormat('ar-TN-u-ca-islamic', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }).format(today);
+      
+      const [day, month, year] = hijriDate.split(' ');
+      const dayOfWeek = days[today.getDay()];
+      
+      return {
+        day: day,
+        month: hijriMonths.find(m => month.includes(m)),
+        year: year,
+        dayOfWeek: dayOfWeek
+      };
+    }
+
+    // Modify the PDF export section to add the date:
+
     exportPdfBtn.addEventListener('click', async () => {
       try {
         const { jsPDF } = window.jspdf;
@@ -1712,7 +1794,7 @@
         exportPdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التصدير...';
         exportPdfBtn.disabled = true;
 
-        // Create temporary container with full width
+        // Create temporary container
         const pageContainer = document.createElement('div');
         pageContainer.style.width = '2000px';
         pageContainer.style.padding = '40px';
@@ -1721,6 +1803,25 @@
         pageContainer.style.backgroundColor = '#ffffff';
         pageContainer.style.fontFamily = 'Arial, sans-serif';
         document.body.appendChild(pageContainer);
+
+        // Add date section
+        const hijriDate = getHijriDate();
+        const dateDiv = document.createElement('div');
+        dateDiv.style.textAlign = 'center';
+        dateDiv.style.marginBottom = '30px';
+        dateDiv.style.padding = '20px';
+        dateDiv.style.backgroundColor = '#f8f9fa';
+        dateDiv.style.borderRadius = '10px';
+        dateDiv.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+        dateDiv.innerHTML = `
+          <h3 style="color: #1a5f7a; font-size: 24px; margin-bottom: 10px;">
+            تاريخ التصدير
+          </h3>
+          <p style="color: #666; font-size: 18px;">
+            ${hijriDate.dayOfWeek}، ${hijriDate.day} ${hijriDate.month} ${hijriDate.year}
+          </p>
+        `;
+        pageContainer.appendChild(dateDiv);
 
         // Update header styles
         const headerDiv = document.createElement('div');
@@ -1888,7 +1989,7 @@
           'إتمام الأذكار': 'الأذكار'
         };
 
-        // Add analytics section
+        // Add analytics section with improved layout
         const analyticsDiv = document.createElement('div');
         analyticsDiv.style.marginTop = '50px';
         analyticsDiv.style.padding = '40px';
@@ -1896,60 +1997,45 @@
         analyticsDiv.style.borderRadius = '15px';
         analyticsDiv.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
 
-        // Calculate analytics data
-        const calculateStats = (taskType) => {
-          const daysCompleted = days.filter(day => 
-            day.tasks.some(t => t.task.includes(taskType) && t.status === '✓')
-          ).length;
-          const percentage = Math.round((daysCompleted / days.length) * 100);
-          const streak = calculateStreak(days, taskType);
-          return { daysCompleted, percentage, streak };
-        };
-
-        // Calculate streak
-        function calculateStreak(days, taskType) {
-          let currentStreak = 0;
-          let maxStreak = 0;
-          
-          days.forEach(day => {
-            const completed = day.tasks.some(t => t.task.includes(taskType) && t.status === '✓');
-            if (completed) {
-              currentStreak++;
-              maxStreak = Math.max(maxStreak, currentStreak);
-            } else {
-              currentStreak = 0;
-            }
-          });
-          
-          return maxStreak;
-        }
-
-        // Generate analytics content
+        // Generate analytics content with improved layout
         let analyticsContent = `
-          <h2 style="color: #1a5f7a; margin-bottom: 30px; text-align: center; font-size: 24px;">التحليل التفصيلي</h2>
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
+          <div style="text-align: center; margin-bottom: 40px;">
+            <h2 style="color: #1a5f7a; font-size: 28px; margin-bottom: 10px;">التحليل التفصيلي</h2>
+            <p style="color: #666; font-size: 16px;">تقرير شامل عن أدائك في الخطة</p>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 40px;">
         `;
 
         for (const [taskType, taskName] of Object.entries(tasks)) {
           const stats = calculateStats(taskType);
+          const percentage = stats.percentage;
+          const color = percentage >= 75 ? '#28a745' : percentage >= 50 ? '#ffc107' : '#dc3545';
+          
           analyticsContent += `
-            <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-              <h3 style="color: #1a5f7a; margin-bottom: 20px; font-size: 20px;">${taskName}</h3>
-              <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span>عدد الأيام المكتملة:</span>
-                  <strong style="color: #28a745">${stats.daysCompleted}</strong>
+            <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; overflow: hidden;">
+              <div style="position: absolute; top: 0; left: 0; height: 4px; width: ${percentage}%; background: ${color}; transition: width 0.3s ease;"></div>
+              
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="color: #1a5f7a; font-size: 20px; margin: 0;">${taskName}</h3>
+                <span style="background: ${color}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 14px;">
+                  ${percentage}%
+                </span>
+              </div>
+              
+              <div style="display: grid; gap: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #f8f9fa; border-radius: 8px;">
+                  <span style="color: #666;">الأيام المكتملة</span>
+                  <strong style="color: #28a745">${stats.daysCompleted} / ${days.length}</strong>
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span>نسبة الإنجاز:</span>
-                  <strong style="color: #28a745">${stats.percentage}%</strong>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span>أطول سلسلة إنجاز:</span>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #f8f9fa; border-radius: 8px;">
+                  <span style="color: #666;">أطول سلسلة إنجاز</span>
                   <strong style="color: #1a5f7a">${stats.streak} أيام</strong>
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span>المتبقي:</span>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #f8f9fa; border-radius: 8px;">
+                  <span style="color: #666;">المتبقي</span>
                   <strong style="color: #dc3545">${days.length - stats.daysCompleted} أيام</strong>
                 </div>
               </div>
@@ -1957,12 +2043,44 @@
           `;
         }
 
+        // Add summary section with improved layout
+        const averageCompletion = Math.round(
+          Object.values(tasks).reduce((acc, _, i) => 
+            acc + calculateStats(Object.keys(tasks)[i]).percentage, 0
+          ) / Object.keys(tasks).length
+        );
+
         analyticsContent += `
           </div>
-          <div style="margin-top: 30px; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-            <h3 style="color: #2c3e50; margin-bottom: 15px;">التقييم العام</h3>
-            <p>إجمالي الأيام: <strong>${days.length}</strong></p>
-            <p>متوسط الإنجاز اليومي: <strong>${Math.round(Object.values(tasks).reduce((acc, _, i) => acc + calculateStats(Object.keys(tasks)[i]).percentage, 0) / Object.keys(tasks).length)}%</strong></p>
+          
+          <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <h3 style="color: #1a5f7a; margin-bottom: 25px; text-align: center; font-size: 24px;">التقييم العام</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+              <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 12px;">
+                <div style="font-size: 32px; font-weight: bold; color: #1a5f7a; margin-bottom: 10px;">
+                  ${days.length}
+                </div>
+                <div style="color: #666;">إجمالي الأيام</div>
+              </div>
+              
+              <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 12px;">
+                <div style="font-size: 32px; font-weight: bold; color: ${
+                  averageCompletion >= 75 ? '#28a745' : 
+                  averageCompletion >= 50 ? '#ffc107' : '#dc3545'
+                }; margin-bottom: 10px;">
+                  ${averageCompletion}%
+                </div>
+                <div style="color: #666;">متوسط الإنجاز</div>
+              </div>
+              
+              <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 12px;">
+                <div style="font-size: 32px; font-weight: bold; color: #1a5f7a; margin-bottom: 10px;">
+                  ${Object.keys(tasks).length}
+                </div>
+                <div style="color: #666;">عدد المهام</div>
+              </div>
+            </div>
           </div>
         `;
 
@@ -1980,15 +2098,18 @@
         const imgData = canvas.toDataURL('image/jpeg', 1.0);
         
         // Create PDF in landscape orientation with better dimensions
-        const pdf = new jsPDF('l', 'mm', [297, 420]); // A3 size for better readability
+        const pdf = new jsPDF('p', 'mm', 'a4'); // Change to portrait A4
+
+        // Adjust the image dimensions to fit A4
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
         const imgWidth = canvas.width;
         const imgHeight = canvas.height;
-        const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+        const ratio = Math.min((pdfWidth - 20) / imgWidth, (pdfHeight - 20) / imgHeight); // Add 20mm margins
         const imgX = (pdfWidth - imgWidth * ratio) / 2;
         const imgY = 10;
 
+        // Add the image with adjusted dimensions
         pdf.addImage(imgData, 'JPEG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
 
         // Save PDF with better name
@@ -2024,4 +2145,3 @@
   </script>
 </body>
 </html>
-
